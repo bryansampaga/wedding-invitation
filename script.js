@@ -223,7 +223,7 @@ $("postBtn").addEventListener("click", uploadPhoto);
 
 async function uploadPhoto() {
   if (!sbReady) {
-    $("uploadStatus").textContent="Connect Supabase first.";
+    $("uploadStatus").textContent = "Connect Supabase first.";
     return;
   }
 
@@ -235,49 +235,103 @@ async function uploadPhoto() {
     .eq("guest_id", guest.id);
 
   if (countError) {
-    $("uploadStatus").textContent = "Could not check photo limit: " + countError.message;
+    $("uploadStatus").textContent =
+      "Could not check photo limit: " + countError.message;
     return;
   }
 
   if ((count || 0) >= MAX_GUEST_PHOTOS) {
     updatePhotoCounter(count || 0);
-    $("uploadStatus").textContent = "You have already used all 3 photo slots.";
+    $("uploadStatus").textContent =
+      "You have already used all 3 photo slots.";
     return;
   }
 
-  $("postBtn").disabled=true;
-  $("uploadStatus").textContent="Posting your photo...";
+  $("postBtn").disabled = true;
+  $("uploadStatus").textContent = "Posting your photo...";
 
   const id = crypto.randomUUID();
   const path = `${guest.id}/${id}.png`;
 
+  // Keep a local preview URL so the guest sees the new image immediately.
+  const localPreviewUrl = URL.createObjectURL(photoBlob);
+
   const { error: storageError } = await sb.storage
     .from("wedding-photos")
-    .upload(path, photoBlob, { contentType:"image/png", upsert:false });
+    .upload(path, photoBlob, {
+      contentType: "image/png",
+      cacheControl: "3600",
+      upsert: false
+    });
 
   if (storageError) {
-    $("uploadStatus").textContent="Upload failed: "+storageError.message;
-    $("postBtn").disabled=false;
+    URL.revokeObjectURL(localPreviewUrl);
+    $("uploadStatus").textContent =
+      "Upload failed: " + storageError.message;
+    $("postBtn").disabled = false;
     return;
   }
 
-  const { error: dbError } = await sb.from("guest_photos").insert({
-    id,
-    guest_id: guest.id,
-    invite_token: token,
-    storage_path: path,
-    filter_name: currentStyle
-  });
+  const { data: insertedRow, error: dbError } = await sb
+    .from("guest_photos")
+    .insert({
+      id,
+      guest_id: guest.id,
+      invite_token: token,
+      storage_path: path,
+      filter_name: currentStyle
+    })
+    .select("id,storage_path,created_at,filter_name")
+    .single();
 
   if (dbError) {
-    $("uploadStatus").textContent="Photo uploaded, but gallery entry failed: "+dbError.message;
-    $("postBtn").disabled=false;
+    URL.revokeObjectURL(localPreviewUrl);
+    $("uploadStatus").textContent =
+      "Photo uploaded, but gallery entry failed: " + dbError.message;
+    $("postBtn").disabled = false;
     return;
   }
 
-  $("uploadStatus").textContent="Posted to your private invitation gallery.";
-  $("postBtn").disabled=false;
-  await loadMyPhotos();
+  // Show the photo immediately instead of waiting for Storage signed URL propagation.
+  prependLocalPhoto(
+    localPreviewUrl,
+    insertedRow?.created_at || new Date().toISOString(),
+    id
+  );
+
+  updatePhotoCounter((count || 0) + 1);
+
+  $("uploadStatus").textContent =
+    "Posted to your private invitation gallery.";
+  $("postBtn").disabled = false;
+
+  // Refresh from Supabase after a short delay. If the new object is not ready,
+  // the local preview remains visible instead of disappearing.
+  setTimeout(async () => {
+    await loadMyPhotos({ preserveLocalId: id });
+    setTimeout(() => URL.revokeObjectURL(localPreviewUrl), 5000);
+  }, 900);
+}
+
+
+function prependLocalPhoto(url, createdAt, localId) {
+  const gallery = $("myPhotos");
+  if (!gallery) return;
+
+  const empty = gallery.querySelector(".empty");
+  if (empty) empty.remove();
+
+  const fig = document.createElement("figure");
+  fig.dataset.photoId = localId;
+  fig.dataset.localPreview = "true";
+  fig.innerHTML = `
+    <img src="${url}" alt="Wedding selfie">
+    <figcaption>
+      Just posted · ${new Date(createdAt).toLocaleString()}
+    </figcaption>
+  `;
+
+  gallery.prepend(fig);
 }
 
 
@@ -305,37 +359,90 @@ function updatePhotoCounter(count) {
   }
 }
 
-async function loadMyPhotos() {
+async function loadMyPhotos(options = {}) {
   if (!sbReady || !guest.id || !token) return;
+
+  const { preserveLocalId = null } = options;
 
   const { data, error } = await sb
     .from("guest_photos")
     .select("id,storage_path,created_at,filter_name")
     .eq("guest_id", guest.id)
     .eq("invite_token", token)
-    .order("created_at",{ascending:false});
+    .order("created_at", { ascending: false });
 
-  if (error) return;
+  if (error) {
+    console.error("Could not load guest photos:", error);
+    return;
+  }
 
-  const gallery=$("myPhotos");
-  gallery.innerHTML="";
+  const gallery = $("myPhotos");
+  if (!gallery) return;
 
   updatePhotoCounter(data?.length || 0);
 
   if (!data?.length) {
-    gallery.innerHTML='<p class="empty">No photos posted yet.</p>';
+    // Do not wipe an optimistic local image while Supabase is catching up.
+    if (!gallery.querySelector("[data-local-preview='true']")) {
+      gallery.innerHTML = '<p class="empty">No photos posted yet.</p>';
+    }
     return;
   }
 
-  for (const item of data) {
-    const { data:signed } = await sb.storage
-      .from("wedding-photos")
-      .createSignedUrl(item.storage_path, 60*60);
+  const rendered = [];
 
-    const fig=document.createElement("figure");
-    fig.innerHTML=`<img src="${signed?.signedUrl || ""}" alt="Wedding selfie">
-      <figcaption>${new Date(item.created_at).toLocaleString()}</figcaption>`;
+  for (const item of data) {
+    let signedUrl = "";
+
+    // Signed URL creation can lag very briefly after a fresh upload.
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const { data: signed, error: signedError } = await sb.storage
+        .from("wedding-photos")
+        .createSignedUrl(item.storage_path, 60 * 60);
+
+      if (!signedError && signed?.signedUrl) {
+        signedUrl = signed.signedUrl;
+        break;
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 450));
+    }
+
+    if (signedUrl) {
+      rendered.push({
+        ...item,
+        signedUrl
+      });
+    }
+  }
+
+  // If the just-posted photo still has no signed URL, keep its local preview.
+  const localFigure = preserveLocalId
+    ? gallery.querySelector(`[data-photo-id="${preserveLocalId}"][data-local-preview="true"]`)
+    : null;
+
+  gallery.innerHTML = "";
+
+  for (const item of rendered) {
+    const fig = document.createElement("figure");
+    fig.dataset.photoId = item.id;
+    fig.innerHTML = `
+      <img src="${item.signedUrl}" alt="Wedding selfie">
+      <figcaption>${new Date(item.created_at).toLocaleString()}</figcaption>
+    `;
     gallery.appendChild(fig);
+  }
+
+  const hasPreservedServerCopy =
+    preserveLocalId &&
+    rendered.some(item => item.id === preserveLocalId);
+
+  if (localFigure && !hasPreservedServerCopy) {
+    gallery.prepend(localFigure);
+  }
+
+  if (!gallery.children.length) {
+    gallery.innerHTML = '<p class="empty">No photos posted yet.</p>';
   }
 }
 

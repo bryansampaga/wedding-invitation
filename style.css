@@ -783,3 +783,96 @@
     min-height:34px !important;
   }
 }
+
+
+/* V9 photo upload reliability */
+.photo-grid figure[data-local-preview="true"]{
+  position:relative;
+}
+
+.photo-grid figure[data-local-preview="true"]::after{
+  content:"Saving…";
+  position:absolute;
+  top:16px;
+  right:16px;
+  padding:5px 8px;
+  border-radius:999px;
+  background:rgba(255,255,255,.88);
+  color:var(--muted);
+  font-size:9px;
+  font-weight:700;
+  backdrop-filter:blur(8px);
+}
+
+
+/* =====================================================
+   V11 - ONLY FIX THE MOBILE TOP NAVIGATION
+   Reservation cards remain unchanged.
+   ===================================================== */
+
+@media(max-width:780px){
+  .nav{
+    width:calc(100% - 12px) !important;
+    max-width:none !important;
+    left:6px !important;
+    right:6px !important;
+    top:6px !important;
+    transform:none !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+
+    gap:0 !important;
+    padding:5px !important;
+
+    overflow:hidden !important;
+    border-radius:999px !important;
+  }
+
+  .nav a{
+    flex:1 1 0 !important;
+    min-width:0 !important;
+    width:auto !important;
+
+    padding:8px 1px !important;
+    margin:0 !important;
+
+    font-size:9px !important;
+    font-weight:600 !important;
+    line-height:1 !important;
+    letter-spacing:-0.015em !important;
+
+    text-align:center !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+
+    border-radius:999px !important;
+  }
+
+  .nav a:hover,
+  .nav a:focus{
+    background:var(--sage-light) !important;
+  }
+}
+
+@media(max-width:430px){
+  .nav{
+    width:calc(100% - 8px) !important;
+    left:4px !important;
+    right:4px !important;
+    padding:4px !important;
+  }
+
+  .nav a{
+    font-size:8px !important;
+    padding:8px 0 !important;
+    letter-spacing:-0.025em !important;
+  }
+}
+
+@media(max-width:360px){
+  .nav a{
+    font-size:7.3px !important;
+  }
+}
