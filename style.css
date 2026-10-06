@@ -577,3 +577,209 @@
     font-size:8px !important;
   }
 }
+
+
+/* =====================================================
+   V7 - FIT ALL TOP NAV ITEMS ON MOBILE
+   ===================================================== */
+
+@media(max-width:780px){
+  .nav{
+    width:calc(100% - 10px) !important;
+    max-width:none !important;
+    left:5px !important;
+    right:5px !important;
+    transform:none !important;
+    display:grid !important;
+    grid-template-columns:repeat(6,1fr) !important;
+    gap:2px !important;
+    padding:4px !important;
+    overflow:visible !important;
+    border-radius:18px !important;
+  }
+
+  .nav a{
+    min-width:0 !important;
+    width:100% !important;
+    padding:8px 2px !important;
+    font-size:9px !important;
+    line-height:1 !important;
+    text-align:center !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:clip !important;
+    border-radius:12px !important;
+  }
+}
+
+@media(max-width:430px){
+  .nav{
+    width:calc(100% - 8px) !important;
+    left:4px !important;
+    right:4px !important;
+    gap:1px !important;
+    padding:3px !important;
+  }
+
+  .nav a{
+    padding:7px 1px !important;
+    font-size:8px !important;
+    letter-spacing:-0.01em !important;
+  }
+}
+
+@media(max-width:360px){
+  .nav a{
+    font-size:7.5px !important;
+    padding:7px 0 !important;
+  }
+}
+
+
+/* =====================================================
+   V8 - ALWAYS-VISIBLE SEATING + BETTER MOBILE NAV
+   ===================================================== */
+
+/* Reservation detail typography */
+.reservation-heading{
+  font-family:"Cormorant Garamond",serif !important;
+  font-size:22px !important;
+  font-weight:600 !important;
+  color:var(--ink) !important;
+  margin-bottom:16px !important;
+}
+
+.reservation-strip span{
+  font-family:Montserrat,sans-serif !important;
+  font-size:10px !important;
+  font-weight:700 !important;
+  letter-spacing:.1em !important;
+}
+
+.reservation-strip b{
+  font-family:"Cormorant Garamond",serif !important;
+  font-size:31px !important;
+  font-weight:600 !important;
+  line-height:1 !important;
+}
+
+.seat-table.my-table{
+  border-color:rgba(105,119,99,.5) !important;
+  box-shadow:0 10px 24px rgba(105,119,99,.12) !important;
+}
+
+/* Mobile nav: two rows, three tabs each. Larger and actually readable. */
+@media(max-width:780px){
+  .nav{
+    width:calc(100% - 14px) !important;
+    left:7px !important;
+    right:7px !important;
+    top:7px !important;
+    transform:none !important;
+    display:grid !important;
+    grid-template-columns:repeat(3,1fr) !important;
+    grid-template-rows:repeat(2,auto) !important;
+    gap:3px !important;
+    padding:5px !important;
+    overflow:visible !important;
+    border-radius:18px !important;
+  }
+
+  .nav a{
+    width:100% !important;
+    min-width:0 !important;
+    padding:9px 4px !important;
+    font-size:11px !important;
+    font-weight:600 !important;
+    line-height:1 !important;
+    text-align:center !important;
+    white-space:nowrap !important;
+    border-radius:11px !important;
+  }
+
+  /* Make room for the two-row fixed nav */
+  .section{
+    padding-top:96px !important;
+  }
+
+  .hero{
+    padding-top:96px !important;
+  }
+
+  .reservation-strip{
+    gap:6px !important;
+  }
+
+  .reservation-strip>div{
+    padding:13px 5px !important;
+  }
+
+  .reservation-strip span{
+    font-size:9px !important;
+  }
+
+  .reservation-strip b{
+    font-size:28px !important;
+  }
+
+  /* Seating stays visible and compact */
+  .seating-plan{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:8px !important;
+  }
+
+  .seat-table{
+    display:grid !important;
+    grid-template-columns:62px 1fr !important;
+    align-items:center !important;
+    padding:9px !important;
+  }
+
+  .seat-grid{
+    display:grid !important;
+    grid-template-columns:repeat(5,1fr) !important;
+    gap:5px !important;
+  }
+
+  .seat-chip{
+    min-height:38px !important;
+  }
+
+  .seat-chip span{
+    font-size:11px !important;
+  }
+
+  .seat-chip small{
+    font-size:7px !important;
+  }
+}
+
+@media(max-width:420px){
+  .nav{
+    width:calc(100% - 10px) !important;
+    left:5px !important;
+    right:5px !important;
+  }
+
+  .nav a{
+    font-size:10px !important;
+    padding:8px 2px !important;
+  }
+
+  .reservation-heading{
+    font-size:20px !important;
+  }
+
+  .reservation-strip b{
+    font-size:25px !important;
+  }
+
+  .seat-table{
+    grid-template-columns:54px 1fr !important;
+  }
+
+  .seat-chip{
+    min-height:34px !important;
+  }
+}

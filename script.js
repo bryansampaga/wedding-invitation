@@ -72,14 +72,28 @@ async function loadGuest() {
 }
 
 function setGuestUI() {
-  $("guestName").textContent = guest.name;
-  $("guestDisplay").textContent = guest.name;
-  $("overlayGuestName").textContent = guest.name;
-  $("guestMessage").textContent = guest.message || "We would be honored to celebrate this beautiful day with you.";
-  $("reservationNumber").textContent = guest.reservation_number || "R-001";
-  $("tableNumber").textContent = guest.table_number || 1;
-  $("seatNumber").textContent = guest.seat_number || 1;
-  renderSeatingPlan(Number(guest.table_number || 1), Number(guest.seat_number || 1));
+  const guestName = $("guestName");
+  const overlayGuestName = $("overlayGuestName");
+  const guestMessage = $("guestMessage");
+  const reservationNumber = $("reservationNumber");
+  const tableNumber = $("tableNumber");
+  const seatNumber = $("seatNumber");
+
+  if (guestName) guestName.textContent = guest.name;
+  if (overlayGuestName) overlayGuestName.textContent = guest.name;
+  if (guestMessage) {
+    guestMessage.textContent =
+      guest.message || "We would be honored to celebrate this beautiful day with you.";
+  }
+
+  if (reservationNumber) reservationNumber.textContent = guest.reservation_number || "R-001";
+  if (tableNumber) tableNumber.textContent = guest.table_number || 1;
+  if (seatNumber) seatNumber.textContent = guest.seat_number || 1;
+
+  renderSeatingPlan(
+    Number(guest.table_number || 1),
+    Number(guest.seat_number || 1)
+  );
 }
 
 let stream = null;
@@ -439,27 +453,21 @@ function renderSeatingPlan(activeTable, activeSeat){
   const wrap = $("seatingPlan");
   if (!wrap) return;
 
-  wrap.innerHTML = "";
+  wrap.querySelectorAll(".seat-chip").forEach(chip => {
+    const table = Number(chip.dataset.table);
+    const seat = Number(chip.dataset.seat);
+    chip.classList.toggle(
+      "my-seat",
+      table === Number(activeTable) && seat === Number(activeSeat)
+    );
+  });
 
-  for (let table = 1; table <= 5; table++) {
-    const card = document.createElement("section");
-    card.className = "seat-table";
-    card.innerHTML = `<div class="seat-table-title"><span>Table</span><strong>${table}</strong></div>`;
-
-    const seats = document.createElement("div");
-    seats.className = "seat-grid";
-
-    for (let seat = 1; seat <= 10; seat++) {
-      const globalNumber = ((table - 1) * 10) + seat;
-      const chip = document.createElement("div");
-      chip.className = "seat-chip" + (table === activeTable && seat === activeSeat ? " my-seat" : "");
-      chip.innerHTML = `<span>${globalNumber}</span><small>S${seat}</small>`;
-      seats.appendChild(chip);
-    }
-
-    card.appendChild(seats);
-    wrap.appendChild(card);
-  }
+  wrap.querySelectorAll(".seat-table").forEach(card => {
+    card.classList.toggle(
+      "my-table",
+      Number(card.dataset.tableCard) === Number(activeTable)
+    );
+  });
 }
 
 function roundRect(ctx,x,y,w,h,r){
@@ -473,4 +481,5 @@ function wrapText(ctx,text,x,y,maxWidth,lineHeight){
   if(line)lines.push(line);lines.slice(0,2).forEach((l,i)=>ctx.fillText(l,x,y+i*lineHeight));
 }
 
+renderSeatingPlan(1, 1);
 loadGuest();
