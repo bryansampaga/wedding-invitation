@@ -442,3 +442,85 @@
   font-weight:600;
   text-align:center;
 }
+
+
+/* ===== Compact mobile + mirrored camera + seating v4 ===== */
+#camera{transform:scaleX(-1)}
+
+.camera-filter-control{
+  position:absolute;z-index:8;top:10px;left:50%;transform:translateX(-50%);
+  width:min(90%,330px);display:flex;align-items:center;gap:7px;padding:7px 10px;
+  border:1px solid rgba(255,255,255,.75);border-radius:999px;
+  background:rgba(255,255,255,.84);backdrop-filter:blur(12px)
+}
+.camera-filter-control label{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--muted)}
+.camera-filter-control select{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font:600 11px Montserrat,sans-serif}
+
+.reservation-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:18px 0 4px}
+.reservation-strip>div{padding:11px 6px;border:1px solid var(--line);border-radius:14px;background:#f7f9f5}
+.reservation-strip span{display:block;margin-bottom:4px;font-size:8px;font-weight:600;text-transform:uppercase;color:var(--muted)}
+.reservation-strip b{font:600 23px "Cormorant Garamond",serif}
+
+.seating-section{margin-top:34px}
+.seating-plan{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.seat-table{padding:12px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.82)}
+.seat-table-title{display:flex;justify-content:space-between;align-items:end;margin-bottom:8px}
+.seat-table-title span{font-size:8px;text-transform:uppercase;color:var(--muted)}
+.seat-table-title strong{font:600 27px "Cormorant Garamond",serif}
+.seat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}
+.seat-chip{display:grid;place-items:center;min-height:40px;border:1px solid var(--line);border-radius:10px;background:white}
+.seat-chip span{font-size:11px;font-weight:700}
+.seat-chip small{font-size:7px;color:var(--muted)}
+.seat-chip.my-seat{background:var(--sage);color:white;border-color:var(--sage)}
+.seat-chip.my-seat small{color:rgba(255,255,255,.8)}
+
+.admin-guest-grid{display:grid;grid-template-columns:2fr 1.2fr .7fr .7fr auto;gap:8px}
+.admin-guest-grid input{width:100%;min-width:0;padding:12px;border:1px solid var(--line);border-radius:12px;background:white;font:400 12px Montserrat,sans-serif}
+
+@media(max-width:780px){
+  .section{min-height:auto!important;padding:62px 0 30px!important}
+  .hero{min-height:100svh!important;padding-top:58px!important}
+  .heading{margin-bottom:17px!important}
+  .heading h2{margin-bottom:6px!important}
+  .heading>p:not(.eyebrow){font-size:12px!important;line-height:1.5!important}
+  .eyebrow{font-size:8px!important;margin-bottom:7px!important}
+
+  .invitation-card{padding:18px 13px!important}
+  .invitation-card strong{font-size:30px!important}
+  .privacy-note{font-size:10px!important;margin-bottom:0!important}
+
+  .seating-section{margin-top:24px}
+  .seating-plan{grid-template-columns:1fr;gap:7px}
+  .seat-table{display:grid;grid-template-columns:58px 1fr;align-items:center;padding:8px 9px;border-radius:14px}
+  .seat-table-title{display:block;margin:0;text-align:center}
+  .seat-table-title strong{display:block;font-size:24px}
+  .seat-grid{grid-template-columns:repeat(5,1fr);gap:4px}
+  .seat-chip{min-height:34px}
+
+  .selfie-grid{display:block!important}
+  .camera-card{padding:8px!important}
+  .camera-stage{
+    width:100%!important;height:min(48svh,390px)!important;min-height:255px!important;
+    max-height:390px!important;border-radius:16px!important
+  }
+  .camera-filter-control{top:7px;width:calc(100% - 16px);padding:6px 8px}
+  .live-overlay{padding:8px!important}
+  .overlay-copy{padding:8px!important;max-width:97%!important}
+  .camera-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:5px!important;margin-top:7px!important}
+  .camera-actions .btn{min-height:38px!important;font-size:9px!important}
+  .filter-card{display:none!important}
+  .my-gallery{margin-top:30px!important}
+  .photo-grid{gap:7px!important}
+
+  .admin-guest-grid{grid-template-columns:1fr 1fr}
+  .admin-guest-grid #guestInput,.admin-guest-grid #reservationInput,.admin-guest-grid .btn{grid-column:1/-1}
+}
+
+@media(max-width:420px){
+  .camera-stage{height:min(44svh,355px)!important;min-height:240px!important}
+  .reservation-strip{gap:4px}
+  .reservation-strip>div{padding:9px 4px}
+  .reservation-strip b{font-size:18px}
+  .seat-table{grid-template-columns:50px 1fr}
+  .seat-chip{min-height:31px}
+}

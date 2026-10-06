@@ -57,13 +57,19 @@ document.getElementById("addGuestBtn").addEventListener("click",async()=>{
   }
 
   const name=document.getElementById("guestInput").value.trim();
+  const reservation=document.getElementById("reservationInput").value.trim();
+  const tableNumber=Number(document.getElementById("tableInput").value);
+  const seatNumber=Number(document.getElementById("seatInput").value);
   if(!name)return;
 
   const token=crypto.randomUUID().replaceAll("-","").slice(0,20);
 
   const {error}=await sb.from("guests").insert({
     name,
-    invite_token:token
+    invite_token:token,
+    reservation_number: reservation || null,
+    table_number: tableNumber || null,
+    seat_number: seatNumber || null
   });
 
   status.textContent=error?error.message:"Guest created.";
@@ -79,7 +85,7 @@ async function loadGuests(){
 
   const {data,error}=await sb
     .from("guests")
-    .select("id,name,invite_token,active")
+    .select("id,name,invite_token,active,reservation_number,table_number,seat_number")
     .order("name");
 
   if(error){

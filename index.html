@@ -46,7 +46,23 @@
     <div class="card invitation-card">
       <p>Your invitation is reserved under</p>
       <strong id="guestDisplay">Our Dear Guest</strong>
-      <p class="privacy-note">This personal link only shows your invitation and your own wedding photos.</p>
+
+      <div class="reservation-strip">
+        <div><span>Reservation No.</span><b id="reservationNumber">R-001</b></div>
+        <div><span>Table</span><b id="tableNumber">1</b></div>
+        <div><span>Seat</span><b id="seatNumber">1</b></div>
+      </div>
+
+      <p class="privacy-note">Please keep this invitation link private. Your seat assignment is shown below.</p>
+    </div>
+
+    <div class="seating-section">
+      <div class="heading small">
+        <p class="eyebrow">Reception seating</p>
+        <h2>50-Guest Seating Plan</h2>
+        <p>Five tables with ten guests each. Your assigned seat is highlighted automatically.</p>
+      </div>
+      <div id="seatingPlan" class="seating-plan"></div>
     </div>
   </section>
 
@@ -121,6 +137,20 @@
           <div id="placeholder" class="placeholder">
             <div class="lens">◎</div>
             <span>Camera preview</span>
+          </div>
+
+          <div class="camera-filter-control">
+            <label for="filterSelect">Filter</label>
+            <select id="filterSelect">
+              <option value="accept">Yes, I accept</option>
+              <option value="honored">Honored to attend</option>
+              <option value="celebrate">See you there</option>
+              <option value="forever">Cheers to forever</option>
+              <option value="garden">Garden flowers</option>
+              <option value="lovebirds">Kissing love birds</option>
+              <option value="floralarch">Floral arch</option>
+              <option value="rings">Rings & roses</option>
+            </select>
           </div>
 
           <div id="liveOverlay" class="live-overlay filter-accept">

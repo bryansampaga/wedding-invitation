@@ -8,17 +8,17 @@
 //
 // NEVER place a service_role or secret key in this file.
 
-const SUPABASE_URL = "https://weqylbliaqupnrixsvyf.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_OLmtJjqiTxfZoEQ_lSIxrQ_VEqY5nUA";
+const SUPABASE_URL = "PASTE_YOUR_SUPABASE_PROJECT_URL_HERE";
+const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
 
 const weddingConfig = {
-  partnerOne: "Judylyn",
-  partnerTwo: "Bryan",
-  weddingDate: "December 27, 2026",
-  weddingTime: "4:00 PM",
-  venueName: "Alvarez Park Cafe",
-  venueAddress: "09 Bisig Road, Barangay Tagalag, Tagalag Fishing Village, Valenzuela City.",
-  mapUrl: "https://share.google/9pXRaHKG5ZqUqZb7X"
+  partnerOne: "Your Name",
+  partnerTwo: "Partner Name",
+  weddingDate: "December 18, 2027",
+  weddingTime: "3:30 PM",
+  venueName: "The Garden Venue",
+  venueAddress: "Replace this with your complete wedding venue address.",
+  mapUrl: "https://www.google.com/maps/search/?api=1&query=Your+Wedding+Venue"
 };
 
 const MAX_GUEST_PHOTOS = 3;

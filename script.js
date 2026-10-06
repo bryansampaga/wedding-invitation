@@ -23,7 +23,10 @@ const token = (params.get("invite") || "").trim();
 let guest = {
   id: null,
   name: "Our Dear Guest",
-  message: "We would be honored to celebrate this beautiful day with you."
+  message: "We would be honored to celebrate this beautiful day with you.",
+  reservation_number: "R-001",
+  table_number: 1,
+  seat_number: 1
 };
 
 async function loadGuest() {
@@ -37,6 +40,9 @@ async function loadGuest() {
     // Preview mode before Supabase is connected.
     guest.name = "Preview Guest";
     guest.message = "This is how a personalized guest invitation will look.";
+    guest.reservation_number = "R-017";
+    guest.table_number = 2;
+    guest.seat_number = 7;
     setGuestUI();
     $("uploadStatus").textContent = "Connect Supabase in config.js to enable private photos.";
     return;
@@ -44,7 +50,7 @@ async function loadGuest() {
 
   const { data, error } = await sb
     .from("guests")
-    .select("id,name,message")
+    .select("id,name,message,reservation_number,table_number,seat_number")
     .eq("invite_token", token)
     .eq("active", true)
     .maybeSingle();
@@ -70,12 +76,48 @@ function setGuestUI() {
   $("guestDisplay").textContent = guest.name;
   $("overlayGuestName").textContent = guest.name;
   $("guestMessage").textContent = guest.message || "We would be honored to celebrate this beautiful day with you.";
+  $("reservationNumber").textContent = guest.reservation_number || "R-001";
+  $("tableNumber").textContent = guest.table_number || 1;
+  $("seatNumber").textContent = guest.seat_number || 1;
+  renderSeatingPlan(Number(guest.table_number || 1), Number(guest.seat_number || 1));
 }
 
 let stream = null;
 let photoBlob = null;
 let currentStyle = "accept";
 let currentDecor = "flowers";
+
+const filterDefinitions = {
+  accept: { small:"With love,", main:"Yes, I do accept the invitation!", decor:"flowers" },
+  honored: { small:"So happy for you both,", main:"Honored to be there for your big day!", decor:"sprigs" },
+  celebrate: { small:"Celebrating love,", main:"See you at the wedding!", decor:"petals" },
+  forever: { small:"A little love note,", main:"Cheers to your forever!", decor:"hearts" },
+  garden: { small:"Blooming with joy,", main:"Love is in full bloom!", decor:"garden" },
+  lovebirds: { small:"Two hearts, one forever,", main:"Celebrating your love story!", decor:"birds" },
+  floralarch: { small:"Under a garden of love,", main:"A beautiful beginning!", decor:"arch" },
+  rings: { small:"With all my love,", main:"To forever and always!", decor:"rings" }
+};
+
+function applyFilter(style){
+  const def = filterDefinitions[style] || filterDefinitions.accept;
+  currentStyle = style;
+  currentDecor = def.decor;
+  $("filterSmall").textContent = def.small;
+  $("filterMain").textContent = def.main;
+  $("liveOverlay").className = `live-overlay filter-${style}`;
+  renderLiveDecor(currentDecor);
+
+  const select = $("filterSelect");
+  if (select && select.value !== style) select.value = style;
+
+  document.querySelectorAll(".filter").forEach(btn =>
+    btn.classList.toggle("active", btn.dataset.style === style)
+  );
+}
+
+if ($("filterSelect")) {
+  $("filterSelect").addEventListener("change", () => applyFilter($("filterSelect").value));
+}
 
 $("startBtn").addEventListener("click", async () => {
   try {
@@ -94,16 +136,7 @@ $("startBtn").addEventListener("click", async () => {
 });
 
 document.querySelectorAll(".filter").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".filter").forEach(x => x.classList.remove("active"));
-    btn.classList.add("active");
-    currentStyle = btn.dataset.style;
-    currentDecor = btn.dataset.decor || "flowers";
-    $("filterSmall").textContent = btn.dataset.small;
-    $("filterMain").textContent = btn.dataset.main;
-    $("liveOverlay").className = `live-overlay filter-${currentStyle}`;
-    renderLiveDecor(currentDecor);
-  });
+  btn.addEventListener("click", () => applyFilter(btn.dataset.style));
 });
 
 $("captureBtn").addEventListener("click", async () => {
@@ -401,6 +434,33 @@ function drawCanvasDecor(ctx,type,w,h){
 }
 
 renderLiveDecor(currentDecor);
+
+function renderSeatingPlan(activeTable, activeSeat){
+  const wrap = $("seatingPlan");
+  if (!wrap) return;
+
+  wrap.innerHTML = "";
+
+  for (let table = 1; table <= 5; table++) {
+    const card = document.createElement("section");
+    card.className = "seat-table";
+    card.innerHTML = `<div class="seat-table-title"><span>Table</span><strong>${table}</strong></div>`;
+
+    const seats = document.createElement("div");
+    seats.className = "seat-grid";
+
+    for (let seat = 1; seat <= 10; seat++) {
+      const globalNumber = ((table - 1) * 10) + seat;
+      const chip = document.createElement("div");
+      chip.className = "seat-chip" + (table === activeTable && seat === activeSeat ? " my-seat" : "");
+      chip.innerHTML = `<span>${globalNumber}</span><small>S${seat}</small>`;
+      seats.appendChild(chip);
+    }
+
+    card.appendChild(seats);
+    wrap.appendChild(card);
+  }
+}
 
 function roundRect(ctx,x,y,w,h,r){
   r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);
