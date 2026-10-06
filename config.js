@@ -16,9 +16,9 @@ const weddingConfig = {
   partnerTwo: "Bryan",
   weddingDate: "December 27, 2026",
   weddingTime: "4:00 PM",
-  venueName: "The Garden Venue",
-  venueAddress: "Replace this with your complete wedding venue address.",
-  mapUrl: "https://www.google.com/maps/search/?api=1&query=Your+Wedding+Venue"
+  venueName: "Alvarez Park Cafe",
+  venueAddress: "09 Bisig Road, Barangay Tagalag, Tagalag Fishing Village, Valenzuela City.",
+  mapUrl: "https://share.google/9pXRaHKG5ZqUqZb7X"
 };
 
 const MAX_GUEST_PHOTOS = 3;
