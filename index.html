@@ -15,6 +15,7 @@
 <nav class="nav">
   <a href="#home">Invitation</a>
   <a href="#guest">Guest</a>
+    <a href="#seating">Seating</a>
   <a href="#theme">Attire</a>
   <a href="#venue">Venue</a>
   <a href="#selfie">Selfie</a>
@@ -44,8 +45,7 @@
     </div>
 
     <div class="card invitation-card">
-      <p>Your invitation is reserved under</p>
-      <strong id="guestDisplay">Our Dear Guest</strong>
+      <p class="reservation-heading">Your reservation details</p>
 
       <div class="reservation-strip">
         <div><span>Reservation No.</span><b id="reservationNumber">R-001</b></div>
@@ -56,11 +56,11 @@
       <p class="privacy-note">Please keep this invitation link private. Your seat assignment is shown below.</p>
     </div>
 
-    <div class="seating-section">
+    <div class="seating-section" id="seating">
       <div class="heading small">
         <p class="eyebrow">Reception seating</p>
-        <h2>50-Guest Seating Plan</h2>
-        <p>Five tables with ten guests each. Your assigned seat is highlighted automatically.</p>
+        <h2>Seating Plan</h2>
+        <p>Five tables, ten seats each. Your assigned seat is highlighted.</p>
       </div>
       <div id="seatingPlan" class="seating-plan"></div>
     </div>

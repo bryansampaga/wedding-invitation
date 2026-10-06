@@ -524,3 +524,56 @@
   .seat-table{grid-template-columns:50px 1fr}
   .seat-chip{min-height:31px}
 }
+
+
+/* =====================================================
+   V5 - streamlined reservation card + seating nav
+   ===================================================== */
+
+.reservation-heading{
+  margin:0 0 14px;
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+}
+
+#seating{
+  scroll-margin-top:78px;
+}
+
+/* Six nav links now, so keep them comfortably compact */
+@media(max-width:780px){
+  .nav{
+    gap:2px !important;
+    padding:4px !important;
+  }
+
+  .nav a{
+    padding:8px 8px !important;
+    font-size:9px !important;
+    white-space:nowrap;
+  }
+
+  .invitation-card{
+    padding-top:16px !important;
+  }
+
+  .reservation-strip{
+    margin-top:0 !important;
+  }
+
+  #seating .heading{
+    margin-bottom:14px !important;
+  }
+
+  #seating .heading h2{
+    font-size:clamp(36px,11vw,50px) !important;
+  }
+}
+
+@media(max-width:420px){
+  .nav a{
+    padding:7px 7px !important;
+    font-size:8px !important;
+  }
+}
