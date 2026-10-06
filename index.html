@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="theme-color" content="#788672">
+  <title>Our Wedding</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#home">Invitation</a>
+  <a href="#guest">Guest</a>
+  <a href="#theme">Attire</a>
+  <a href="#venue">Venue</a>
+  <a href="#selfie">Selfie</a>
+</nav>
+
+<main>
+  <section id="home" class="section hero">
+    <div class="hero-card">
+      <p class="eyebrow">Together with our families</p>
+      <h1><span id="partnerOne">Your Name</span><small>&</small><span id="partnerTwo">Partner Name</span></h1>
+      <p class="lead">With joyful hearts, we invite you to celebrate the beginning of our forever.</p>
+
+      <div class="date-row">
+        <div><span>Date</span><strong id="weddingDate">December 18, 2027</strong></div>
+        <div><span>Time</span><strong id="weddingTime">3:30 PM</strong></div>
+      </div>
+
+      <a class="btn primary" href="#guest">Open Your Invitation</a>
+    </div>
+  </section>
+
+  <section id="guest" class="section">
+    <div class="heading">
+      <p class="eyebrow">This invitation is especially for</p>
+      <h2 id="guestName">Our Dear Guest</h2>
+      <p id="guestMessage">We would be honored to celebrate this beautiful day with you.</p>
+    </div>
+
+    <div class="card invitation-card">
+      <p>Your invitation is reserved under</p>
+      <strong id="guestDisplay">Our Dear Guest</strong>
+      <p class="privacy-note">This personal link only shows your invitation and your own wedding photos.</p>
+    </div>
+  </section>
+
+  <section id="theme" class="section">
+    <div class="heading">
+      <p class="eyebrow">Wedding attire</p>
+      <h2>Our Wedding Colors</h2>
+      <p>Guests may choose any shade within their assigned palette. Matching perfectly is not required. Humanity survives another dress code.</p>
+    </div>
+
+    <div class="attire-grid">
+      <article class="attire-card">
+        <p class="eyebrow">Ladies</p>
+        <h3>Sage Green Gradient</h3>
+        <div class="palette ladies">
+          <span style="--c:#697763"></span>
+          <span style="--c:#8C9984"></span>
+          <span style="--c:#AAB6A2"></span>
+          <span style="--c:#D5DDD1"></span>
+        </div>
+        <p>Dresses, jumpsuits, or elegant separates in these muted sage-green shades.</p>
+      </article>
+
+      <article class="attire-card">
+        <p class="eyebrow">Gentlemen</p>
+        <h3>Slate Blue Gradient</h3>
+        <div class="palette gentlemen">
+          <span style="--c:#C7D0D5"></span>
+          <span style="--c:#A3B1BC"></span>
+          <span style="--c:#8195A4"></span>
+          <span style="--c:#607485"></span>
+        </div>
+        <p>Shirts, suits, polos, or accents in these soft-to-deep slate-blue shades.</p>
+      </article>
+    </div>
+
+    <div class="card note-card">
+      <strong>Please avoid:</strong>
+      <span>full white outfits, neon colors, and extremely bright tones.</span>
+    </div>
+  </section>
+
+  <section id="venue" class="section">
+    <div class="heading">
+      <p class="eyebrow">Ceremony & reception</p>
+      <h2>One Place, One Celebration</h2>
+    </div>
+
+    <div class="card venue-card">
+      <div>
+        <span class="mini-label">Venue</span>
+        <h3 id="venueName">The Garden Venue</h3>
+        <p id="venueAddress">Replace this with your complete wedding venue address.</p>
+      </div>
+      <a class="btn secondary" id="mapLink" target="_blank" rel="noopener">Open in Maps</a>
+    </div>
+  </section>
+
+  <section id="selfie" class="section">
+    <div class="heading">
+      <p class="eyebrow">Private wedding selfie booth</p>
+      <h2>Your Wedding Photo</h2>
+      <p>Your saved photos appear only on your invitation. The couple can see all guest photos from the private admin page.</p>
+    </div>
+
+    <div class="selfie-grid">
+      <div class="camera-card">
+        <div class="camera-stage">
+          <video id="camera" autoplay playsinline muted></video>
+          <canvas id="snapshotCanvas"></canvas>
+
+          <div id="placeholder" class="placeholder">
+            <div class="lens">◎</div>
+            <span>Camera preview</span>
+          </div>
+
+          <div id="liveOverlay" class="live-overlay filter-accept">
+            <div class="flower f1">❀</div>
+            <div class="flower f2">✿</div>
+            <div class="overlay-copy">
+              <small id="filterSmall">With love,</small>
+              <strong id="filterMain">Yes, I do accept the invitation!</strong>
+              <b id="overlayGuestName">Our Dear Guest</b>
+            </div>
+          </div>
+        </div>
+
+        <div class="camera-actions">
+          <button id="startBtn" class="btn primary">Start Camera</button>
+          <button id="captureBtn" class="btn secondary" disabled>Take Selfie</button>
+          <button id="retakeBtn" class="btn secondary hidden">Retake</button>
+          <button id="postBtn" class="btn primary hidden">Post to My Invitation</button>
+          <a id="downloadBtn" class="btn secondary hidden" download="wedding-selfie.png">Save Copy</a>
+        </div>
+
+        <p id="uploadStatus" class="status"></p>
+      </div>
+
+      <aside class="filter-card">
+        <h3>Choose a frame</h3>
+        <button class="filter active" data-style="accept" data-small="With love," data-main="Yes, I do accept the invitation!" data-decor="flowers">Yes, I accept</button>
+        <button class="filter" data-style="honored" data-small="So happy for you both," data-main="Honored to be there for your big day!" data-decor="sprigs">Honored to attend</button>
+        <button class="filter" data-style="celebrate" data-small="Celebrating love," data-main="See you at the wedding!" data-decor="petals">See you there</button>
+        <button class="filter" data-style="forever" data-small="A little love note," data-main="Cheers to your forever!" data-decor="hearts">Cheers to forever</button>
+        <button class="filter" data-style="garden" data-small="Blooming with joy," data-main="Love is in full bloom!" data-decor="garden">Garden flowers</button>
+        <button class="filter" data-style="lovebirds" data-small="Two hearts, one forever," data-main="Celebrating your love story!" data-decor="birds">Kissing love birds</button>
+        <button class="filter" data-style="floralarch" data-small="Under a garden of love," data-main="A beautiful beginning!" data-decor="arch">Floral arch</button>
+        <button class="filter" data-style="rings" data-small="With all my love," data-main="To forever and always!" data-decor="rings">Rings & roses</button>
+      </aside>
+    </div>
+
+    <div class="my-gallery">
+      <p id="photoCounter" class="photo-counter">0 / 3 photos uploaded</p>
+      <div class="heading small">
+        <p class="eyebrow">My photos</p>
+        <h2>Your Private Gallery</h2>
+      </div>
+      <div id="myPhotos" class="photo-grid">
+        <p class="empty">No photos posted yet.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>Made with love for <span id="footerCouple">Your Name & Partner Name</span></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

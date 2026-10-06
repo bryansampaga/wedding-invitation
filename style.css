@@ -1,0 +1,444 @@
+*{box-sizing:border-box}:root{--ink:#273129;--muted:#6e776f;--sage:#697763;--sage2:#8c9984;--paper:#f7f6f1;--line:rgba(52,68,57,.14);--shadow:0 22px 55px rgba(46,60,50,.11)}html{scroll-behavior:smooth}body{margin:0;font-family:Montserrat,sans-serif;color:var(--ink);background:radial-gradient(circle at 10% 10%,rgba(140,153,132,.18),transparent 28%),linear-gradient(#fbfaf6,#eef2ed)}a{text-decoration:none;color:inherit}.nav{position:fixed;z-index:20;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:5px;padding:7px;border:1px solid rgba(255,255,255,.8);border-radius:999px;background:rgba(255,255,255,.78);backdrop-filter:blur(14px);box-shadow:0 10px 30px rgba(39,52,43,.1)}.nav a{padding:9px 13px;border-radius:999px;font-size:12px;font-weight:600}.nav a:hover{background:#e2e8df}.section{width:min(1080px,calc(100% - 30px));min-height:85vh;margin:auto;padding:105px 0 75px;display:flex;flex-direction:column;justify-content:center}.hero{min-height:100vh}.hero-card,.card,.camera-card,.filter-card,.attire-card{border:1px solid rgba(255,255,255,.88);background:rgba(255,255,255,.76);box-shadow:var(--shadow);backdrop-filter:blur(14px)}.hero-card{width:min(760px,100%);margin:auto;padding:68px 38px;text-align:center;border-radius:32px}.eyebrow{margin:0 0 14px;text-transform:uppercase;letter-spacing:.2em;font-size:11px;font-weight:600;color:#697763}.hero h1,.heading h2,.attire-card h3,.venue-card h3,.filter-card h3,.invitation-card strong{font-family:"Cormorant Garamond",serif}.hero h1{margin:0;font-size:clamp(58px,9vw,110px);line-height:.82}.hero h1 small{display:block;margin:18px 0;font-size:32px;color:#8c9984}.lead,.heading>p:not(.eyebrow),.attire-card>p:last-child,.privacy-note,.venue-card p{line-height:1.8;color:var(--muted)}.date-row{display:grid;grid-template-columns:1fr 1fr;margin:28px 0;border:1px solid var(--line);border-radius:18px;overflow:hidden}.date-row div{padding:19px;background:rgba(255,255,255,.75)}.date-row div+div{border-left:1px solid var(--line)}.date-row span,.mini-label{display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:.14em;font-size:10px;color:var(--muted)}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border-radius:999px;font:600 13px Montserrat,sans-serif;cursor:pointer;border:1px solid var(--line)}button.btn{appearance:none}.primary{background:#697763;color:white;border-color:#697763}.secondary{background:white}.heading{max-width:720px;margin:0 auto 36px;text-align:center}.heading h2{margin:0 0 12px;font-size:clamp(44px,6vw,70px);line-height:1}.heading.small h2{font-size:42px}.card{border-radius:26px;padding:36px}.invitation-card{width:min(720px,100%);margin:auto;text-align:center}.invitation-card strong{display:block;font-size:42px}.attire-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.attire-card{padding:28px;border-radius:26px}.attire-card h3{font-size:35px;margin:0 0 18px}.palette{display:grid;grid-template-columns:repeat(4,1fr);overflow:hidden;border-radius:18px;margin-bottom:18px;box-shadow:0 12px 25px rgba(40,50,42,.1)}.palette span{height:115px;background:var(--c)}.note-card{margin-top:18px;text-align:center}.note-card span{color:var(--muted)}.venue-card{display:flex;justify-content:space-between;align-items:center;gap:20px}.venue-card h3{font-size:38px;margin:0 0 5px}.selfie-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(230px,.55fr);gap:20px}.camera-card,.filter-card{padding:20px;border-radius:26px}.camera-stage{position:relative;aspect-ratio:4/5;overflow:hidden;border-radius:20px;background:#dce3dc}#camera,#snapshotCanvas{width:100%;height:100%;object-fit:cover}#snapshotCanvas{display:none}.placeholder{position:absolute;inset:0;display:grid;place-content:center;text-align:center;gap:8px;color:#728078}.lens{font-size:60px}.live-overlay{pointer-events:none;position:absolute;inset:0;display:flex;align-items:flex-end;padding:24px}.overlay-copy{width:100%;padding:16px;border-radius:18px;text-align:center;background:rgba(255,255,255,.82);backdrop-filter:blur(8px)}.overlay-copy small,.overlay-copy strong,.overlay-copy b{display:block}.overlay-copy small{font:italic 19px Georgia,serif}.overlay-copy strong{margin:4px 0 8px;font-size:14px}.overlay-copy b{font-family:"Cormorant Garamond",serif;font-size:26px}.filter-honored .overlay-copy{background:rgba(215,225,231,.85)}.filter-celebrate .overlay-copy{background:rgba(226,234,220,.86)}.filter-forever .overlay-copy{background:rgba(244,238,226,.88)}.flower{position:absolute;font-size:32px;color:white;text-shadow:0 5px 15px rgba(0,0,0,.2)}.f1{top:18px;left:18px}.f2{top:18px;right:18px}.camera-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}.filter-card h3{font-size:30px;margin:4px 0 16px}.filter{width:100%;padding:15px;margin-bottom:9px;border:1px solid var(--line);border-radius:15px;background:white;text-align:left;font:500 13px Montserrat;cursor:pointer}.filter.active{border-color:#697763;background:#eef3eb}.status{min-height:22px;font-size:12px;color:var(--muted)}.my-gallery{margin-top:85px}.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.photo-grid figure{margin:0;padding:10px;border-radius:18px;background:white;box-shadow:0 12px 30px rgba(45,57,48,.09)}.photo-grid img{display:block;width:100%;border-radius:12px}.photo-grid figcaption{padding:9px 3px 2px;font-size:12px;color:var(--muted)}.empty{grid-column:1/-1;text-align:center;color:var(--muted)}footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}.hidden{display:none!important}@media(max-width:780px){.nav{max-width:calc(100% - 18px);overflow-x:auto;justify-content:flex-start}.section{padding-top:90px}.hero-card{padding:58px 23px 40px}.date-row,.attire-grid,.selfie-grid{grid-template-columns:1fr}.date-row div+div{border-left:0;border-top:1px solid var(--line)}.venue-card{align-items:flex-start;flex-direction:column}.venue-card .btn{width:100%}.palette span{height:90px}.photo-grid{grid-template-columns:1fr 1fr}}@media(max-width:480px){.photo-grid{grid-template-columns:1fr}}
+
+/* =====================================================
+   MOBILE CAMERA + EXTRA WEDDING FILTERS
+   ===================================================== */
+
+.camera-card{
+  overflow:hidden;
+}
+
+.camera-stage{
+  width:100%;
+  max-width:620px;
+  margin:0 auto;
+  /* Keep the preview inside the visible screen on desktop and mobile. */
+  height:min(72svh,720px);
+  min-height:360px;
+  aspect-ratio:auto;
+  border-radius:22px;
+}
+
+#camera,
+#snapshotCanvas{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+}
+
+#snapshotCanvas{
+  display:none;
+}
+
+.filter-card{
+  max-height:min(72svh,720px);
+  overflow:auto;
+  overscroll-behavior:contain;
+}
+
+.filter-card::-webkit-scrollbar{
+  width:7px;
+}
+
+.filter-card::-webkit-scrollbar-thumb{
+  background:rgba(105,119,99,.28);
+  border-radius:999px;
+}
+
+.filter-garden .overlay-copy{
+  background:rgba(238,242,231,.88);
+}
+
+.filter-lovebirds .overlay-copy{
+  background:rgba(240,236,230,.88);
+}
+
+.filter-floralarch .overlay-copy{
+  background:rgba(232,239,229,.9);
+}
+
+.filter-rings .overlay-copy{
+  background:rgba(244,238,226,.9);
+}
+
+.decor-layer{
+  pointer-events:none;
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+}
+
+.decor-item{
+  position:absolute;
+  user-select:none;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.15));
+}
+
+@media(max-width:780px){
+  body{
+    overflow-x:hidden;
+  }
+
+  .section{
+    width:min(100% - 20px,1080px);
+    min-height:auto;
+    padding:82px 0 50px;
+  }
+
+  .hero{
+    min-height:100svh;
+    padding-top:78px;
+  }
+
+  .hero-card{
+    width:100%;
+    border-radius:24px;
+  }
+
+  .hero h1{
+    font-size:clamp(48px,16vw,78px);
+  }
+
+  .heading{
+    margin-bottom:26px;
+  }
+
+  .heading h2{
+    font-size:clamp(39px,12vw,58px);
+  }
+
+  .selfie-grid{
+    display:block;
+  }
+
+  .camera-card{
+    padding:12px;
+    border-radius:22px;
+  }
+
+  .camera-stage{
+    /* Header + buttons still remain visible without giant scrolling. */
+    height:min(68svh,620px);
+    min-height:330px;
+    max-height:calc(100svh - 190px);
+    width:100%;
+  }
+
+  .live-overlay{
+    padding:14px;
+  }
+
+  .overlay-copy{
+    padding:12px 10px;
+    border-radius:15px;
+  }
+
+  .overlay-copy small{
+    font-size:16px;
+  }
+
+  .overlay-copy strong{
+    font-size:12px;
+  }
+
+  .overlay-copy b{
+    font-size:22px;
+  }
+
+  .camera-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+
+  .camera-actions .btn{
+    width:100%;
+    min-height:46px;
+    padding:0 12px;
+    font-size:12px;
+  }
+
+  .filter-card{
+    margin-top:16px;
+    max-height:none;
+    padding:16px;
+  }
+
+  .filter-card h3{
+    margin-bottom:12px;
+  }
+
+  .filter{
+    padding:13px 14px;
+    margin-bottom:8px;
+  }
+
+  .attire-card{
+    padding:20px;
+  }
+
+  .palette span{
+    height:76px;
+  }
+
+  .card{
+    padding:24px 18px;
+  }
+
+  .invitation-card strong{
+    font-size:36px;
+  }
+
+  .my-gallery{
+    margin-top:58px;
+  }
+}
+
+@media(max-width:480px){
+  .nav{
+    top:8px;
+    width:calc(100% - 12px);
+    padding:5px;
+  }
+
+  .nav a{
+    flex:0 0 auto;
+    padding:8px 10px;
+    font-size:10px;
+  }
+
+  .camera-stage{
+    height:min(63svh,540px);
+    max-height:calc(100svh - 205px);
+    min-height:300px;
+  }
+
+  .camera-actions{
+    grid-template-columns:1fr;
+  }
+
+  .hero-card{
+    padding:52px 18px 30px;
+  }
+
+  .date-row div{
+    padding:15px 10px;
+  }
+}
+
+
+/* Admin Supabase configuration */
+.admin-config-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+}
+
+.admin-config-grid label{
+  display:grid;
+  gap:7px;
+  font-size:12px;
+  font-weight:600;
+}
+
+.admin-config-grid input,
+.admin-config-grid textarea{
+  width:100%;
+  padding:13px 14px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(255,255,255,.9);
+  color:var(--ink);
+  font:400 13px Montserrat,sans-serif;
+  resize:vertical;
+}
+
+.admin-config-grid input:focus,
+.admin-config-grid textarea:focus{
+  outline:2px solid rgba(105,119,99,.18);
+  border-color:var(--sage);
+}
+
+
+/* =====================================================
+   FIXED CAMERA FIT + CALLIGRAPHY NAMES
+   ===================================================== */
+
+/* Couple names in calligraphy */
+#partnerOne,
+#partnerTwo{
+  display:inline-block;
+  font-family:"Great Vibes", cursive !important;
+  font-weight:400 !important;
+  letter-spacing:.01em;
+  line-height:1;
+}
+
+/* Keep ampersand elegant but readable */
+.hero h1 small{
+  font-family:"Cormorant Garamond", serif !important;
+  font-style:italic;
+}
+
+/* Better hero typography balance */
+.hero h1{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  line-height:0.95 !important;
+}
+
+/* Camera section layout tuning */
+.selfie-grid{
+  align-items:start;
+}
+
+/* Make preview visibly fit the screen on desktop */
+.camera-card{
+  padding:18px !important;
+}
+
+.camera-stage{
+  width:min(100%, 440px) !important;
+  height:min(58svh, 540px) !important;
+  min-height:320px !important;
+  max-height:540px !important;
+  aspect-ratio:3 / 4 !important;
+  margin:0 auto !important;
+}
+
+#camera,
+#snapshotCanvas{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  object-position:center center !important;
+  border-radius:20px;
+}
+
+.placeholder{
+  border-radius:20px;
+}
+
+/* Keep text overlay inside the frame nicely */
+.live-overlay{
+  padding:16px !important;
+}
+
+.overlay-copy{
+  width:100%;
+  max-width:92%;
+  margin:0 auto;
+}
+
+.overlay-copy small{
+  font-size:18px !important;
+}
+
+.overlay-copy strong{
+  font-size:13px !important;
+  line-height:1.4;
+}
+
+.overlay-copy b{
+  font-size:24px !important;
+  line-height:1.15;
+}
+
+/* Desktop screens: avoid giant preview */
+@media (min-width: 1024px){
+  .camera-stage{
+    width:min(100%, 430px) !important;
+    height:min(54vh, 500px) !important;
+    max-height:500px !important;
+  }
+
+  .filter-card{
+    max-height:500px !important;
+  }
+}
+
+/* Tablet */
+@media (max-width: 1023px){
+  .camera-stage{
+    width:min(100%, 420px) !important;
+    height:min(60svh, 520px) !important;
+    min-height:320px !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 780px){
+  .hero h1{
+    gap:4px;
+  }
+
+  #partnerOne,
+  #partnerTwo{
+    font-size:clamp(3rem, 14vw, 4.8rem) !important;
+  }
+
+  .camera-card{
+    padding:12px !important;
+  }
+
+  .camera-stage{
+    width:100% !important;
+    height:min(56svh, 470px) !important;
+    min-height:300px !important;
+    max-height:calc(100svh - 230px) !important;
+    aspect-ratio:3 / 4 !important;
+  }
+
+  .filter-card{
+    max-height:none !important;
+  }
+
+  .overlay-copy{
+    max-width:95%;
+  }
+
+  .overlay-copy small{
+    font-size:15px !important;
+  }
+
+  .overlay-copy strong{
+    font-size:12px !important;
+  }
+
+  .overlay-copy b{
+    font-size:20px !important;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px){
+  .camera-stage{
+    height:min(50svh, 420px) !important;
+    min-height:280px !important;
+    max-height:calc(100svh - 250px) !important;
+  }
+
+  #partnerOne,
+  #partnerTwo{
+    font-size:clamp(2.8rem, 13vw, 4.2rem) !important;
+  }
+}
+
+
+.photo-counter{
+  width:max-content;
+  max-width:100%;
+  margin:0 auto 22px;
+  padding:10px 15px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:rgba(255,255,255,.8);
+  color:var(--muted);
+  font-size:12px;
+  font-weight:600;
+  text-align:center;
+}
