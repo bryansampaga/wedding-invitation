@@ -8,7 +8,7 @@
 //
 // NEVER place a service_role or secret key in this file.
 
-const SUPABASE_URL = "https://weqylbliaqupnrixsvyf.supabase.co\";
+const SUPABASE_URL = "https://weqylbliaqupnrixsvyf.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_OLmtJjqiTxfZoEQ_lSIxrQ_VEqY5nUA";
 
 const weddingConfig = {
