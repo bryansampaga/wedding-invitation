@@ -9,7 +9,7 @@
 // NEVER place a service_role or secret key in this file.
 
 const SUPABASE_URL = "https://weqylbliaqupnrixsvyf.supabase.co/rest/v1/";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcXlsYmxpYXF1cG5yaXhzdnlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyOTQ1ODgsImV4cCI6MjEwNjg3MDU4OH0.aP42Iw6sj55nbxKqoiACzTfic8Zw9XJrw_jRmzw0eVs";
+const SUPABASE_ANON_KEY = "sb_publishable_OLmtJjqiTxfZoEQ_lSIxrQ_VEqY5nUA";
 
 const weddingConfig = {
   partnerOne: "Judylyn",
