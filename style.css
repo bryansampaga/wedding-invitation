@@ -876,3 +876,71 @@
     font-size:7.3px !important;
   }
 }
+
+
+/* =====================================================
+   V12 - MOBILE SECTION + SELFIE VIEWPORT FIT
+   Keep each main section screen-sized and keep the complete selfie
+   booth controls inside the first visible screen.
+   ===================================================== */
+
+@media(max-width:780px){
+  /* Short sections still fill a screen; longer sections can scroll normally. */
+  .section{
+    min-height:100svh !important;
+    min-height:100dvh !important;
+  }
+
+  #selfie{
+    justify-content:flex-start;
+    padding-top:clamp(72px, 10dvh, 88px) !important;
+  }
+
+  #selfie > .heading{
+    margin-bottom:14px !important;
+  }
+
+  #selfie > .heading h2{
+    font-size:clamp(38px,11vw,52px) !important;
+  }
+
+  #selfie .camera-stage{
+    /* Scale with the usable phone screen, including changing browser bars. */
+    height:clamp(220px, 44svh, 420px) !important;
+    height:clamp(220px, 44dvh, 420px) !important;
+    min-height:0 !important;
+    max-height:calc((100vw - 36px) * 1.333) !important;
+  }
+
+  #selfie .status{
+    min-height:16px;
+    margin:6px 4px 0;
+    line-height:1.35;
+  }
+}
+
+@media(max-width:420px){
+  #selfie{
+    padding-top:clamp(68px, 9dvh, 78px) !important;
+  }
+}
+
+/* Short landscape phones need a shallower preview than portrait phones. */
+@media(max-width:780px) and (orientation:landscape) and (max-height:520px){
+  #selfie{
+    padding-top:58px !important;
+  }
+
+  #selfie > .heading{
+    margin-bottom:9px !important;
+  }
+
+  #selfie > .heading p:not(.eyebrow){
+    display:none;
+  }
+
+  #selfie .camera-stage{
+    height:clamp(160px, 48dvh, 250px) !important;
+    max-width:420px !important;
+  }
+}
