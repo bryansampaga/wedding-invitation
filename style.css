@@ -945,6 +945,88 @@
   }
 }
 
+/* Compact mobile attire layout so both palettes are visible in one section. */
+@media(max-width:780px){
+  #theme{
+    justify-content:flex-start;
+    padding-top:clamp(66px, 9dvh, 78px) !important;
+    padding-bottom:20px !important;
+  }
+
+  #theme > .heading{
+    margin-bottom:12px !important;
+  }
+
+  #theme > .heading .eyebrow{
+    margin-bottom:5px !important;
+  }
+
+  #theme > .heading h2{
+    margin-bottom:7px !important;
+    font-size:clamp(34px, 10vw, 48px) !important;
+    line-height:.95;
+  }
+
+  #theme > .heading p:not(.eyebrow){
+    max-width:34rem;
+    margin:0 auto;
+    font-size:clamp(10px, 2.9vw, 12px) !important;
+    line-height:1.45 !important;
+  }
+
+  #theme .attire-grid{
+    gap:8px;
+  }
+
+  #theme .attire-card{
+    padding:clamp(12px, 3.5vw, 16px) !important;
+    border-radius:18px;
+  }
+
+  #theme .attire-card .eyebrow{
+    margin-bottom:5px !important;
+    font-size:7px !important;
+  }
+
+  #theme .attire-card h3{
+    margin:0 0 8px;
+    font-size:clamp(25px, 7.5vw, 32px);
+    line-height:1;
+  }
+
+  #theme .palette{
+    margin-bottom:8px;
+    border-radius:14px;
+  }
+
+  #theme .palette span{
+    height:clamp(44px, 13vw, 62px);
+  }
+
+  #theme .attire-card > p:last-child{
+    margin:0;
+    font-size:clamp(10px, 3vw, 12px);
+    line-height:1.5;
+  }
+
+  #theme .note-card{
+    margin-top:8px;
+    padding:11px 14px !important;
+    font-size:clamp(9px, 2.8vw, 11px);
+    line-height:1.4;
+  }
+}
+
+@media(max-width:780px) and (max-height:620px){
+  #theme > .heading p:not(.eyebrow){
+    display:none;
+  }
+
+  #theme .attire-card > p:last-child{
+    line-height:1.35;
+  }
+}
+
 /* =====================================================
    RESPONSIVE FOUNDATION
    Fluid sizing and safe overflow for phones, tablets and desktops.
