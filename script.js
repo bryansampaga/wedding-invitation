@@ -588,5 +588,80 @@ function wrapText(ctx,text,x,y,maxWidth,lineHeight){
   if(line)lines.push(line);lines.slice(0,2).forEach((l,i)=>ctx.fillText(l,x,y+i*lineHeight));
 }
 
+// Slate-blue attire preview modal.
+const attirePreviewTrigger = $("slatePreviewTrigger");
+const attirePreviewModal = $("attirePreviewModal");
+let attireModalCloseTimer = null;
+let attireModalLastFocus = null;
+
+function replayAttireModalFade(){
+  if(!attirePreviewModal) return;
+  attirePreviewModal.classList.remove("is-changing");
+  void attirePreviewModal.offsetWidth;
+  attirePreviewModal.classList.add("is-changing");
+  window.setTimeout(() => attirePreviewModal.classList.remove("is-changing"), 360);
+}
+
+function openAttireModal(){
+  if(!attirePreviewModal || !attirePreviewTrigger) return;
+
+  window.clearTimeout(attireModalCloseTimer);
+  if(!attirePreviewModal.hidden){
+    if(attirePreviewModal.classList.contains("is-open")){
+      replayAttireModalFade();
+    }else{
+      attirePreviewModal.setAttribute("aria-hidden", "false");
+      attirePreviewTrigger.setAttribute("aria-expanded", "true");
+      document.body.classList.add("attire-modal-open");
+      requestAnimationFrame(() => attirePreviewModal.classList.add("is-open"));
+    }
+    return;
+  }
+
+  attireModalLastFocus = document.activeElement;
+  attirePreviewModal.hidden = false;
+  attirePreviewModal.setAttribute("aria-hidden", "false");
+  attirePreviewTrigger.setAttribute("aria-expanded", "true");
+  document.body.classList.add("attire-modal-open");
+
+  requestAnimationFrame(() => {
+    attirePreviewModal.classList.add("is-open");
+    attirePreviewModal.querySelector(".attire-modal-close")?.focus();
+  });
+}
+
+function closeAttireModal(){
+  if(!attirePreviewModal || attirePreviewModal.hidden) return;
+
+  attirePreviewModal.classList.remove("is-open", "is-changing");
+  attirePreviewTrigger?.setAttribute("aria-expanded", "false");
+  document.body.classList.remove("attire-modal-open");
+  if(attireModalLastFocus instanceof HTMLElement) attireModalLastFocus.focus();
+  attirePreviewModal.setAttribute("aria-hidden", "true");
+
+  attireModalCloseTimer = window.setTimeout(() => {
+    attirePreviewModal.hidden = true;
+  }, 380);
+}
+
+if(attirePreviewTrigger && attirePreviewModal){
+  attirePreviewTrigger.addEventListener("click", openAttireModal);
+
+  attirePreviewModal.querySelectorAll("[data-attire-close]").forEach(control => {
+    control.addEventListener("click", closeAttireModal);
+  });
+
+  document.addEventListener("keydown", event => {
+    if(event.key === "Escape" && !attirePreviewModal.hidden){
+      closeAttireModal();
+    }
+
+    if(event.key === "Tab" && !attirePreviewModal.hidden){
+      event.preventDefault();
+      attirePreviewModal.querySelector(".attire-modal-close")?.focus();
+    }
+  });
+}
+
 renderSeatingPlan(1, 1);
 loadGuest();

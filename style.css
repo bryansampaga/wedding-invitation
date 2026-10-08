@@ -945,6 +945,180 @@
   }
 }
 
+/* Slate-blue attire inspiration modal */
+.attire-preview-trigger{
+  width:100%;
+  padding:0;
+  border:0;
+  appearance:none;
+  cursor:pointer;
+  transition:transform .22s ease, box-shadow .22s ease;
+}
+
+.attire-preview-trigger:hover{
+  transform:translateY(-2px);
+  box-shadow:0 16px 30px rgba(40,50,42,.16);
+}
+
+.attire-preview-trigger:focus-visible{
+  outline:3px solid rgba(105,119,99,.38);
+  outline-offset:4px;
+}
+
+.palette-hint{
+  display:block;
+  margin:-1px 0 10px;
+  color:var(--muted);
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:.04em;
+  text-align:center;
+}
+
+body.attire-modal-open{
+  overflow:hidden;
+}
+
+.attire-modal[hidden]{
+  display:none;
+}
+
+.attire-modal{
+  position:fixed;
+  z-index:100;
+  inset:0;
+  display:grid;
+  place-items:center;
+  padding:clamp(16px,4vw,36px);
+}
+
+.attire-modal-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(25,34,28,.18);
+  opacity:0;
+  backdrop-filter:blur(0);
+  transition:opacity .32s ease, backdrop-filter .32s ease;
+}
+
+.attire-modal-panel{
+  position:relative;
+  z-index:1;
+  width:min(92vw,430px);
+  max-height:calc(100dvh - 32px);
+  overflow:auto;
+  border:1px solid rgba(255,255,255,.9);
+  border-radius:28px;
+  background:#f9faf7;
+  box-shadow:0 28px 80px rgba(28,39,31,.28);
+  opacity:0;
+  transform:translateY(22px) scale(.94);
+  transition:opacity .32s ease, transform .38s cubic-bezier(.2,.8,.2,1);
+}
+
+.attire-modal.is-open .attire-modal-backdrop{
+  opacity:1;
+  backdrop-filter:blur(9px);
+}
+
+.attire-modal.is-open .attire-modal-panel{
+  opacity:1;
+  transform:translateY(0) scale(1);
+}
+
+.attire-modal-close{
+  position:absolute;
+  z-index:2;
+  top:12px;
+  right:12px;
+  display:grid;
+  width:38px;
+  height:38px;
+  padding:0;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.75);
+  border-radius:50%;
+  background:rgba(255,255,255,.88);
+  color:var(--ink);
+  box-shadow:0 8px 22px rgba(28,39,31,.12);
+  font:400 25px/1 Arial,sans-serif;
+  cursor:pointer;
+}
+
+.attire-modal-close:focus-visible{
+  outline:3px solid rgba(105,119,99,.42);
+  outline-offset:2px;
+}
+
+.attire-modal-media{
+  aspect-ratio:1 / 1;
+  overflow:hidden;
+  background:#edf0ec;
+}
+
+.attire-modal-media img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.attire-modal-copy{
+  padding:22px 24px 25px;
+  text-align:center;
+}
+
+.attire-modal-copy .eyebrow{
+  margin-bottom:7px;
+}
+
+.attire-modal-copy h2{
+  margin:0 0 8px;
+  font:600 clamp(30px,8vw,42px)/1 "Cormorant Garamond",serif;
+}
+
+.attire-modal-copy > p:last-child{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+}
+
+.attire-modal.is-changing .attire-modal-media,
+.attire-modal.is-changing .attire-modal-copy{
+  animation:attire-content-fade .34s ease;
+}
+
+@keyframes attire-content-fade{
+  0%{opacity:1;transform:scale(1)}
+  45%{opacity:.18;transform:scale(.985)}
+  100%{opacity:1;transform:scale(1)}
+}
+
+@media(max-width:480px){
+  .attire-modal-panel{
+    width:min(94vw,390px);
+    border-radius:22px;
+  }
+
+  .attire-modal-copy{
+    padding:17px 18px 20px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .attire-preview-trigger,
+  .attire-modal-backdrop,
+  .attire-modal-panel{
+    transition-duration:.01ms;
+  }
+
+  .attire-modal.is-changing .attire-modal-media,
+  .attire-modal.is-changing .attire-modal-copy{
+    animation:none;
+  }
+}
+
 /* Compact mobile attire layout so both palettes are visible in one section. */
 @media(max-width:780px){
   #theme{

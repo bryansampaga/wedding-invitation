@@ -120,12 +120,15 @@
       <article class="attire-card">
         <p class="eyebrow">Gentlemen</p>
         <h3>Slate Blue Gradient</h3>
-        <div class="palette gentlemen">
+        <button class="palette gentlemen attire-preview-trigger" id="slatePreviewTrigger" type="button"
+          aria-haspopup="dialog" aria-controls="attirePreviewModal" aria-expanded="false"
+          aria-label="View Slate Blue attire inspiration">
           <span style="--c:#C7D0D5"></span>
           <span style="--c:#A3B1BC"></span>
           <span style="--c:#8195A4"></span>
           <span style="--c:#607485"></span>
-        </div>
+        </button>
+        <span class="palette-hint">Tap the palette to view an outfit example</span>
         <p>Shirts, suits, polos, or accents in these soft-to-deep slate-blue shades.</p>
       </article>
     </div>
@@ -231,6 +234,22 @@
     </div>
   </section>
 </main>
+
+<div class="attire-modal" id="attirePreviewModal" role="dialog" aria-modal="true"
+  aria-labelledby="attireModalTitle" aria-hidden="true" hidden>
+  <div class="attire-modal-backdrop" data-attire-close></div>
+  <div class="attire-modal-panel" role="document">
+    <button class="attire-modal-close" type="button" data-attire-close aria-label="Close attire inspiration">&times;</button>
+    <div class="attire-modal-media">
+      <img src="gentlemen-slate-outfit.jpeg" alt="Gentleman wearing a slate-blue polo with dark trousers">
+    </div>
+    <div class="attire-modal-copy">
+      <p class="eyebrow">Gentlemen</p>
+      <h2 id="attireModalTitle">Slate Blue Inspiration</h2>
+      <p>A polished slate-blue top paired with dark trousers is perfectly on palette.</p>
+    </div>
+  </div>
+</div>
 
 <footer>Made with love for <span id="footerCouple">Your Name & Partner Name</span></footer>
 
