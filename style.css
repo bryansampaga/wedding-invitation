@@ -893,7 +893,7 @@
 
   #selfie{
     justify-content:flex-start;
-    padding-top:clamp(72px, 10dvh, 88px) !important;
+    padding-top:clamp(58px, 8dvh, 68px) !important;
   }
 
   #selfie > .heading{
@@ -921,7 +921,7 @@
 
 @media(max-width:420px){
   #selfie{
-    padding-top:clamp(68px, 9dvh, 78px) !important;
+    padding-top:clamp(54px, 7dvh, 62px) !important;
   }
 }
 
@@ -949,7 +949,7 @@
 @media(max-width:780px){
   #theme{
     justify-content:flex-start;
-    padding-top:clamp(66px, 9dvh, 78px) !important;
+    padding-top:clamp(56px, 8dvh, 66px) !important;
     padding-bottom:20px !important;
   }
 
@@ -1075,7 +1075,10 @@ canvas{
 
 @media(max-width:780px){
   html{
-    scroll-padding-top:58px;
+    /* Sections already include enough top padding for the fixed navigation.
+       Avoid stacking a second offset when a nav anchor is opened. */
+    scroll-padding-top:0;
+    scroll-behavior:auto;
   }
 
   .nav{
@@ -1111,7 +1114,7 @@ canvas{
     min-height:100svh !important;
     min-height:100dvh !important;
     height:auto !important;
-    padding:clamp(70px, 11dvh, 92px) 0 clamp(30px, 7dvh, 56px) !important;
+    padding:clamp(56px, 8dvh, 68px) 0 clamp(24px, 5dvh, 44px) !important;
     justify-content:center;
   }
 
