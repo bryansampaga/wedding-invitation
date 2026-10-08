@@ -120,15 +120,25 @@
       <article class="attire-card">
         <p class="eyebrow">Gentlemen</p>
         <h3>Slate Blue Gradient</h3>
-        <button class="palette gentlemen attire-preview-trigger" id="slatePreviewTrigger" type="button"
-          aria-haspopup="dialog" aria-controls="attirePreviewModal" aria-expanded="false"
-          aria-label="View Slate Blue attire inspiration">
-          <span style="--c:#C7D0D5"></span>
-          <span style="--c:#A3B1BC"></span>
+        <div class="palette gentlemen">
+          <button class="palette-color attire-preview-trigger" id="lightSlatePreviewTrigger" type="button"
+            style="--c:#C7D0D5" data-gallery="light" data-title="Light Slate Blue Inspiration"
+            data-description="A light slate-blue polo pairs beautifully with tailored dark trousers."
+            aria-haspopup="dialog" aria-controls="attirePreviewModal" aria-expanded="false"
+            aria-label="View light slate-blue attire inspiration"></button>
+          <button class="palette-color attire-preview-trigger" id="softSlatePreviewTrigger" type="button"
+            style="--c:#A3B1BC" data-gallery="soft" data-title="Soft Slate Blue Inspiration"
+            data-description="A soft slate-blue knit polo pairs beautifully with tailored dark trousers."
+            aria-haspopup="dialog" aria-controls="attirePreviewModal" aria-expanded="false"
+            aria-label="View soft slate-blue attire inspiration"></button>
           <span style="--c:#8195A4"></span>
-          <span style="--c:#607485"></span>
-        </button>
-        <span class="palette-hint">Tap the palette to view an outfit example</span>
+          <button class="palette-color attire-preview-trigger" id="slatePreviewTrigger" type="button"
+            style="--c:#607485" data-gallery="dark" data-title="Dark Slate Blue Inspiration"
+            data-description="A polished dark slate-blue top paired with dark trousers is perfectly on palette."
+            aria-haspopup="dialog" aria-controls="attirePreviewModal"
+            aria-expanded="false" aria-label="View dark slate blue-gray attire inspiration"></button>
+        </div>
+        <span class="palette-hint">Tap the light, soft, or dark swatches to view outfit examples</span>
         <p>Shirts, suits, polos, or accents in these soft-to-deep slate-blue shades.</p>
       </article>
     </div>
@@ -240,13 +250,38 @@
   <div class="attire-modal-backdrop" data-attire-close></div>
   <div class="attire-modal-panel" role="document">
     <button class="attire-modal-close" type="button" data-attire-close aria-label="Close attire inspiration">&times;</button>
-    <div class="attire-modal-media">
-      <img src="gentlemen-slate-outfit.jpeg" alt="Gentleman wearing a slate-blue polo with dark trousers">
-    </div>
+    <button class="attire-modal-media" id="attireImageSwitcher" type="button"
+      aria-label="Show the next Slate Blue outfit view">
+      <img class="is-active" src="slate_blue_style_whole.jpg" data-gallery="dark" data-view-label="full outfit view"
+        alt="Full outfit view of a gentleman wearing a slate-blue polo with dark trousers" aria-hidden="false">
+      <img src="slate_blue_style_side.jpg" data-gallery="dark" data-view-label="side outfit view"
+        alt="Side view of a gentleman wearing a slate-blue polo with dark trousers" aria-hidden="true">
+      <img src="slate_blue_style_front.jpg" data-gallery="dark" data-view-label="front detail view"
+        alt="Front detail view of a gentleman wearing a slate-blue polo" aria-hidden="true">
+      <img src="slate_blue_style_back.jpg" data-gallery="dark" data-view-label="back outfit view"
+        alt="Back view of a gentleman wearing a slate-blue polo with dark trousers" aria-hidden="true">
+      <img class="is-gallery-hidden" src="light_slate_style_1_square.jpg" data-gallery="light" data-view-label="front outfit view"
+        alt="Front view of a gentleman wearing a light slate-blue polo with dark trousers" aria-hidden="true">
+      <img class="is-gallery-hidden" src="light_slate_style_2_square.jpg" data-gallery="light" data-view-label="collar detail view"
+        alt="Collar detail of a light slate-blue polo" aria-hidden="true">
+      <img class="is-gallery-hidden" src="light_slate_style_3_square.jpg" data-gallery="light" data-view-label="side outfit view"
+        alt="Side view of a gentleman wearing a light slate-blue polo with dark trousers" aria-hidden="true">
+      <img class="is-gallery-hidden" src="light_slate_style_4_square.jpg" data-gallery="light" data-view-label="back outfit view"
+        alt="Back view of a gentleman wearing a light slate-blue polo with dark trousers" aria-hidden="true">
+      <img class="is-gallery-hidden" src="light_slate_style_5_square.jpg" data-gallery="light" data-view-label="full outfit view"
+        alt="Full outfit view of a gentleman wearing a light slate-blue polo with dark trousers" aria-hidden="true">
+      <img class="is-gallery-hidden" src="soft_slate_style_1_square.jpg" data-gallery="soft" data-view-label="portrait detail view"
+        alt="Portrait detail of a gentleman wearing a soft slate-blue knit polo" aria-hidden="true">
+      <img class="is-gallery-hidden" src="soft_slate_style_2_square.jpg" data-gallery="soft" data-view-label="back outfit view"
+        alt="Back view of a gentleman wearing a soft slate-blue knit polo with dark trousers" aria-hidden="true">
+      <img class="is-gallery-hidden" src="soft_slate_style_3_square.jpg" data-gallery="soft" data-view-label="front outfit view"
+        alt="Front view of a gentleman wearing a soft slate-blue knit polo with dark trousers" aria-hidden="true">
+      <span class="attire-image-hint" id="attireImageHint">Tap photo to change view &middot; 1 of 4</span>
+    </button>
     <div class="attire-modal-copy">
       <p class="eyebrow">Gentlemen</p>
-      <h2 id="attireModalTitle">Slate Blue Inspiration</h2>
-      <p>A polished slate-blue top paired with dark trousers is perfectly on palette.</p>
+      <h2 id="attireModalTitle">Dark Slate Blue Inspiration</h2>
+      <p id="attireModalDescription">A polished dark slate-blue top paired with dark trousers is perfectly on palette.</p>
     </div>
   </div>
 </div>

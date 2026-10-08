@@ -589,10 +589,89 @@ function wrapText(ctx,text,x,y,maxWidth,lineHeight){
 }
 
 // Slate-blue attire preview modal.
-const attirePreviewTrigger = $("slatePreviewTrigger");
+const attirePreviewTriggers = [...document.querySelectorAll(".attire-preview-trigger")];
 const attirePreviewModal = $("attirePreviewModal");
+const attireImageSwitcher = $("attireImageSwitcher");
+const attireImageHint = $("attireImageHint");
+const attireModalTitle = $("attireModalTitle");
+const attireModalDescription = $("attireModalDescription");
 let attireModalCloseTimer = null;
 let attireModalLastFocus = null;
+let attireModalScrollY = 0;
+let activeAttireTrigger = null;
+
+function lockAttireModalScroll(){
+  if(document.body.classList.contains("attire-modal-open")) return;
+  attireModalScrollY = window.scrollY;
+  document.body.style.setProperty("--attire-scroll-lock-top", `-${attireModalScrollY}px`);
+  document.documentElement.classList.add("attire-modal-open");
+  document.body.classList.add("attire-modal-open");
+}
+
+function unlockAttireModalScroll(){
+  const root = document.documentElement;
+  const previousInlineScrollBehavior = root.style.scrollBehavior;
+  root.style.scrollBehavior = "auto";
+  document.documentElement.classList.remove("attire-modal-open");
+  document.body.classList.remove("attire-modal-open");
+  document.body.style.removeProperty("--attire-scroll-lock-top");
+  window.scrollTo(0, attireModalScrollY);
+  requestAnimationFrame(() => {
+    root.style.scrollBehavior = previousInlineScrollBehavior;
+  });
+}
+
+function showNextAttireImage(){
+  if(!attireImageSwitcher) return;
+  const images = [...attireImageSwitcher.querySelectorAll("img:not(.is-gallery-hidden)")];
+  if(images.length < 2) return;
+
+  const activeIndex = Math.max(0, images.findIndex(image => image.classList.contains("is-active")));
+  const nextIndex = (activeIndex + 1) % images.length;
+  images[activeIndex].classList.remove("is-active");
+  images[activeIndex].setAttribute("aria-hidden", "true");
+  images[nextIndex].classList.add("is-active");
+  images[nextIndex].setAttribute("aria-hidden", "false");
+  const followingImage = images[(nextIndex + 1) % images.length];
+  attireImageSwitcher.setAttribute(
+    "aria-label",
+    `Show the next Slate Blue ${followingImage.dataset.viewLabel || "outfit view"}`
+  );
+  if(attireImageHint){
+    attireImageHint.textContent = `Tap photo to change view · ${nextIndex + 1} of ${images.length}`;
+  }
+}
+
+function selectAttireGallery(trigger){
+  if(!attireImageSwitcher || !trigger) return;
+  const gallery = trigger.dataset.gallery;
+  const allImages = [...attireImageSwitcher.querySelectorAll("img")];
+  const galleryImages = allImages.filter(image => image.dataset.gallery === gallery);
+
+  allImages.forEach(image => {
+    const belongsToGallery = image.dataset.gallery === gallery;
+    image.classList.toggle("is-gallery-hidden", !belongsToGallery);
+    image.classList.remove("is-active");
+    image.setAttribute("aria-hidden", "true");
+  });
+
+  const firstImage = galleryImages[0];
+  firstImage?.classList.add("is-active");
+  firstImage?.setAttribute("aria-hidden", "false");
+
+  if(attireImageHint){
+    attireImageHint.textContent = `Tap photo to change view · 1 of ${galleryImages.length}`;
+  }
+  if(attireModalTitle) attireModalTitle.textContent = trigger.dataset.title || "Slate Blue Inspiration";
+  if(attireModalDescription) attireModalDescription.textContent = trigger.dataset.description || "";
+
+  const nextImage = galleryImages[1] || firstImage;
+  attireImageSwitcher.setAttribute(
+    "aria-label",
+    `Show the next Slate Blue ${nextImage?.dataset.viewLabel || "outfit view"}`
+  );
+  activeAttireTrigger = trigger;
+}
 
 function replayAttireModalFade(){
   if(!attirePreviewModal) return;
@@ -602,17 +681,21 @@ function replayAttireModalFade(){
   window.setTimeout(() => attirePreviewModal.classList.remove("is-changing"), 360);
 }
 
-function openAttireModal(){
-  if(!attirePreviewModal || !attirePreviewTrigger) return;
+function openAttireModal(event){
+  const trigger = event?.currentTarget instanceof HTMLElement ? event.currentTarget : activeAttireTrigger;
+  if(!attirePreviewModal || !trigger) return;
 
   window.clearTimeout(attireModalCloseTimer);
+  selectAttireGallery(trigger);
+  attirePreviewTriggers.forEach(item => item.setAttribute("aria-expanded", "false"));
+  trigger.setAttribute("aria-expanded", "true");
+
   if(!attirePreviewModal.hidden){
     if(attirePreviewModal.classList.contains("is-open")){
       replayAttireModalFade();
     }else{
       attirePreviewModal.setAttribute("aria-hidden", "false");
-      attirePreviewTrigger.setAttribute("aria-expanded", "true");
-      document.body.classList.add("attire-modal-open");
+      lockAttireModalScroll();
       requestAnimationFrame(() => attirePreviewModal.classList.add("is-open"));
     }
     return;
@@ -621,8 +704,7 @@ function openAttireModal(){
   attireModalLastFocus = document.activeElement;
   attirePreviewModal.hidden = false;
   attirePreviewModal.setAttribute("aria-hidden", "false");
-  attirePreviewTrigger.setAttribute("aria-expanded", "true");
-  document.body.classList.add("attire-modal-open");
+  lockAttireModalScroll();
 
   requestAnimationFrame(() => {
     attirePreviewModal.classList.add("is-open");
@@ -634,31 +716,48 @@ function closeAttireModal(){
   if(!attirePreviewModal || attirePreviewModal.hidden) return;
 
   attirePreviewModal.classList.remove("is-open", "is-changing");
-  attirePreviewTrigger?.setAttribute("aria-expanded", "false");
-  document.body.classList.remove("attire-modal-open");
-  if(attireModalLastFocus instanceof HTMLElement) attireModalLastFocus.focus();
+  activeAttireTrigger?.setAttribute("aria-expanded", "false");
+  if(attireModalLastFocus instanceof HTMLElement){
+    attireModalLastFocus.focus({preventScroll:true});
+  }
   attirePreviewModal.setAttribute("aria-hidden", "true");
 
   attireModalCloseTimer = window.setTimeout(() => {
     attirePreviewModal.hidden = true;
+    unlockAttireModalScroll();
   }, 380);
 }
 
-if(attirePreviewTrigger && attirePreviewModal){
-  attirePreviewTrigger.addEventListener("click", openAttireModal);
+if(attirePreviewTriggers.length && attirePreviewModal){
+  attirePreviewTriggers.forEach(trigger => trigger.addEventListener("click", openAttireModal));
+  attireImageSwitcher?.addEventListener("click", showNextAttireImage);
 
   attirePreviewModal.querySelectorAll("[data-attire-close]").forEach(control => {
     control.addEventListener("click", closeAttireModal);
   });
 
   document.addEventListener("keydown", event => {
-    if(event.key === "Escape" && !attirePreviewModal.hidden){
+    const modalIsOpen = !attirePreviewModal.hidden;
+
+    if(event.key === "Escape" && modalIsOpen){
       closeAttireModal();
     }
 
-    if(event.key === "Tab" && !attirePreviewModal.hidden){
+    if(event.key === "Tab" && modalIsOpen){
       event.preventDefault();
-      attirePreviewModal.querySelector(".attire-modal-close")?.focus();
+      const controls = [...attirePreviewModal.querySelectorAll("button:not([disabled])")];
+      const currentIndex = controls.indexOf(document.activeElement);
+      const nextIndex = event.shiftKey
+        ? (currentIndex <= 0 ? controls.length - 1 : currentIndex - 1)
+        : (currentIndex + 1) % controls.length;
+      controls[nextIndex]?.focus();
+    }
+
+    const blockedScrollKeys = [" ", "Spacebar", "PageUp", "PageDown", "Home", "End", "ArrowUp", "ArrowDown"];
+    if(modalIsOpen && blockedScrollKeys.includes(event.key)){
+      const isButtonActivation = (event.key === " " || event.key === "Spacebar") &&
+        event.target instanceof HTMLElement && event.target.matches("button");
+      if(!isButtonActivation) event.preventDefault();
     }
   });
 }

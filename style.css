@@ -975,7 +975,17 @@
   text-align:center;
 }
 
+html.attire-modal-open{
+  overflow:hidden;
+  overscroll-behavior:none;
+}
+
 body.attire-modal-open{
+  position:fixed;
+  top:var(--attire-scroll-lock-top,0);
+  right:0;
+  left:0;
+  width:100%;
   overflow:hidden;
 }
 
@@ -990,6 +1000,7 @@ body.attire-modal-open{
   display:grid;
   place-items:center;
   padding:clamp(16px,4vw,36px);
+  overscroll-behavior:none;
 }
 
 .attire-modal-backdrop{
@@ -998,6 +1009,7 @@ body.attire-modal-open{
   background:rgba(25,34,28,.18);
   opacity:0;
   backdrop-filter:blur(0);
+  touch-action:none;
   transition:opacity .32s ease, backdrop-filter .32s ease;
 }
 
@@ -1007,12 +1019,13 @@ body.attire-modal-open{
   width:min(92vw,430px);
   max-height:calc(100dvh - 32px);
   overflow:auto;
+  overscroll-behavior:contain;
   border:1px solid rgba(255,255,255,.9);
   border-radius:28px;
   background:#f9faf7;
   box-shadow:0 28px 80px rgba(28,39,31,.28);
   opacity:0;
-  transform:translateY(22px) scale(.94);
+  transform:scale(.96);
   transition:opacity .32s ease, transform .38s cubic-bezier(.2,.8,.2,1);
 }
 
@@ -1023,7 +1036,7 @@ body.attire-modal-open{
 
 .attire-modal.is-open .attire-modal-panel{
   opacity:1;
-  transform:translateY(0) scale(1);
+  transform:scale(1);
 }
 
 .attire-modal-close{
@@ -1051,16 +1064,60 @@ body.attire-modal-open{
 }
 
 .attire-modal-media{
+  position:relative;
+  display:block;
+  width:100%;
+  padding:0;
+  border:0;
   aspect-ratio:1 / 1;
   overflow:hidden;
-  background:#edf0ec;
+  background:#fff;
+  cursor:pointer;
 }
 
 .attire-modal-media img{
+  position:absolute;
+  inset:0;
   display:block;
   width:100%;
   height:100%;
-  object-fit:cover;
+  object-fit:contain;
+  opacity:0;
+  transform:scale(1.015);
+  transition:opacity .42s ease, transform .5s ease;
+}
+
+.attire-modal-media img.is-active{
+  z-index:1;
+  opacity:1;
+  transform:scale(1);
+}
+
+.attire-modal-media img.is-gallery-hidden{
+  display:none;
+}
+
+.attire-modal-media:focus-visible{
+  outline:3px solid rgba(105,119,99,.55);
+  outline-offset:-5px;
+}
+
+.attire-image-hint{
+  position:absolute;
+  z-index:2;
+  right:50%;
+  bottom:12px;
+  transform:translateX(50%);
+  width:max-content;
+  max-width:calc(100% - 28px);
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(255,255,255,.86);
+  color:var(--ink);
+  box-shadow:0 7px 20px rgba(28,39,31,.12);
+  font:600 9px/1 Montserrat,sans-serif;
+  pointer-events:none;
+  backdrop-filter:blur(8px);
 }
 
 .attire-modal-copy{
@@ -1109,13 +1166,36 @@ body.attire-modal-open{
 @media(prefers-reduced-motion:reduce){
   .attire-preview-trigger,
   .attire-modal-backdrop,
-  .attire-modal-panel{
+  .attire-modal-panel,
+  .attire-modal-media img{
     transition-duration:.01ms;
   }
 
   .attire-modal.is-changing .attire-modal-media,
   .attire-modal.is-changing .attire-modal-copy{
     animation:none;
+  }
+}
+
+/* Interactive slate-blue swatches open their matching outfit galleries. */
+.palette .palette-color{
+  width:100%;
+  min-width:0;
+  height:115px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:var(--c);
+}
+
+.palette .palette-color:focus-visible{
+  outline:3px solid rgba(255,255,255,.88);
+  outline-offset:-5px;
+}
+
+@media(max-width:780px){
+  #theme .palette .palette-color{
+    height:clamp(44px, 13vw, 62px);
   }
 }
 
@@ -1252,7 +1332,7 @@ canvas{
     /* Sections already include enough top padding for the fixed navigation.
        Avoid stacking a second offset when a nav anchor is opened. */
     scroll-padding-top:0;
-    scroll-behavior:auto;
+    scroll-behavior:smooth;
   }
 
   .nav{
