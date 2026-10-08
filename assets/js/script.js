@@ -44,7 +44,7 @@ async function loadGuest() {
     guest.table_number = 2;
     guest.seat_number = 7;
     setGuestUI();
-    $("uploadStatus").textContent = "Connect Supabase in config.js to enable private photos.";
+    $("uploadStatus").textContent = "Connect Supabase in assets/js/config.js to enable private photos.";
     return;
   }
 

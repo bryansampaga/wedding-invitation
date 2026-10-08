@@ -26,16 +26,20 @@ WHAT IS NEW
    GENTLEMEN:
    pale blue-gray -> soft slate -> slate blue -> deep slate blue
 
-FILES
------
-index.html           Guest-facing invitation
-admin.html           Couple/admin gallery
-style.css            Site design
-script.js            Guest page + camera + private gallery
-admin.js             Guest management + all-photo gallery
-config.js            Couple/event + Supabase configuration
-supabase-setup.sql   Database tables and starter RLS
-README.txt           This guide
+PROJECT STRUCTURE
+-----------------
+index.html                         Guest-facing invitation
+admin.html                         Couple/admin gallery
+assets/css/style.css               Site design
+assets/js/script.js                Guest page + camera + private gallery
+assets/js/admin.js                 Guest management + all-photo gallery
+assets/js/config.js                Couple/event + Supabase configuration
+assets/images/attire/              Attire inspiration galleries
+assets/images/references/          Color-palette reference images
+database/supabase-setup.sql        Database tables and starter RLS
+database/add-seating-fields.sql    Optional seating-field migration
+docs/setup-guide.md                Detailed deployment instructions
+README.md                          This overview
 
 IMPORTANT ABOUT PHOTO STORAGE
 -----------------------------
@@ -52,8 +56,8 @@ SUPABASE SETUP
 3. Copy:
    - Project URL
    - anon/public key
-4. Paste both into config.js.
-5. Open SQL Editor and run supabase-setup.sql.
+4. Paste both into assets/js/config.js.
+5. Open SQL Editor and run database/supabase-setup.sql.
 6. Open Storage and create a PRIVATE bucket named:
    wedding-photos
 
@@ -103,13 +107,13 @@ LATEST UPDATE
 
 IMPORTANT ABOUT ADMIN SUPABASE SETTINGS
 ---------------------------------------
-A static website cannot rewrite config.js on the web server from the browser.
+A static website cannot rewrite assets/js/config.js on the web server from the browser.
 
 The admin configuration form therefore stores the Supabase values in the
 ADMIN BROWSER using localStorage.
 
 For your actual published wedding site, place the SAME Supabase Project URL
-and anon/public key in config.js so every invited guest's phone can connect.
+and anon/public key in assets/js/config.js so every invited guest's phone can connect.
 
 
 ADDITIONAL UPDATE

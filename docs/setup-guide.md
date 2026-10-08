@@ -34,7 +34,7 @@ DO NOT use:
 - service_role key
 - secret key
 
-Open config.js.
+Open assets/js/config.js.
 
 Replace:
 
@@ -58,7 +58,7 @@ Create a new query.
 
 Paste EVERYTHING from:
 
-supabase-setup.sql
+database/supabase-setup.sql
 
 Click Run.
 
@@ -195,4 +195,4 @@ but it is not equivalent to authenticated user accounts.
 Do not place confidential information on the guest records.
 
 Never expose a Supabase service-role/secret key in GitHub.
-Only the frontend publishable/anon key belongs in config.js.
+Only the frontend publishable/anon key belongs in assets/js/config.js.
