@@ -560,20 +560,44 @@ function renderSeatingPlan(activeTable, activeSeat){
   const wrap = $("seatingPlan");
   if (!wrap) return;
 
-  wrap.querySelectorAll(".seat-chip").forEach(chip => {
-    const table = Number(chip.dataset.table);
-    const seat = Number(chip.dataset.seat);
-    chip.classList.toggle(
-      "my-seat",
-      table === Number(activeTable) && seat === Number(activeSeat)
-    );
-  });
+  const capacities =
+    typeof weddingConfig !== "undefined" && Array.isArray(weddingConfig.tableCapacities)
+      ? weddingConfig.tableCapacities
+      : [13, 24, 13];
 
-  wrap.querySelectorAll(".seat-table").forEach(card => {
-    card.classList.toggle(
-      "my-table",
-      Number(card.dataset.tableCard) === Number(activeTable)
-    );
+  wrap.replaceChildren();
+  let overallSeat = 0;
+
+  capacities.forEach((capacity, tableIndex) => {
+    const tableNumber = tableIndex + 1;
+    const card = document.createElement("section");
+    card.className = "seat-table";
+    card.dataset.tableCard = tableNumber;
+    card.classList.toggle("my-table", tableNumber === Number(activeTable));
+
+    const title = document.createElement("div");
+    title.className = "seat-table-title";
+    title.innerHTML = `<span>Table · ${capacity} seats</span><strong>${tableNumber}</strong>`;
+
+    const grid = document.createElement("div");
+    grid.className = "seat-grid";
+
+    for(let seatNumber = 1; seatNumber <= capacity; seatNumber += 1){
+      overallSeat += 1;
+      const chip = document.createElement("div");
+      chip.className = "seat-chip";
+      chip.dataset.table = tableNumber;
+      chip.dataset.seat = seatNumber;
+      chip.classList.toggle(
+        "my-seat",
+        tableNumber === Number(activeTable) && seatNumber === Number(activeSeat)
+      );
+      chip.innerHTML = `<span>${overallSeat}</span><small>S${seatNumber}</small>`;
+      grid.appendChild(chip);
+    }
+
+    card.append(title, grid);
+    wrap.appendChild(card);
   });
 }
 
@@ -593,6 +617,7 @@ const attirePreviewTriggers = [...document.querySelectorAll(".attire-preview-tri
 const attirePreviewModal = $("attirePreviewModal");
 const attireImageSwitcher = $("attireImageSwitcher");
 const attireImageHint = $("attireImageHint");
+const attireModalAudience = $("attireModalAudience");
 const attireModalTitle = $("attireModalTitle");
 const attireModalDescription = $("attireModalDescription");
 let attireModalCloseTimer = null;
@@ -635,7 +660,7 @@ function showNextAttireImage(){
   const followingImage = images[(nextIndex + 1) % images.length];
   attireImageSwitcher.setAttribute(
     "aria-label",
-    `Show the next Slate Blue ${followingImage.dataset.viewLabel || "outfit view"}`
+    `Show the next ${followingImage.dataset.viewLabel || "attire outfit view"}`
   );
   if(attireImageHint){
     attireImageHint.textContent = `Tap photo to change view · ${nextIndex + 1} of ${images.length}`;
@@ -662,13 +687,14 @@ function selectAttireGallery(trigger){
   if(attireImageHint){
     attireImageHint.textContent = `Tap photo to change view · 1 of ${galleryImages.length}`;
   }
+  if(attireModalAudience) attireModalAudience.textContent = trigger.dataset.audience || "Wedding Guest";
   if(attireModalTitle) attireModalTitle.textContent = trigger.dataset.title || "Slate Blue Inspiration";
   if(attireModalDescription) attireModalDescription.textContent = trigger.dataset.description || "";
 
   const nextImage = galleryImages[1] || firstImage;
   attireImageSwitcher.setAttribute(
     "aria-label",
-    `Show the next Slate Blue ${nextImage?.dataset.viewLabel || "outfit view"}`
+    `Show the next ${nextImage?.dataset.viewLabel || "attire outfit view"}`
   );
   activeAttireTrigger = trigger;
 }

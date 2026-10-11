@@ -138,8 +138,13 @@ alter table public.guests
 
 alter table public.guests drop constraint if exists guests_table_number_check;
 alter table public.guests add constraint guests_table_number_check
-check (table_number is null or table_number between 1 and 5);
+check (table_number is null or table_number between 1 and 3);
 
 alter table public.guests drop constraint if exists guests_seat_number_check;
 alter table public.guests add constraint guests_seat_number_check
-check (seat_number is null or seat_number between 1 and 10);
+check (
+  seat_number is null
+  or (table_number = 1 and seat_number between 1 and 13)
+  or (table_number = 2 and seat_number between 1 and 24)
+  or (table_number = 3 and seat_number between 1 and 13)
+);

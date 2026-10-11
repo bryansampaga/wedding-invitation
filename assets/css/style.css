@@ -462,12 +462,12 @@
 .reservation-strip b{font:600 23px "Cormorant Garamond",serif}
 
 .seating-section{margin-top:34px}
-.seating-plan{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.seating-plan{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .seat-table{padding:12px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.82)}
 .seat-table-title{display:flex;justify-content:space-between;align-items:end;margin-bottom:8px}
 .seat-table-title span{font-size:8px;text-transform:uppercase;color:var(--muted)}
 .seat-table-title strong{font:600 27px "Cormorant Garamond",serif}
-.seat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}
+.seat-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
 .seat-chip{display:grid;place-items:center;min-height:40px;border:1px solid var(--line);border-radius:10px;background:white}
 .seat-chip span{font-size:11px;font-weight:700}
 .seat-chip small{font-size:7px;color:var(--muted)}
@@ -942,6 +942,242 @@
   #selfie .camera-stage{
     height:clamp(160px, 48dvh, 250px) !important;
     max-width:420px !important;
+  }
+}
+
+/* =====================================================
+   PALETTE-RICH INVITATION HERO
+   Sage green + slate blue details from the attire palette
+   ===================================================== */
+
+.hero{
+  position:relative;
+  isolation:isolate;
+}
+
+.hero::before,
+.hero::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  width:clamp(190px, 34vw, 420px);
+  aspect-ratio:1;
+  border-radius:50%;
+  filter:blur(2px);
+  pointer-events:none;
+}
+
+.hero::before{
+  top:9%;
+  right:-9%;
+  background:radial-gradient(circle, rgba(129,149,164,.24), rgba(199,208,213,.08) 52%, transparent 72%);
+}
+
+.hero::after{
+  bottom:2%;
+  left:-12%;
+  background:radial-gradient(circle, rgba(140,153,132,.22), rgba(213,221,209,.08) 54%, transparent 72%);
+}
+
+.hero-card{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  border:1px solid rgba(105,119,99,.20);
+  background:
+    linear-gradient(135deg, rgba(213,221,209,.22), transparent 30%),
+    linear-gradient(315deg, rgba(199,208,213,.20), transparent 32%),
+    rgba(255,255,255,.88);
+  box-shadow:
+    0 28px 65px rgba(54,68,58,.14),
+    0 0 0 7px rgba(255,255,255,.34),
+    inset 0 0 0 1px rgba(255,255,255,.78);
+}
+
+.hero-card > :not(.hero-botanical){
+  position:relative;
+  z-index:2;
+}
+
+.hero-botanical{
+  position:absolute;
+  z-index:1;
+  width:clamp(135px, 24vw, 220px);
+  height:auto;
+  opacity:.72;
+  pointer-events:none;
+}
+
+.hero-botanical-top{
+  top:-22px;
+  right:-24px;
+}
+
+.hero-botanical-bottom{
+  bottom:-28px;
+  left:-28px;
+}
+
+.botanical-stem{
+  fill:none;
+  stroke:#8195a4;
+  stroke-width:2.2;
+  stroke-linecap:round;
+}
+
+.botanical-leaf{
+  stroke:rgba(255,255,255,.8);
+  stroke-width:1.2;
+}
+
+.botanical-leaf-sage{fill:#8c9984}
+.botanical-leaf-slate{fill:#a3b1bc}
+.botanical-leaf-soft{fill:#d5ddd1}
+.botanical-berry-sage{fill:#697763}
+.botanical-berry-slate{fill:#607485}
+
+.hero .eyebrow{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:11px;
+  color:#60705c;
+}
+
+.hero .eyebrow::before,
+.hero .eyebrow::after{
+  content:"";
+  width:clamp(25px, 5vw, 48px);
+  height:1px;
+  background:linear-gradient(90deg, transparent, #8c9984);
+}
+
+.hero .eyebrow::after{
+  background:linear-gradient(90deg, #8195a4, transparent);
+}
+
+.hero h1{
+  color:#263229;
+  text-shadow:0 3px 18px rgba(105,119,99,.08);
+}
+
+.hero h1 small{
+  position:relative;
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  margin:12px 0 !important;
+  color:#697763;
+  border:1px solid rgba(129,149,164,.36);
+  border-radius:50%;
+  background:linear-gradient(145deg, rgba(213,221,209,.75), rgba(199,208,213,.42));
+}
+
+.hero .lead{
+  max-width:620px;
+}
+
+.hero .date-row{
+  position:relative;
+  border-color:rgba(96,116,133,.20);
+  box-shadow:0 12px 30px rgba(74,91,78,.07);
+}
+
+.hero .date-row div{
+  position:relative;
+  background:linear-gradient(145deg, rgba(213,221,209,.58), rgba(255,255,255,.80));
+}
+
+.hero .date-row div:nth-child(2){
+  background:linear-gradient(145deg, rgba(199,208,213,.55), rgba(255,255,255,.82));
+}
+
+.hero .date-row div::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:14%;
+  right:14%;
+  height:2px;
+  border-radius:999px;
+  background:linear-gradient(90deg, transparent, #8c9984, transparent);
+}
+
+.hero .date-row div:nth-child(2)::before{
+  background:linear-gradient(90deg, transparent, #8195a4, transparent);
+}
+
+.hero .date-row span{
+  color:#697763;
+}
+
+.hero .date-row div:nth-child(2) span{
+  color:#607485;
+}
+
+.hero .primary{
+  position:relative;
+  overflow:hidden;
+  border-color:rgba(96,116,133,.35);
+  background:linear-gradient(110deg, #697763 0%, #748675 48%, #607485 100%);
+  box-shadow:0 12px 24px rgba(79,98,83,.22);
+  transition:transform .25s ease, box-shadow .25s ease, filter .25s ease;
+}
+
+.hero .primary::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(105deg, transparent 25%, rgba(255,255,255,.28) 48%, transparent 72%);
+  transform:translateX(-120%);
+  transition:transform .55s ease;
+}
+
+.hero .primary:hover,
+.hero .primary:focus-visible{
+  transform:translateY(-2px);
+  box-shadow:0 16px 30px rgba(79,98,83,.28);
+  filter:saturate(1.06);
+}
+
+.hero .primary:hover::before,
+.hero .primary:focus-visible::before{
+  transform:translateX(120%);
+}
+
+.hero .primary:focus-visible{
+  outline:3px solid rgba(129,149,164,.38);
+  outline-offset:3px;
+}
+
+@media(max-width:780px){
+  .hero-botanical{
+    width:clamp(112px, 36vw, 165px);
+    opacity:.54;
+  }
+
+  .hero-botanical-top{
+    top:-18px;
+    right:-25px;
+  }
+
+  .hero-botanical-bottom{
+    bottom:-24px;
+    left:-27px;
+  }
+
+  .hero h1 small{
+    width:clamp(36px, 10vw, 44px);
+    height:clamp(36px, 10vw, 44px);
+    margin:clamp(4px, 1.2dvh, 10px) 0 !important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .hero .primary,
+  .hero .primary::before{
+    transition:none;
   }
 }
 

@@ -39,6 +39,22 @@ const ready =
   SUPABASE_ANON_KEY.trim() !== "";
 
 const status=document.getElementById("adminStatus");
+const tableInput=document.getElementById("tableInput");
+const seatInput=document.getElementById("seatInput");
+const seatingCapacities =
+  typeof weddingConfig !== "undefined" && Array.isArray(weddingConfig.tableCapacities)
+    ? weddingConfig.tableCapacities
+    : [13, 24, 13];
+
+function updateSeatLimit(){
+  const tableNumber=Number(tableInput.value);
+  const capacity=seatingCapacities[tableNumber-1];
+  seatInput.max=capacity || Math.max(...seatingCapacities);
+  seatInput.placeholder=capacity ? `Seat 1-${capacity}` : "Seat for table";
+}
+
+tableInput.addEventListener("input",updateSeatLimit);
+updateSeatLimit();
 
 let sb=null;
 
@@ -58,9 +74,32 @@ document.getElementById("addGuestBtn").addEventListener("click",async()=>{
 
   const name=document.getElementById("guestInput").value.trim();
   const reservation=document.getElementById("reservationInput").value.trim();
-  const tableNumber=Number(document.getElementById("tableInput").value);
-  const seatNumber=Number(document.getElementById("seatInput").value);
-  if(!name)return;
+  const tableValue=tableInput.value.trim();
+  const seatValue=seatInput.value.trim();
+  const tableNumber=Number(tableValue);
+  const seatNumber=Number(seatValue);
+
+  if(!name){
+    status.textContent="Enter the guest name.";
+    return;
+  }
+
+  if((tableValue && !seatValue) || (!tableValue && seatValue)){
+    status.textContent="Enter both a table and seat, or leave both blank.";
+    return;
+  }
+
+  if(tableValue){
+    const capacity=seatingCapacities[tableNumber-1];
+    if(!Number.isInteger(tableNumber) || !capacity){
+      status.textContent=`Choose a table from 1 to ${seatingCapacities.length}.`;
+      return;
+    }
+    if(!Number.isInteger(seatNumber) || seatNumber < 1 || seatNumber > capacity){
+      status.textContent=`Table ${tableNumber} has seats 1 to ${capacity}.`;
+      return;
+    }
+  }
 
   const token=crypto.randomUUID().replaceAll("-","").slice(0,20);
 
@@ -68,14 +107,18 @@ document.getElementById("addGuestBtn").addEventListener("click",async()=>{
     name,
     invite_token:token,
     reservation_number: reservation || null,
-    table_number: tableNumber || null,
-    seat_number: seatNumber || null
+    table_number: tableValue ? tableNumber : null,
+    seat_number: seatValue ? seatNumber : null
   });
 
   status.textContent=error?error.message:"Guest created.";
 
   if(!error){
     document.getElementById("guestInput").value="";
+    document.getElementById("reservationInput").value="";
+    tableInput.value="";
+    seatInput.value="";
+    updateSeatLimit();
     await loadGuests();
   }
 });

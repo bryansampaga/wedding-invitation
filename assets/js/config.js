@@ -18,7 +18,8 @@ const weddingConfig = {
   weddingTime: "4:00 PM",
   venueName: "Alvarez Park Cafe",
   venueAddress: "09 Bisig Road, Barangay Tagalag, Tagalag Fishing Village, Valenzuela City.",
-  mapUrl: "https://share.google/9pXRaHKG5ZqUqZb7X"
+  mapUrl: "https://share.google/9pXRaHKG5ZqUqZb7X",
+  tableCapacities: [13, 24, 13]
 };
 
 const MAX_GUEST_PHOTOS = 3;
