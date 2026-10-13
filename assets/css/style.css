@@ -946,6 +946,95 @@
 }
 
 /* =====================================================
+   REFERENCE-MATCHED MAIN INVITATION
+   The supplied design is used as the opening artwork at its native ratio.
+   ===================================================== */
+
+.nav{
+  transition:opacity .3s ease, transform .3s ease;
+}
+
+.invitation-at-top .nav{
+  opacity:0;
+  pointer-events:none;
+  transform:translate(-50%, -18px);
+}
+
+.hero{
+  width:100% !important;
+  min-height:100svh !important;
+  min-height:100dvh !important;
+  padding:0 !important;
+  background:#f8f7f2;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.hero::before,
+.hero::after{
+  display:none !important;
+}
+
+.main-invitation{
+  position:relative;
+  width:min(480px, 100vw, 61.5384svh);
+  width:min(480px, 100vw, 61.5384dvh);
+  aspect-ratio:8 / 13;
+  flex:0 0 auto;
+}
+
+.main-invitation img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+.main-invitation-open{
+  position:absolute;
+  z-index:2;
+  left:24%;
+  top:83.25%;
+  width:52%;
+  height:6.4%;
+  border-radius:999px;
+  color:transparent;
+  cursor:pointer;
+}
+
+.main-invitation-open span{
+  position:absolute;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+  clip:rect(0 0 0 0);
+  white-space:nowrap;
+}
+
+.main-invitation-open:hover{
+  background:rgba(255,255,255,.08);
+}
+
+.main-invitation-open:focus-visible{
+  outline:3px solid #4f6275;
+  outline-offset:4px;
+}
+
+@media(max-width:780px){
+  .hero{
+    width:100% !important;
+    padding:0 !important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .nav{
+    transition:none;
+  }
+}
+
+/* =====================================================
    PALETTE-RICH INVITATION HERO
    Sage green + slate blue details from the attire palette
    ===================================================== */
@@ -959,7 +1048,7 @@
 .hero::after{
   content:"";
   position:absolute;
-  z-index:-1;
+  z-index:0;
   width:clamp(190px, 34vw, 420px);
   aspect-ratio:1;
   border-radius:50%;
@@ -1799,5 +1888,338 @@ canvas{
   .date-row div+div{
     border-top:0;
     border-left:1px solid var(--line);
+  }
+}
+
+/* =====================================================
+   REFERENCE-STYLE HERO — original card sizing retained
+   ===================================================== */
+
+.hero{
+  position:relative;
+  width:min(1080px, calc(100% - clamp(24px, 5vw, 64px))) !important;
+  min-height:100vh !important;
+  min-height:100svh !important;
+  padding:105px 0 75px !important;
+  background:transparent !important;
+  overflow:visible;
+}
+
+.hero::before,
+.hero::after{
+  display:none !important;
+}
+
+.hero-card{
+  position:relative;
+  isolation:isolate;
+  display:block;
+  width:min(760px, 100%);
+  min-height:0;
+  margin:auto;
+  padding:76px 72px 62px !important;
+  overflow:hidden;
+  border:1px solid #a8b29f;
+  border-radius:0;
+  background:#f8f7f2;
+  box-shadow:
+    inset 0 0 0 7px #f8f7f2,
+    inset 0 0 0 8px rgba(143,154,133,.48),
+    0 22px 55px rgba(46,60,50,.10);
+  text-align:center;
+  backdrop-filter:none;
+}
+
+.hero-card::before,
+.hero-card::after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  display:block;
+  pointer-events:none;
+  background-repeat:no-repeat;
+  background-size:contain;
+}
+
+.hero-card::before{
+  top:-34px;
+  right:-28px;
+  width:170px;
+  height:170px;
+  background-image:url("../images/invitation-floral-complete.png");
+  background-position:top right;
+  transform-origin:center;
+  animation:invitation-bloom-top 1.15s .12s cubic-bezier(.18,.78,.25,1) backwards;
+}
+
+.hero-card::after{
+  bottom:-18px;
+  left:-18px;
+  width:170px;
+  height:170px;
+  background-image:url("../images/invitation-floral-complete.png");
+  background-position:bottom left;
+  transform:rotate(180deg);
+  transform-origin:center;
+  animation:invitation-bloom-bottom 1.15s .3s cubic-bezier(.18,.78,.25,1) backwards;
+}
+
+@keyframes invitation-bloom-top{
+  0%{opacity:0;transform:scale(.2) rotate(-10deg)}
+  68%{opacity:1;transform:scale(1.06) rotate(1.5deg)}
+  100%{opacity:1;transform:scale(1) rotate(0)}
+}
+
+@keyframes invitation-bloom-bottom{
+  0%{opacity:0;transform:rotate(180deg) scale(.2) rotate(-10deg)}
+  68%{opacity:1;transform:rotate(180deg) scale(1.06) rotate(1.5deg)}
+  100%{opacity:1;transform:rotate(180deg) scale(1) rotate(0)}
+}
+
+.hero-card > *{
+  position:relative;
+  z-index:1;
+}
+
+.hero .eyebrow{
+  display:block;
+  margin:0 0 28px !important;
+  color:#5c6852;
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:.28em;
+}
+
+.hero .eyebrow::before,
+.hero .eyebrow::after{
+  display:none;
+}
+
+.hero h1{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:0 !important;
+  margin:0;
+  color:#4f6275;
+  font-family:"Great Vibes", cursive;
+  font-size:clamp(74px, 9vw, 104px) !important;
+  font-weight:400;
+  line-height:.88;
+  text-shadow:none;
+}
+
+.hero h1 span{
+  font:inherit;
+  color:inherit;
+}
+
+.hero h1 small{
+  display:block;
+  width:auto;
+  height:auto;
+  margin:15px 0 13px !important;
+  border:0;
+  border-radius:0;
+  background:none;
+  color:#6b7660;
+  font:400 31px/1 "Cormorant Garamond", serif;
+}
+
+.hero .lead{
+  max-width:520px;
+  margin:38px auto 0 !important;
+  color:#4a5648;
+  font:400 21px/1.5 "Cormorant Garamond", serif;
+}
+
+.hero .date-row{
+  display:grid !important;
+  grid-template-columns:1fr .62fr 1fr !important;
+  width:min(520px, 100%);
+  margin:36px auto 0 !important;
+  overflow:visible;
+  border:0;
+  border-top:1px solid #a3b1bc;
+  border-bottom:1px solid #a3b1bc;
+  border-radius:0;
+  box-shadow:none;
+}
+
+.hero .date-row div,
+.hero .date-row div:nth-child(2){
+  padding:14px 10px !important;
+  border:0;
+  background:transparent;
+}
+
+.hero .date-row div+div,
+.hero .date-row div:nth-child(2){
+  border-top:0;
+  border-left:1px solid #a3b1bc;
+}
+
+.hero .date-row div::before{
+  display:none;
+}
+
+.hero .date-row span,
+.hero .date-row div:nth-child(2) span{
+  margin-bottom:5px;
+  color:#5c6852;
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:.24em;
+}
+
+.hero .date-row strong{
+  display:block;
+  color:#2f3a2e;
+  font:400 24px/1.1 "Cormorant Garamond", serif;
+}
+
+.hero .date-row div:nth-child(2) strong{
+  font-size:36px;
+  line-height:.8;
+  padding-top:3px;
+}
+
+.hero .wedding-time{
+  margin:16px 0 0;
+  color:#2f3a2e;
+  font:italic 21px/1.4 "Cormorant Garamond", serif;
+}
+
+.hero .primary{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  min-width:250px;
+  min-height:48px;
+  margin-top:28px;
+  padding:0 36px;
+  border:0;
+  border-radius:999px;
+  background:#6b7660;
+  color:#fff;
+  box-shadow:0 12px 24px rgba(79,98,83,.22);
+  font:500 12px/1 Montserrat, sans-serif;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  transition:transform .25s ease, background-color .3s ease, box-shadow .3s ease;
+}
+
+.hero .primary::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:-2px;
+  display:block;
+  background:linear-gradient(110deg, transparent 20%, rgba(255,255,255,.12) 36%, rgba(255,255,255,.72) 49%, rgba(255,255,255,.12) 62%, transparent 78%);
+  transform:translateX(-135%) skewX(-18deg);
+  transition:transform .65s ease;
+  pointer-events:none;
+}
+
+@media(hover:hover){
+  .hero .primary:hover{
+    transform:translateY(-2px);
+    background:#607485;
+    box-shadow:0 17px 31px rgba(71,88,103,.32);
+  }
+
+  .hero .primary:hover::before{
+    transform:translateX(135%) skewX(-18deg);
+  }
+}
+
+.hero .primary:focus-visible{
+  background:#607485;
+  outline:3px solid rgba(96,116,133,.38);
+  outline-offset:4px;
+}
+
+@media(max-width:780px){
+  .hero{
+    --hero-top-space:clamp(52px, 8dvh, 72px);
+    --hero-bottom-space:clamp(10px, 2dvh, 20px);
+    width:calc(100% - clamp(16px, 4vw, 28px)) !important;
+    min-height:100svh !important;
+    min-height:100dvh !important;
+    padding:var(--hero-top-space) 0 var(--hero-bottom-space) !important;
+  }
+
+  .hero-card{
+    width:100%;
+    min-height:calc(100svh - var(--hero-top-space) - var(--hero-bottom-space));
+    min-height:calc(100dvh - var(--hero-top-space) - var(--hero-bottom-space));
+    padding:clamp(42px, 7dvh, 62px) clamp(24px, 8vw, 52px) clamp(32px, 5dvh, 48px) !important;
+    border-radius:0;
+  }
+
+  .hero-card::before{
+    width:clamp(128px, 34vw, 164px);
+    height:clamp(128px, 34vw, 164px);
+  }
+
+  .hero-card::after{
+    width:clamp(128px, 34vw, 164px);
+    height:clamp(128px, 34vw, 164px);
+  }
+
+  .hero .eyebrow{
+    margin-bottom:clamp(18px, 3dvh, 26px) !important;
+    font-size:clamp(7px, 2.2vw, 10px) !important;
+  }
+
+  .hero h1{
+    font-size:clamp(52px, min(17vw, 9dvh), 82px) !important;
+  }
+
+  .hero h1 small{
+    margin:clamp(8px, 1.5dvh, 13px) 0 !important;
+    font-size:clamp(23px, 7vw, 29px) !important;
+  }
+
+  .hero .lead{
+    margin-top:clamp(20px, 3.4dvh, 32px) !important;
+    font-size:clamp(15px, 4.4vw, 19px);
+  }
+
+  .hero .date-row{
+    grid-template-columns:1fr .62fr 1fr !important;
+    margin-top:clamp(20px, 3.5dvh, 32px) !important;
+  }
+
+  .hero .date-row div,
+  .hero .date-row div:nth-child(2){
+    padding:clamp(10px, 2dvh, 14px) 5px !important;
+  }
+
+  .hero .date-row strong{
+    font-size:clamp(18px, 5vw, 23px);
+  }
+
+  .hero .date-row div:nth-child(2) strong{
+    font-size:clamp(28px, 8vw, 34px);
+  }
+
+  .hero .wedding-time{
+    font-size:clamp(16px, 4.8vw, 20px);
+  }
+
+  .hero .primary{
+    min-width:min(250px, 82%);
+    margin-top:clamp(20px, 3.5dvh, 28px);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .hero-card,
+  .hero-card::before,
+  .hero-card::after,
+  .hero .primary{
+    animation:none !important;
+    transition:none !important;
   }
 }

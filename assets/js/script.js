@@ -8,10 +8,16 @@ const sb = sbReady ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : nu
 
 const $ = (id) => document.getElementById(id);
 
-$("partnerOne").textContent = weddingConfig.partnerOne;
-$("partnerTwo").textContent = weddingConfig.partnerTwo;
-$("weddingDate").textContent = weddingConfig.weddingDate;
-$("weddingTime").textContent = weddingConfig.weddingTime;
+$("partnerOne")?.replaceChildren(weddingConfig.partnerOne);
+$("partnerTwo")?.replaceChildren(weddingConfig.partnerTwo);
+const weddingDateParts = new Date(weddingConfig.weddingDate.replace(/,/g, "")).toLocaleDateString("en-US", {
+  month: "long",
+  day: "numeric",
+  year: "numeric"
+}).replace(",", "").split(" ");
+$("weddingMonth")?.replaceChildren(weddingDateParts[0] || "December");
+$("weddingDay")?.replaceChildren(weddingDateParts[1] || "27");
+$("weddingYear")?.replaceChildren(weddingDateParts[2] || "2026");
 $("venueName").textContent = weddingConfig.venueName;
 $("venueAddress").textContent = weddingConfig.venueAddress;
 $("mapLink").href = weddingConfig.mapUrl;
