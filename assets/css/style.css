@@ -2224,3 +2224,344 @@ canvas{
     transition:none !important;
   }
 }
+
+/* =====================================================
+   EXACT MAIN.DC VISUAL SYSTEM
+   Production implementation of the supplied design mockup.
+   ===================================================== */
+
+.hero-card{
+  position:relative;
+  display:block;
+  width:min(760px, 100%);
+  height:780px;
+  min-height:780px;
+  padding:0 !important;
+  overflow:hidden;
+  border:0;
+  border-radius:0;
+  background:#f8f7f2;
+  box-shadow:
+    inset 0 0 0 22px #f8f7f2,
+    inset 0 0 0 23px #aab5a2,
+    inset 0 0 0 30px #f8f7f2,
+    inset 0 0 0 31px #d5dcd0,
+    0 22px 55px rgba(46,60,50,.1);
+  color:#2f3a2e;
+  font-family:Jost, sans-serif;
+  text-align:center;
+}
+
+.hero-card::before,
+.hero-card::after{
+  display:none !important;
+}
+
+.hero-card > .invitation-floral{
+  position:absolute;
+  z-index:0;
+  display:block;
+  width:min(180px, 37.5%);
+  height:auto;
+  aspect-ratio:1;
+  pointer-events:none;
+}
+
+.invitation-floral-top{
+  top:0;
+  right:0;
+}
+
+.invitation-floral-bottom{
+  bottom:0;
+  left:0;
+  transform:rotate(180deg);
+}
+
+.invitation-floral .rg,
+.invitation-floral .lg,
+.invitation-floral .pop,
+.invitation-floral .fd,
+.invitation-floral .st{
+  transform-origin:0 0;
+}
+
+.invitation-floral .rg{animation:invitation-unfurl 1.8s cubic-bezier(.16,.84,.3,1) var(--d) both}
+.invitation-floral .lg{animation:invitation-grow 1.3s cubic-bezier(.2,.8,.3,1) var(--d) both}
+.invitation-floral .pop{animation:invitation-pop .9s cubic-bezier(.3,1.5,.5,1) var(--d) both}
+.invitation-floral .fd{animation:invitation-fade 1s ease-out var(--d) both}
+.invitation-floral .st{stroke-dasharray:1;animation:invitation-draw 1.8s ease-out var(--d) both}
+
+@keyframes invitation-unfurl{
+  from{transform:rotate(-55deg) scale(.05);opacity:0}
+  25%{opacity:1}
+  to{transform:none;opacity:1}
+}
+
+@keyframes invitation-grow{from{transform:rotate(-14deg) scale(0)}to{transform:none}}
+@keyframes invitation-pop{from{transform:scale(0)}to{transform:scale(1)}}
+@keyframes invitation-fade{from{opacity:0}to{opacity:1}}
+@keyframes invitation-draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes invitation-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.hero-content{
+  position:relative;
+  z-index:1;
+  display:flex;
+  height:100%;
+  padding:0 56px;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+}
+
+.hero-content > *{
+  animation:invitation-rise 1.1s cubic-bezier(.2,.8,.3,1) both;
+}
+
+.hero-content > :nth-child(1){animation-delay:1.3s}
+.hero-content > :nth-child(2){animation-delay:1.45s}
+.hero-content > :nth-child(3){animation-delay:1.75s}
+.hero-content > :nth-child(4){animation-delay:1.95s}
+.hero-content > :nth-child(5){animation-delay:2.15s}
+.hero-content > :nth-child(6){animation-delay:2.3s}
+
+.hero .hero-content .eyebrow{
+  display:block;
+  margin:0 !important;
+  color:#5c6852;
+  font:500 11px/1 Jost, sans-serif;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+}
+
+.hero .hero-content h1{
+  display:flex;
+  margin:34px 0 0;
+  flex-direction:column;
+  align-items:center;
+  color:#4f6275;
+  font:400 84px/1.05 "Great Vibes", cursive !important;
+  text-shadow:none;
+}
+
+.hero .hero-content h1 span{
+  font:inherit;
+}
+
+.hero .hero-content h1 small{
+  display:block;
+  width:auto;
+  height:auto;
+  margin:12px 0 !important;
+  border:0;
+  background:transparent;
+  color:#6b7660;
+  font:400 30px/1 "Cormorant Garamond", serif;
+}
+
+.hero .hero-content .lead{
+  max-width:300px;
+  margin:34px 0 0 !important;
+  color:#4a5648;
+  font:400 20px/1.45 "Cormorant Garamond", serif;
+}
+
+.hero .hero-content .date-row{
+  position:relative;
+  display:grid !important;
+  grid-template-columns:1fr 76px 1fr !important;
+  width:min(320px, 100%);
+  margin:38px 0 0 !important;
+  overflow:visible;
+  border:0;
+  border-top:1px solid #a3b1bc;
+  border-bottom:1px solid #a3b1bc;
+  border-radius:0;
+  box-shadow:none;
+}
+
+.hero .hero-content .date-row div,
+.hero .hero-content .date-row div:nth-child(2){
+  position:relative;
+  display:flex;
+  padding:14px 0 !important;
+  flex-direction:column;
+  gap:4px;
+  border:0;
+  background:transparent;
+}
+
+.hero .hero-content .date-row div+div::before{
+  content:"";
+  position:absolute;
+  top:10px;
+  bottom:10px;
+  left:0;
+  display:block;
+  width:1px;
+  height:auto;
+  background:#a3b1bc;
+}
+
+.hero .hero-content .date-row span,
+.hero .hero-content .date-row div:nth-child(2) span{
+  margin:0;
+  color:#5c6852;
+  font:500 10px/1 Jost, sans-serif;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+}
+
+.hero .hero-content .date-row strong{
+  display:block;
+  padding:0;
+  color:#2f3a2e;
+  font:400 22px/1 "Cormorant Garamond", serif;
+}
+
+.hero .hero-content .date-row div:nth-child(2) strong{
+  padding-top:4px;
+  font-size:34px;
+  line-height:.8;
+}
+
+.hero .hero-content .wedding-time{
+  margin:16px 0 0;
+  color:#2f3a2e;
+  font:italic 21px/1.4 "Cormorant Garamond", serif;
+}
+
+.hero .hero-content .primary{
+  position:relative;
+  isolation:auto;
+  display:inline-flex;
+  width:250px;
+  min-width:250px;
+  min-height:48px;
+  margin-top:30px;
+  padding:0 36px;
+  overflow:hidden;
+  border:0;
+  border-radius:999px;
+  background:#6b7660;
+  color:#fff;
+  box-shadow:0 6px 16px rgba(107,118,96,.25);
+  font:500 12px/1 Jost, sans-serif;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  transition:transform .35s cubic-bezier(.2,.8,.3,1), box-shadow .35s, background-color .35s;
+}
+
+.hero .hero-content .primary::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-60%;
+  z-index:0;
+  display:block;
+  width:40%;
+  height:100%;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,.4), transparent);
+  transform:skewX(-20deg);
+  transition:left .7s ease;
+  pointer-events:none;
+}
+
+.invitation-arrow{
+  position:absolute;
+  right:26px;
+  top:50%;
+  z-index:1;
+  margin-top:-6px;
+  opacity:0;
+  transform:translateX(-10px);
+  transition:transform .35s, opacity .35s;
+}
+
+@media(hover:hover){
+  .hero .hero-content .primary:hover{
+    background:#5f7285;
+    transform:translateY(-3px);
+    box-shadow:0 12px 24px rgba(95,114,133,.38);
+  }
+
+  .hero .hero-content .primary:hover::before{left:130%;transform:skewX(-20deg)}
+  .hero .hero-content .primary:hover .invitation-arrow{opacity:1;transform:none}
+}
+
+.hero .hero-content .primary:active{transform:translateY(-1px) scale(.98)}
+
+.hero .hero-content .primary:focus-visible{
+  background:#6b7660;
+  outline:2px solid #5f7285;
+  outline-offset:3px;
+}
+
+.hero .hero-content .primary:focus-visible .invitation-arrow{opacity:1;transform:none}
+
+@media(max-width:780px){
+  .hero-card{
+    height:calc(100svh - var(--hero-top-space) - var(--hero-bottom-space));
+    height:calc(100dvh - var(--hero-top-space) - var(--hero-bottom-space));
+    min-height:650px;
+  }
+
+  .hero-content{
+    padding:0 clamp(24px, 12vw, 56px);
+  }
+
+  .hero .hero-content h1{
+    font-size:clamp(62px, 18vw, 84px) !important;
+  }
+
+  .hero .hero-content .date-row{
+    grid-template-columns:1fr minmax(64px, 76px) 1fr !important;
+  }
+
+  .hero .hero-content .primary{
+    min-width:min(250px, 100%);
+  }
+}
+
+@media(max-width:420px){
+  .hero-card{
+    min-height:620px;
+  }
+
+  .hero-content{
+    padding-inline:24px;
+  }
+
+  .hero .hero-content .eyebrow{font-size:9px !important}
+  .hero .hero-content h1{margin-top:24px;font-size:clamp(58px, 19vw, 76px) !important}
+  .hero .hero-content h1 small{margin:8px 0 !important;font-size:26px !important}
+  .hero .hero-content .lead{margin-top:24px !important;font-size:18px}
+  .hero .hero-content .date-row{margin-top:26px !important}
+  .hero .hero-content .wedding-time{font-size:18px}
+  .hero .hero-content .primary{margin-top:22px}
+}
+
+@media(max-height:700px) and (max-width:780px){
+  .hero-card{min-height:570px}
+  .hero .hero-content h1{margin-top:16px;font-size:58px !important}
+  .hero .hero-content h1 small{margin:5px 0 !important;font-size:23px !important}
+  .hero .hero-content .lead{margin-top:15px !important;font-size:16px}
+  .hero .hero-content .date-row{margin-top:17px !important}
+  .hero .hero-content .date-row div,
+  .hero .hero-content .date-row div:nth-child(2){padding:10px 0 !important}
+  .hero .hero-content .wedding-time{margin-top:10px;font-size:16px}
+  .hero .hero-content .primary{min-height:42px;margin-top:14px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .invitation-floral *,
+  .hero-content > *,
+  .hero .hero-content .primary,
+  .hero .hero-content .primary::before,
+  .invitation-arrow{
+    animation:none !important;
+    transition:none !important;
+  }
+}
