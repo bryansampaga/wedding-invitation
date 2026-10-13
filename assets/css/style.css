@@ -1943,37 +1943,38 @@ canvas{
 
 .hero-card::before{
   top:-34px;
-  right:-28px;
+  right:-10px;
   width:170px;
   height:170px;
   background-image:url("../images/invitation-floral-complete.png");
   background-position:top right;
+  transform:rotate(42deg);
   transform-origin:center;
   animation:invitation-bloom-top 1.15s .12s cubic-bezier(.18,.78,.25,1) backwards;
 }
 
 .hero-card::after{
   bottom:-18px;
-  left:-18px;
+  left:-8px;
   width:170px;
   height:170px;
   background-image:url("../images/invitation-floral-complete.png");
   background-position:bottom left;
-  transform:rotate(180deg);
+  transform:rotate(222deg);
   transform-origin:center;
   animation:invitation-bloom-bottom 1.15s .3s cubic-bezier(.18,.78,.25,1) backwards;
 }
 
 @keyframes invitation-bloom-top{
-  0%{opacity:0;transform:scale(.2) rotate(-10deg)}
-  68%{opacity:1;transform:scale(1.06) rotate(1.5deg)}
-  100%{opacity:1;transform:scale(1) rotate(0)}
+  0%{opacity:0;transform:scale(.2) rotate(32deg)}
+  68%{opacity:1;transform:scale(1.06) rotate(43.5deg)}
+  100%{opacity:1;transform:scale(1) rotate(42deg)}
 }
 
 @keyframes invitation-bloom-bottom{
-  0%{opacity:0;transform:rotate(180deg) scale(.2) rotate(-10deg)}
-  68%{opacity:1;transform:rotate(180deg) scale(1.06) rotate(1.5deg)}
-  100%{opacity:1;transform:rotate(180deg) scale(1) rotate(0)}
+  0%{opacity:0;transform:scale(.2) rotate(212deg)}
+  68%{opacity:1;transform:scale(1.06) rotate(223.5deg)}
+  100%{opacity:1;transform:scale(1) rotate(222deg)}
 }
 
 .hero-card > *{
