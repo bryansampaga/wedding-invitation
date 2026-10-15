@@ -1034,6 +1034,73 @@
   }
 }
 
+/* Keep Guest and Seating as distinct navigation views. */
+#guest{
+  min-height:100vh !important;
+  min-height:100svh !important;
+  scroll-margin-top:0;
+}
+
+.guest-love-note{
+  width:min(620px, 92%);
+  margin:0 auto 28px;
+  text-align:center;
+  color:#526052;
+}
+
+.guest-love-note::before{
+  content:"";
+  display:block;
+  width:54px;
+  height:1px;
+  margin:0 auto 17px;
+  background:linear-gradient(90deg, transparent, #8c9984, transparent);
+}
+
+.guest-love-note p{
+  margin:0 auto 10px;
+  font:400 clamp(22px, 3vw, 29px)/1.35 "Great Vibes",cursive;
+}
+
+.guest-love-note span{
+  display:block;
+  margin-bottom:2px;
+  font:italic 15px/1.2 "Cormorant Garamond",serif;
+}
+
+.guest-love-note strong{
+  display:block;
+  color:#4f6275;
+  font:400 25px/1.15 "Great Vibes",cursive;
+}
+
+@media(max-width:780px){
+  .guest-love-note{
+    width:min(340px, 88%);
+    margin-bottom:20px;
+  }
+
+  .guest-love-note::before{
+    margin-bottom:12px;
+  }
+
+  .guest-love-note p{
+    font-size:clamp(20px, 6vw, 25px);
+    line-height:1.25;
+  }
+
+  .guest-love-note strong{
+    font-size:23px;
+  }
+}
+
+#seating.seating-section{
+  margin-top:0;
+  min-height:100vh !important;
+  min-height:100svh !important;
+  scroll-margin-top:0;
+}
+
 /* =====================================================
    PALETTE-RICH INVITATION HERO
    Sage green + slate blue details from the attire palette
@@ -1321,7 +1388,8 @@ body.attire-modal-open{
 .attire-modal{
   position:fixed;
   z-index:100;
-  inset:0;
+  inset:0 auto 0 0;
+  width:100vw;
   display:grid;
   place-items:center;
   padding:clamp(16px,4vw,36px);
@@ -1615,6 +1683,7 @@ body.attire-modal-open{
 html{
   overflow-x:hidden;
   scroll-padding-top:76px;
+  scrollbar-gutter:stable;
 }
 
 body{
@@ -2563,5 +2632,707 @@ canvas{
   .invitation-arrow{
     animation:none !important;
     transition:none !important;
+  }
+}
+
+/* Start Seating directly below the fixed nav, like the Guest view. */
+@media(max-width:780px){
+  #seating.seating-section{
+    padding-top:48px !important;
+    padding-bottom:12px !important;
+    justify-content:flex-start;
+  }
+
+  #seating .heading{
+    margin-bottom:10px !important;
+  }
+
+  #seating .seat-chip{
+    min-height:35px !important;
+  }
+}
+
+/* Click-through venue slideshow. */
+.venue-slideshow{
+  position:relative;
+  display:block;
+  width:min(760px, 100%);
+  aspect-ratio:16 / 9;
+  margin:0 auto 18px;
+  padding:0;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.9);
+  border-radius:26px;
+  background:#dfe4de;
+  box-shadow:var(--shadow);
+  cursor:pointer;
+}
+
+.venue-slideshow img{
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0;
+  transition:opacity .42s ease;
+  user-select:none;
+  pointer-events:none;
+}
+
+.venue-slideshow img.is-active{
+  z-index:1;
+  opacity:1;
+}
+
+.venue-slide-hint{
+  position:absolute;
+  right:14px;
+  bottom:14px;
+  z-index:2;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.9);
+  color:var(--ink);
+  box-shadow:0 7px 20px rgba(28,39,31,.14);
+  font:600 9px/1 Montserrat,sans-serif;
+  pointer-events:none;
+  backdrop-filter:blur(8px);
+}
+
+.venue-slide-name{
+  position:absolute;
+  top:14px;
+  left:14px;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  max-width:calc(100% - 28px);
+  padding:8px 12px;
+  border:1px solid rgba(255,255,255,.5);
+  border-radius:999px;
+  background:rgba(39,49,41,.72);
+  color:#fff;
+  box-shadow:0 7px 20px rgba(28,39,31,.18);
+  font:600 15px/1 "Cormorant Garamond",serif;
+  pointer-events:none;
+  backdrop-filter:blur(8px);
+}
+
+.venue-slide-name svg{
+  width:13px;
+  height:13px;
+  flex:0 0 auto;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+}
+
+.venue-slide-hint b{
+  margin-left:5px;
+}
+
+.venue-slideshow:focus-visible{
+  outline:3px solid rgba(105,119,99,.45);
+  outline-offset:4px;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .venue-slideshow img{
+    transition:none;
+  }
+}
+
+.venue-map{
+  position:relative;
+  width:100%;
+  height:230px;
+  margin-top:12px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:#e7ebe5;
+}
+
+.venue-map iframe{
+  display:block;
+  width:100%;
+  height:100%;
+  border:0;
+  pointer-events:none;
+}
+
+.venue-map a{
+  position:absolute;
+  z-index:1;
+  inset:0;
+  display:block;
+  cursor:pointer;
+}
+
+.venue-map a:focus-visible{
+  outline:3px solid rgba(105,119,99,.55);
+  outline-offset:-4px;
+  border-radius:inherit;
+}
+
+@media(max-width:780px){
+  .venue-slideshow{
+    margin-bottom:12px;
+    border-radius:18px;
+  }
+
+  .venue-slide-hint{
+    right:9px;
+    bottom:9px;
+    padding:7px 10px;
+    font-size:8px;
+  }
+
+  .venue-slide-name{
+    top:9px;
+    left:9px;
+    gap:5px;
+    padding:7px 10px;
+    font-size:13px;
+  }
+
+  .venue-slide-name svg{
+    width:11px;
+    height:11px;
+  }
+}
+
+/* Keep the complete Venue view within one phone screen. */
+@media(max-width:780px){
+  #venue{
+    padding:48px 0 10px !important;
+    justify-content:flex-start;
+    scroll-margin-top:0;
+  }
+
+  #venue > .heading{
+    margin-bottom:10px !important;
+  }
+
+  #venue > .heading .eyebrow{
+    margin-bottom:4px !important;
+  }
+
+  #venue > .heading h2{
+    margin-bottom:0 !important;
+    font-size:clamp(34px, 10vw, 44px) !important;
+    line-height:.96;
+  }
+
+  #venue .venue-slideshow{
+    aspect-ratio:2 / 1;
+    margin-bottom:10px;
+  }
+
+  #venue .venue-card{
+    gap:8px;
+    padding:18px !important;
+  }
+
+  #venue .venue-card > div{
+    width:100%;
+  }
+
+  #venue .venue-card h3{
+    margin-bottom:4px;
+    font-size:34px;
+    line-height:1;
+  }
+
+  #venue .venue-card p{
+    margin:8px 0;
+    font-size:clamp(12px, 3.7vw, 15px);
+    line-height:1.55;
+  }
+
+  #venue .venue-map{
+    height:155px;
+    margin-top:8px;
+    border-radius:12px;
+  }
+}
+
+/* Guest stationery design adapted from the supplied reference file. */
+#guest{
+  --guest-bg:#d0dbcf;
+  --guest-card:#f5f8f3;
+  --guest-ink:#2f4152;
+  --guest-soft:#566a78;
+  --guest-accent:#5b7184;
+  --guest-line:#bccabb;
+  --guest-frame:#7b929f;
+  width:100% !important;
+  max-width:none;
+  padding-inline:16px;
+  background:var(--guest-bg);
+  color:var(--guest-ink);
+  font-family:"Cormorant Garamond",Georgia,serif;
+}
+
+.guest-invitation-card{
+  position:relative;
+  width:100%;
+  max-width:420px;
+  margin:auto;
+  padding:30px 20px 28px;
+  border:1px solid var(--guest-frame);
+  border-radius:6px;
+  background:var(--guest-card);
+  box-shadow:0 18px 40px -24px rgba(47,65,82,.45);
+  text-align:center;
+}
+
+.guest-invitation-card::before{
+  content:"";
+  position:absolute;
+  inset:6px;
+  border:1px solid var(--guest-line);
+  border-radius:3px;
+  pointer-events:none;
+}
+
+.guest-invitation-card > *{
+  position:relative;
+  z-index:1;
+}
+
+#guest .guest-invitation-top{
+  max-width:none;
+  margin:0;
+  padding:28px 12px 8px;
+}
+
+#guest .guest-invitation-top .eyebrow{
+  margin:0;
+  color:var(--guest-accent);
+  font:italic 500 18px/1.2 "Cormorant Garamond",Georgia,serif !important;
+  letter-spacing:.02em;
+  text-transform:none;
+}
+
+#guest .guest-invitation-top h2{
+  margin:14px 0 10px;
+  color:var(--guest-ink);
+  font:500 clamp(38px,11vw,48px)/1.1 "Cormorant Garamond",Georgia,serif !important;
+}
+
+#guest .guest-invitation-top > p:not(.eyebrow){
+  max-width:32ch;
+  margin:0 auto;
+  color:var(--guest-soft);
+  font:500 20px/1.5 "Cormorant Garamond",Georgia,serif !important;
+}
+
+#guest .guest-love-note{
+  width:auto;
+  margin:0;
+  color:var(--guest-ink);
+}
+
+#guest .guest-love-note::before{
+  width:48px;
+  height:0;
+  margin:26px auto;
+  border:0;
+  border-top:1px solid var(--guest-frame);
+  background:none;
+}
+
+#guest .guest-love-note p{
+  max-width:24em;
+  margin:0 auto;
+  color:var(--guest-ink);
+  font:italic 400 22px/1.55 "Cormorant Garamond",Georgia,serif;
+}
+
+#guest .guest-love-note span{
+  display:block;
+  margin-top:26px;
+  color:var(--guest-soft);
+  font:400 17px/1.2 "Cormorant Garamond",Georgia,serif;
+}
+
+#guest .guest-love-note strong{
+  display:block;
+  margin-top:2px;
+  color:var(--guest-ink);
+  font:italic 500 26px/1.2 "Cormorant Garamond",Georgia,serif;
+}
+
+#guest .invitation-card{
+  width:100%;
+  margin:40px 0 0;
+  padding:24px 14px 18px !important;
+  border:1px solid var(--guest-line);
+  border-radius:12px;
+  background:transparent;
+  box-shadow:none;
+  backdrop-filter:none;
+}
+
+#guest .reservation-heading{
+  margin:0 0 18px !important;
+  color:var(--guest-ink) !important;
+  font:500 20px/1.2 "Cormorant Garamond",Georgia,serif !important;
+}
+
+#guest .reservation-strip{
+  grid-template-columns:1.5fr 1fr 1fr;
+  gap:0 !important;
+  margin:0 !important;
+}
+
+#guest .reservation-strip > div{
+  padding:0 7px !important;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+
+#guest .reservation-strip > div + div{
+  border-left:1px solid var(--guest-line);
+}
+
+#guest .reservation-strip span{
+  margin-bottom:6px;
+  color:var(--guest-soft);
+  font:400 11px/1.2 Montserrat,system-ui,sans-serif !important;
+  letter-spacing:.08em !important;
+}
+
+#guest .reservation-strip b{
+  color:var(--guest-ink);
+  font:500 25px/1.1 Montserrat,system-ui,sans-serif !important;
+  font-variant-numeric:lining-nums tabular-nums;
+  letter-spacing:.02em;
+}
+
+#guest .privacy-note{
+  max-width:32ch;
+  margin:20px auto 0 !important;
+  color:var(--guest-soft);
+  font:300 12px/1.6 Montserrat,system-ui,sans-serif;
+}
+
+@media(max-width:780px){
+  #guest{
+    padding:54px 16px 20px !important;
+    justify-content:flex-start;
+  }
+
+  .guest-invitation-card{
+    display:flex;
+    min-height:calc(100svh - 74px);
+    min-height:calc(100dvh - 74px);
+    padding:16px 14px 14px;
+    flex-direction:column;
+    justify-content:center;
+  }
+
+  #guest .guest-invitation-top{
+    padding:14px 10px 4px;
+  }
+
+  #guest .guest-invitation-top .eyebrow{
+    font-size:15px !important;
+  }
+
+  #guest .guest-invitation-top h2{
+    margin:10px 0 7px;
+    font-size:clamp(36px,10.5vw,44px) !important;
+  }
+
+  #guest .guest-invitation-top > p:not(.eyebrow){
+    max-width:32ch;
+    font-size:17px !important;
+    line-height:1.35 !important;
+  }
+
+  #guest .guest-love-note::before{
+    margin:15px auto;
+  }
+
+  #guest .guest-love-note p{
+    font-size:18px;
+    line-height:1.32;
+  }
+
+  #guest .guest-love-note span{
+    margin-top:12px;
+    font-size:15px;
+  }
+
+  #guest .guest-love-note strong{
+    font-size:23px;
+  }
+
+  #guest .invitation-card{
+    margin-top:18px;
+    padding:14px 8px 12px !important;
+  }
+
+  #guest .reservation-heading{
+    margin-bottom:14px !important;
+    font-size:19px !important;
+  }
+
+  #guest .reservation-strip > div{
+    padding-inline:4px !important;
+  }
+
+  #guest .reservation-strip span{
+    font-size:9px !important;
+  }
+
+  #guest .reservation-strip b{
+    font-size:21px !important;
+  }
+
+  #guest .privacy-note{
+    margin-top:10px !important;
+    font-size:9px;
+  }
+}
+
+/* Clearer numerals for the invitation date. */
+.hero .hero-content .date-row div:nth-child(2) strong,
+.hero .hero-content .date-row div:nth-child(3) strong{
+  font-family:Jost,Montserrat,sans-serif !important;
+  font-weight:400 !important;
+  font-variant-numeric:lining-nums tabular-nums;
+  letter-spacing:.03em;
+}
+
+.hero .hero-content .date-row div:nth-child(2) strong{
+  padding-top:1px;
+  font-size:30px !important;
+  line-height:1 !important;
+}
+
+.hero .hero-content .date-row div:nth-child(3) strong{
+  font-size:17px !important;
+  line-height:1.1 !important;
+}
+
+/* Reference-style selfie booth with a fixed side filter rail. */
+#selfie{
+  --selfie-card:#f5f8f3;
+  --selfie-ink:#2f4152;
+  --selfie-soft:#566a78;
+  --selfie-accent:#5b7184;
+  --selfie-line:#bccabb;
+  --selfie-frame:#7b929f;
+  width:100% !important;
+  max-width:none;
+  padding-inline:10px;
+  background:#d0dbcf;
+  color:var(--selfie-ink);
+  font-family:"Cormorant Garamond",Georgia,serif;
+}
+
+#selfie > .heading{
+  max-width:420px;
+  margin:0 auto 10px;
+  text-align:center;
+}
+
+#selfie > .heading .eyebrow{
+  margin:0;
+  color:var(--selfie-accent);
+  font:italic 500 17px/1.2 "Cormorant Garamond",Georgia,serif !important;
+  letter-spacing:0;
+  text-transform:none;
+}
+
+#selfie > .heading h2{
+  margin:4px 0 0;
+  color:var(--selfie-ink);
+  font:500 clamp(34px,10vw,42px)/1.1 "Cormorant Garamond",Georgia,serif !important;
+}
+
+#selfie .selfie-grid{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) 98px !important;
+  grid-template-rows:min(397px,calc(100dvh - 185px)) auto auto;
+  width:100%;
+  max-width:420px;
+  margin:0 auto;
+  gap:8px;
+  padding:8px 8px 10px;
+  border:1px solid var(--selfie-frame);
+  border-radius:16px;
+  background:var(--selfie-card);
+  box-shadow:0 14px 34px -22px rgba(47,65,82,.5);
+}
+
+#selfie .camera-card{
+  display:contents;
+}
+
+#selfie .camera-stage{
+  grid-column:1;
+  grid-row:1;
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  max-height:none !important;
+  aspect-ratio:auto !important;
+  overflow:hidden;
+  border:1px solid var(--selfie-line);
+  border-radius:11px !important;
+  background:#dfe7de;
+}
+
+#selfie #camera,
+#selfie #snapshotCanvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+#selfie .camera-filter-control{
+  display:none !important;
+}
+
+#selfie .live-overlay{
+  padding:8px !important;
+  align-items:flex-end;
+}
+
+#selfie .overlay-copy{
+  width:100%;
+  max-width:none !important;
+  padding:6px 8px 7px !important;
+  border-radius:10px;
+  background:rgba(251,250,245,.95) !important;
+  color:var(--selfie-ink);
+  backdrop-filter:none;
+}
+
+#selfie .overlay-copy small{
+  font:italic 14px/1.2 "Cormorant Garamond",Georgia,serif;
+}
+
+#selfie .overlay-copy strong{
+  margin:0 0 1px;
+  font:500 15px/1.15 "Cormorant Garamond",Georgia,serif;
+}
+
+#selfie .overlay-copy b{
+  font:600 20px/1.1 "Cormorant Garamond",Georgia,serif;
+}
+
+#selfie .filter-card{
+  grid-column:2;
+  grid-row:1;
+  display:flex !important;
+  width:98px;
+  height:100%;
+  min-width:0;
+  min-height:0;
+  max-height:100%;
+  padding:0;
+  flex-direction:column;
+  gap:8px;
+  overflow:hidden;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  backdrop-filter:none;
+}
+
+#selfie .filter-card h3{
+  margin:2px 0 0;
+  color:var(--selfie-soft);
+  font:italic 16px/1.15 "Cormorant Garamond",Georgia,serif;
+  text-align:center;
+}
+
+#selfie .filter{
+  width:100%;
+  min-height:0;
+  margin:0;
+  padding:12px 6px;
+  border:1px solid var(--selfie-frame);
+  border-radius:12px;
+  background:transparent;
+  color:var(--selfie-ink);
+  font:500 17px/1.15 "Cormorant Garamond",Georgia,serif;
+  text-align:center;
+}
+
+#selfie .filter.active{
+  border-color:var(--selfie-accent);
+  background:var(--selfie-accent);
+  color:var(--selfie-card);
+}
+
+#selfie .filter-card .filter:nth-of-type(n+4){
+  display:none;
+}
+
+#selfie .camera-actions{
+  grid-column:1 / -1;
+  grid-row:2;
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:8px !important;
+  margin:0 !important;
+}
+
+#selfie .camera-actions .btn{
+  min-width:0;
+  min-height:0 !important;
+  padding:8px 10px;
+  border:1px solid var(--selfie-accent);
+  border-radius:999px;
+  font:500 17px/1.2 "Cormorant Garamond",Georgia,serif !important;
+  white-space:normal;
+}
+
+#selfie .camera-actions .primary{
+  background:var(--selfie-accent);
+  color:var(--selfie-card);
+}
+
+#selfie .camera-actions .secondary{
+  background:transparent;
+  color:var(--selfie-accent);
+}
+
+#selfie .status{
+  grid-column:1 / -1;
+  grid-row:3;
+  min-height:0;
+  margin:0 4px;
+  color:var(--selfie-soft);
+  font:300 11px/1.5 Montserrat,system-ui,sans-serif;
+}
+
+#selfie .my-gallery{
+  width:100%;
+  max-width:420px;
+  margin:40px auto 0 !important;
+}
+
+@media(max-width:780px){
+  #selfie{
+    padding:54px 10px 24px !important;
+    justify-content:flex-start;
+  }
+
+  #selfie .selfie-grid{
+    grid-template-rows:min(397px,calc(133.333vw - 189.33px),calc(100dvh - 175px)) auto auto;
   }
 }

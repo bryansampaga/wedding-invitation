@@ -66,32 +66,41 @@
   </section>
 
   <section id="guest" class="section">
-    <div class="heading">
-      <p class="eyebrow">This invitation is especially for</p>
-      <h2 id="guestName">Our Dear Guest</h2>
-      <p id="guestMessage">We would be honored to celebrate this beautiful day with you.</p>
-    </div>
-
-    <div class="card invitation-card">
-      <p class="reservation-heading">Your reservation details</p>
-
-      <div class="reservation-strip">
-        <div><span>Reservation No.</span><b id="reservationNumber">R-001</b></div>
-        <div><span>Table</span><b id="tableNumber">1</b></div>
-        <div><span>Seat</span><b id="seatNumber">1</b></div>
+    <div class="guest-invitation-card">
+      <div class="heading guest-invitation-top">
+        <p class="eyebrow">This invitation is especially for</p>
+        <h2 id="guestName">Our Dear Guest</h2>
+        <p id="guestMessage">We would be honored to celebrate this beautiful day with you.</p>
       </div>
 
-      <p class="privacy-note">Please keep this invitation link private. Your seat assignment is shown below.</p>
+      <div class="guest-love-note">
+        <p>Your presence means more to us than words can express. Thank you for being part of our lives and for sharing in the beginning of this beautiful new chapter.</p>
+        <span>With love,</span>
+        <strong>Judylyn &amp; Bryan</strong>
+      </div>
+
+      <div class="card invitation-card">
+        <p class="reservation-heading">Your reservation details</p>
+
+        <div class="reservation-strip">
+          <div><span>Reservation No.</span><b id="reservationNumber">R-001</b></div>
+          <div><span>Table</span><b id="tableNumber">1</b></div>
+          <div><span>Seat</span><b id="seatNumber">1</b></div>
+        </div>
+
+        <p class="privacy-note">Please keep this invitation link private. Your seat assignment is shown below.</p>
+      </div>
     </div>
 
-    <div class="seating-section" id="seating">
-      <div class="heading small">
-        <p class="eyebrow">Reception seating</p>
-        <h2>Seating Plan</h2>
-        <p>Three tables with 13, 24, and 13 seats. Your assigned seat is highlighted.</p>
-      </div>
-      <div id="seatingPlan" class="seating-plan"></div>
+  </section>
+
+  <section class="section seating-section" id="seating">
+    <div class="heading small">
+      <p class="eyebrow">Reception seating</p>
+      <h2>Seating Plan</h2>
+      <p>Three tables with 13, 24, and 13 seats. Your assigned seat is highlighted.</p>
     </div>
+    <div id="seatingPlan" class="seating-plan"></div>
   </section>
 
   <section id="theme" class="section">
@@ -177,13 +186,31 @@
       <h2>One Place, One Celebration</h2>
     </div>
 
+    <button class="venue-slideshow" id="venueSlideshow" type="button"
+      aria-label="Show venue photo 2 of 6">
+      <img class="is-active" src="assets/images/venue/venue-01.webp" alt="Alvarez Park Cafe beside the water during the day" draggable="false">
+      <img src="assets/images/venue/venue-02.webp" alt="Alvarez Park Cafe illuminated at night" draggable="false">
+      <img src="assets/images/venue/venue-03.webp" alt="Outdoor dining area at Alvarez Park Cafe" draggable="false">
+      <img src="assets/images/venue/venue-04.webp" alt="Wide evening view of Alvarez Park Cafe and the water" draggable="false">
+      <img src="assets/images/venue/venue-05.webp" alt="Waterfront buildings and lights at Alvarez Park Cafe at night" draggable="false">
+      <img src="assets/images/venue/venue-06.webp" alt="Covered dining area at Alvarez Park Cafe at night" draggable="false">
+      <span class="venue-slide-name">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"></path><circle cx="12" cy="9" r="2.4"></circle></svg>
+        <span id="venueName">The Garden Venue</span>
+      </span>
+      <span class="venue-slide-hint">Tap photo for next <b id="venueSlideCount">1 of 6</b></span>
+    </button>
+
     <div class="card venue-card">
       <div>
-        <span class="mini-label">Venue</span>
-        <h3 id="venueName">The Garden Venue</h3>
+        <span class="mini-label">Address</span>
         <p id="venueAddress">Replace this with your complete wedding venue address.</p>
+        <div class="venue-map">
+          <iframe id="venueMap" title="Map showing Alvarez Park Cafe" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+          <a id="mapLink" target="_blank" rel="noopener" aria-label="Open Alvarez Park Cafe in Google Maps"></a>
+        </div>
       </div>
-      <a class="btn secondary" id="mapLink" target="_blank" rel="noopener">Open in Maps</a>
     </div>
   </section>
 
@@ -191,7 +218,6 @@
     <div class="heading">
       <p class="eyebrow">Private wedding selfie booth</p>
       <h2>Your Wedding Photo</h2>
-      <p>Your saved photos appear only on your invitation. The couple can see all guest photos from the private admin page.</p>
     </div>
 
     <div class="selfie-grid">
@@ -220,8 +246,6 @@
           </div>
 
           <div id="liveOverlay" class="live-overlay filter-accept">
-            <div class="flower f1">❀</div>
-            <div class="flower f2">✿</div>
             <div class="overlay-copy">
               <small id="filterSmall">With love,</small>
               <strong id="filterMain">Yes, I do accept the invitation!</strong>
@@ -242,7 +266,7 @@
       </div>
 
       <aside class="filter-card">
-        <h3>Choose a frame</h3>
+        <h3>Message</h3>
         <button class="filter active" data-style="accept" data-small="With love," data-main="Yes, I do accept the invitation!" data-decor="flowers">Yes, I accept</button>
         <button class="filter" data-style="honored" data-small="So happy for you both," data-main="Honored to be there for your big day!" data-decor="sprigs">Honored to attend</button>
         <button class="filter" data-style="celebrate" data-small="Celebrating love," data-main="See you at the wedding!" data-decor="petals">See you there</button>

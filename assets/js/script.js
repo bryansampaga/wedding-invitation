@@ -21,6 +21,31 @@ $("weddingYear")?.replaceChildren(weddingDateParts[2] || "2026");
 $("venueName").textContent = weddingConfig.venueName;
 $("venueAddress").textContent = weddingConfig.venueAddress;
 $("mapLink").href = weddingConfig.mapUrl;
+$("venueMap").src = `https://www.google.com/maps?q=${encodeURIComponent(`${weddingConfig.venueName}, ${weddingConfig.venueAddress}`)}&z=12&output=embed`;
+
+const venueSlideshow = $("venueSlideshow");
+const venueSlideCount = $("venueSlideCount");
+let venueSlideIndex = 0;
+
+function showNextVenueSlide(){
+  if(!venueSlideshow) return;
+  const slides = [...venueSlideshow.querySelectorAll("img")];
+  if(slides.length < 2) return;
+
+  slides[venueSlideIndex].classList.remove("is-active");
+  venueSlideIndex = (venueSlideIndex + 1) % slides.length;
+  slides[venueSlideIndex].classList.add("is-active");
+
+  if(venueSlideCount){
+    venueSlideCount.textContent = `${venueSlideIndex + 1} of ${slides.length}`;
+  }
+  venueSlideshow.setAttribute(
+    "aria-label",
+    `Show venue photo ${(venueSlideIndex + 1) % slides.length + 1} of ${slides.length}`
+  );
+}
+
+venueSlideshow?.addEventListener("click", showNextVenueSlide);
 $("footerCouple").textContent = `${weddingConfig.partnerOne} & ${weddingConfig.partnerTwo}`;
 
 const params = new URLSearchParams(location.search);
@@ -125,7 +150,6 @@ function applyFilter(style){
   $("filterSmall").textContent = def.small;
   $("filterMain").textContent = def.main;
   $("liveOverlay").className = `live-overlay filter-${style}`;
-  renderLiveDecor(currentDecor);
 
   const select = $("filterSelect");
   if (select && select.value !== style) select.value = style;
@@ -174,9 +198,6 @@ $("captureBtn").addEventListener("click", async () => {
   ctx.scale(-1, 1);
   ctx.drawImage(video, 0, 0, w, h);
   ctx.restore();
-
-  // Wedding decoration selected by the guest.
-  drawCanvasDecor(ctx, currentDecor, w, h);
 
   // Caption background
   const bg = {
@@ -559,8 +580,6 @@ function drawCanvasDecor(ctx,type,w,h){
   }
   ctx.restore();
 }
-
-renderLiveDecor(currentDecor);
 
 function renderSeatingPlan(activeTable, activeSeat){
   const wrap = $("seatingPlan");
