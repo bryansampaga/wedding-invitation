@@ -3410,3 +3410,735 @@ canvas{
   #selfie .overlay-copy strong{font-size:13px}
   #selfie .overlay-copy b{font-size:17px}
 }
+
+/* =====================================================
+   FLUID SITE SYSTEM
+   Keep every invitation view balanced across small phones,
+   large phones, tablets, laptops, and wide desktop displays.
+   ===================================================== */
+
+:root{
+  --fluid-page-gutter:clamp(10px, 3vw, 42px);
+  --fluid-section-top:clamp(74px, 10dvh, 112px);
+  --fluid-section-bottom:clamp(24px, 6dvh, 72px);
+  --fluid-card-pad:clamp(16px, 3.2vw, 38px);
+  --fluid-card-radius:clamp(16px, 2.4vw, 28px);
+  --fluid-title:clamp(42px, 5.5vw, 72px);
+  --fluid-copy:clamp(13px, 1.15vw, 17px);
+}
+
+html{
+  font-size:clamp(14px, .45vw + 11px, 17px);
+}
+
+body{
+  min-width:280px;
+}
+
+.nav{
+  top:clamp(6px, 1.6dvh, 16px);
+  width:min(94vw, 640px);
+  gap:clamp(2px, .5vw, 6px);
+  padding:clamp(4px, .65vw, 8px);
+}
+
+.nav a{
+  padding:clamp(8px, 1vw, 11px) clamp(8px, 1.25vw, 15px);
+  font-size:clamp(9px, .75vw, 12px);
+}
+
+main > .section{
+  width:min(1200px, calc(100% - var(--fluid-page-gutter) - var(--fluid-page-gutter))) !important;
+  min-height:100svh !important;
+  min-height:100dvh !important;
+  padding:var(--fluid-section-top) 0 var(--fluid-section-bottom) !important;
+  margin-inline:auto;
+}
+
+.heading{
+  width:min(100%, 760px);
+  margin-bottom:clamp(16px, 3dvh, 38px);
+}
+
+.heading h2,
+.heading.small h2{
+  font-size:var(--fluid-title) !important;
+  line-height:.98;
+}
+
+.heading > p:not(.eyebrow){
+  font-size:var(--fluid-copy);
+  line-height:1.65;
+}
+
+.eyebrow,
+.mini-label{
+  font-size:clamp(8px, .72vw, 11px);
+}
+
+.card,
+.attire-card{
+  padding:var(--fluid-card-pad) !important;
+  border-radius:var(--fluid-card-radius);
+}
+
+.btn{
+  min-height:clamp(40px, 5.5dvh, 50px);
+  padding-inline:clamp(14px, 2vw, 24px);
+  font-size:clamp(10px, .85vw, 13px);
+}
+
+/* Invitation */
+.hero{
+  width:min(1200px, calc(100% - var(--fluid-page-gutter) - var(--fluid-page-gutter))) !important;
+}
+
+.hero-card{
+  width:clamp(560px, 58vw, 820px);
+  height:clamp(610px, calc(100dvh - 150px), 840px);
+  min-height:0;
+}
+
+.hero-content{
+  padding-inline:clamp(32px, 6vw, 74px);
+}
+
+.hero-card > .invitation-floral{
+  width:clamp(138px, 16vw, 198px);
+}
+
+.hero .hero-content .eyebrow{
+  font-size:clamp(9px, .8vw, 12px) !important;
+}
+
+.hero .hero-content h1{
+  margin-top:clamp(20px, 3.4dvh, 36px);
+  font-size:clamp(68px, 7vw, 98px) !important;
+}
+
+.hero .hero-content h1 small{
+  font-size:clamp(25px, 2.3vw, 34px) !important;
+}
+
+.hero .hero-content .lead{
+  margin-top:clamp(20px, 3.5dvh, 36px) !important;
+  font-size:clamp(17px, 1.55vw, 22px);
+}
+
+.hero .hero-content .date-row{
+  width:min(100%, clamp(300px, 29vw, 360px));
+  margin-top:clamp(20px, 4dvh, 38px) !important;
+}
+
+.hero .hero-content .wedding-time{
+  font-size:clamp(17px, 1.5vw, 22px);
+}
+
+.hero .hero-content .primary{
+  width:clamp(220px, 22vw, 270px);
+  min-width:0;
+  margin-top:clamp(16px, 3dvh, 30px);
+}
+
+/* Guest */
+#guest{
+  padding-inline:var(--fluid-page-gutter) !important;
+}
+
+.guest-invitation-card{
+  width:min(100%, clamp(420px, 42vw, 540px));
+  padding:clamp(22px, 3.2vw, 38px) clamp(16px, 2.5vw, 30px) !important;
+}
+
+#guest .guest-invitation-top .eyebrow{
+  font-size:clamp(15px, 1.35vw, 20px) !important;
+}
+
+#guest .guest-invitation-top h2{
+  font-size:clamp(40px, 4vw, 54px) !important;
+}
+
+#guest .guest-invitation-top > p:not(.eyebrow){
+  font-size:clamp(17px, 1.55vw, 21px) !important;
+}
+
+#guest .guest-love-note p{
+  font-size:clamp(18px, 1.55vw, 23px);
+}
+
+#guest .guest-love-note span{
+  font-size:clamp(14px, 1.25vw, 18px);
+}
+
+#guest .guest-love-note strong{
+  font-size:clamp(22px, 1.9vw, 28px);
+}
+
+#guest .invitation-card{
+  margin-top:clamp(18px, 3.5dvh, 40px);
+  padding:clamp(14px, 2vw, 24px) clamp(8px, 1.2vw, 16px) !important;
+}
+
+#guest .reservation-heading{
+  font-size:clamp(18px, 1.55vw, 22px) !important;
+}
+
+#guest .reservation-strip span{
+  font-size:clamp(8px, .72vw, 11px) !important;
+}
+
+#guest .reservation-strip b{
+  font-size:clamp(19px, 1.9vw, 27px) !important;
+}
+
+#guest .privacy-note{
+  font-size:clamp(9px, .75vw, 12px);
+}
+
+/* Seating */
+#seating .seating-plan{
+  width:100%;
+  gap:clamp(7px, 1.2vw, 14px);
+}
+
+#seating .seat-table{
+  padding:clamp(8px, 1.1vw, 14px);
+  border-radius:clamp(12px, 1.5vw, 19px);
+}
+
+#seating .seat-table-title strong{
+  font-size:clamp(22px, 2.1vw, 30px);
+}
+
+#seating .seat-grid{
+  gap:clamp(3px, .55vw, 6px);
+}
+
+#seating .seat-chip{
+  min-height:clamp(31px, 3.7vw, 43px);
+  border-radius:clamp(7px, .9vw, 11px);
+}
+
+#seating .seat-chip span{
+  font-size:clamp(9px, .85vw, 12px);
+}
+
+#seating .seat-chip small{
+  font-size:clamp(6px, .52vw, 8px);
+}
+
+/* Attire */
+#theme .attire-grid{
+  gap:clamp(10px, 2vw, 22px);
+}
+
+#theme .attire-card h3{
+  font-size:clamp(28px, 3vw, 40px);
+}
+
+#theme .attire-card p,
+#theme .note-card{
+  font-size:var(--fluid-copy);
+  line-height:1.6;
+}
+
+#theme .palette{
+  margin-bottom:clamp(10px, 2dvh, 20px);
+  border-radius:clamp(12px, 1.5vw, 18px);
+}
+
+#theme .palette span,
+#theme .palette .palette-color{
+  height:clamp(68px, 10vw, 120px);
+}
+
+.palette-hint{
+  font-size:clamp(9px, .75vw, 12px);
+}
+
+/* Venue */
+#venue .venue-slideshow,
+#venue .venue-card{
+  width:min(100%, clamp(620px, 68vw, 860px));
+  margin-inline:auto;
+}
+
+#venue .venue-slide-name{
+  font-size:clamp(13px, 1.2vw, 17px);
+}
+
+#venue .venue-card p{
+  font-size:var(--fluid-copy);
+}
+
+#venue .venue-map{
+  height:clamp(190px, 26dvh, 300px);
+}
+
+@media(min-width:781px){
+  #venue{
+    padding-top:clamp(70px, 8dvh, 92px) !important;
+    padding-bottom:clamp(20px, 3dvh, 36px) !important;
+  }
+
+  #venue > .heading{
+    margin-bottom:clamp(10px, 1.8dvh, 20px);
+  }
+
+  #venue .venue-slideshow{
+    height:clamp(260px, 38dvh, 410px);
+    aspect-ratio:auto;
+    margin-bottom:clamp(10px, 1.8dvh, 18px);
+  }
+
+  #venue .venue-card{
+    padding:clamp(16px, 2dvh, 26px) !important;
+  }
+
+  #venue .venue-card p{
+    margin-block:clamp(5px, 1dvh, 10px);
+  }
+
+  #venue .venue-map{
+    height:clamp(150px, 20dvh, 230px);
+    margin-top:clamp(6px, 1dvh, 12px);
+  }
+}
+
+/* Selfie */
+#selfie{
+  padding-inline:var(--fluid-page-gutter) !important;
+}
+
+#selfie > .heading,
+#selfie .selfie-grid,
+#selfie .my-gallery{
+  width:100%;
+  max-width:clamp(420px, 43vw, 560px);
+}
+
+#selfie .selfie-grid{
+  grid-template-columns:minmax(0, 1fr) clamp(90px, 10vw, 125px) !important;
+  grid-template-rows:clamp(390px, 53dvh, 570px) auto auto;
+  gap:clamp(7px, .9vw, 11px);
+  padding:clamp(8px, 1vw, 12px);
+}
+
+#selfie .filter-card{
+  gap:clamp(7px, 1dvh, 11px);
+}
+
+#selfie .filter-card h3{
+  font-size:clamp(15px, 1.35vw, 19px);
+}
+
+#selfie .filter{
+  padding:clamp(10px, 1.5dvh, 15px) 5px;
+  font-size:clamp(15px, 1.35vw, 19px);
+}
+
+#selfie .camera-actions .btn{
+  font-size:clamp(15px, 1.35vw, 19px) !important;
+}
+
+/* Phone portrait and compact tablet widths. */
+@media(max-width:780px){
+  :root{
+    --fluid-page-gutter:clamp(5px, 2.5vw, 14px);
+    --fluid-section-top:clamp(48px, 7.5dvh, 64px);
+    --fluid-section-bottom:clamp(10px, 2.5dvh, 24px);
+    --fluid-card-pad:clamp(12px, 4vw, 22px);
+    --fluid-title:clamp(34px, 10.5vw, 52px);
+    --fluid-copy:clamp(11px, 3.5vw, 16px);
+  }
+
+  .nav{
+    top:max(4px, env(safe-area-inset-top)) !important;
+    left:50% !important;
+    right:auto !important;
+    width:calc(100% - clamp(8px, 2.5vw, 16px)) !important;
+    max-width:720px !important;
+    padding:clamp(3px, 1.1vw, 5px) !important;
+    transform:translateX(-50%) !important;
+  }
+
+  .nav a{
+    padding:clamp(7px, 2.2vw, 9px) 1px !important;
+    font-size:clamp(7px, 2.15vw, 10px) !important;
+  }
+
+  main > .section{
+    width:calc(100% - var(--fluid-page-gutter) - var(--fluid-page-gutter)) !important;
+    padding:var(--fluid-section-top) 0 var(--fluid-section-bottom) !important;
+  }
+
+  .heading{
+    margin-bottom:clamp(9px, 2dvh, 18px) !important;
+  }
+
+  .heading > p:not(.eyebrow){
+    font-size:var(--fluid-copy) !important;
+  }
+
+  .eyebrow{
+    margin-bottom:clamp(4px, 1dvh, 8px) !important;
+    font-size:clamp(7px, 2.1vw, 9px) !important;
+  }
+
+  .hero{
+    --hero-top-space:var(--fluid-section-top);
+    --hero-bottom-space:var(--fluid-section-bottom);
+    width:calc(100% - var(--fluid-page-gutter) - var(--fluid-page-gutter)) !important;
+  }
+
+  .hero-card{
+    width:100%;
+    height:calc(100svh - var(--hero-top-space) - var(--hero-bottom-space));
+    height:calc(100dvh - var(--hero-top-space) - var(--hero-bottom-space));
+    min-height:0;
+  }
+
+  .hero-content{
+    padding-inline:clamp(16px, 8vw, 46px);
+  }
+
+  .hero-card > .invitation-floral{
+    width:clamp(105px, 34vw, 170px);
+  }
+
+  .hero .hero-content .eyebrow{
+    font-size:clamp(7px, 2.2vw, 10px) !important;
+  }
+
+  .hero .hero-content h1{
+    margin-top:clamp(12px, 3dvh, 26px);
+    font-size:clamp(50px, min(18vw, 10dvh), 84px) !important;
+  }
+
+  .hero .hero-content h1 small{
+    margin-block:clamp(4px, 1dvh, 9px) !important;
+    font-size:clamp(20px, min(7vw, 4dvh), 29px) !important;
+  }
+
+  .hero .hero-content .lead{
+    margin-top:clamp(10px, 2.5dvh, 24px) !important;
+    font-size:clamp(14px, min(4.5vw, 2.6dvh), 19px);
+  }
+
+  .hero .hero-content .date-row{
+    grid-template-columns:1fr minmax(56px, 22vw) 1fr !important;
+    width:min(100%, 350px);
+    margin-top:clamp(10px, 2.8dvh, 26px) !important;
+  }
+
+  .hero .hero-content .date-row div,
+  .hero .hero-content .date-row div:nth-child(2){
+    padding:clamp(7px, 1.5dvh, 13px) 2px !important;
+  }
+
+  .hero .hero-content .date-row span,
+  .hero .hero-content .date-row div:nth-child(2) span{
+    font-size:clamp(7px, 2vw, 10px) !important;
+  }
+
+  .hero .hero-content .date-row strong{
+    font-size:clamp(15px, 5vw, 22px) !important;
+  }
+
+  .hero .hero-content .date-row div:nth-child(2) strong{
+    font-size:clamp(24px, 8vw, 34px) !important;
+  }
+
+  .hero .hero-content .wedding-time{
+    margin-top:clamp(7px, 1.7dvh, 14px);
+    font-size:clamp(14px, min(4.7vw, 2.6dvh), 20px);
+  }
+
+  .hero .hero-content .primary{
+    width:min(250px, 82%);
+    min-height:clamp(36px, 6dvh, 48px);
+    margin-top:clamp(9px, 2.4dvh, 22px);
+    font-size:clamp(9px, 3vw, 12px);
+  }
+
+  #guest{
+    width:100% !important;
+    padding:var(--fluid-section-top) var(--fluid-page-gutter) var(--fluid-section-bottom) !important;
+  }
+
+  .guest-invitation-card{
+    display:flex;
+    width:min(100%, 560px);
+    min-height:calc(100svh - var(--fluid-section-top) - var(--fluid-section-bottom));
+    min-height:calc(100dvh - var(--fluid-section-top) - var(--fluid-section-bottom));
+    padding:clamp(12px, 3.8vw, 22px) clamp(10px, 3vw, 18px) !important;
+  }
+
+  #guest .guest-invitation-top{
+    padding:clamp(8px, 2dvh, 16px) clamp(5px, 2vw, 12px) 3px;
+  }
+
+  #guest .guest-invitation-top .eyebrow{
+    font-size:clamp(13px, 4vw, 17px) !important;
+  }
+
+  #guest .guest-invitation-top h2{
+    margin:clamp(7px, 1.5dvh, 12px) 0;
+    font-size:clamp(34px, 10.7vw, 48px) !important;
+  }
+
+  #guest .guest-invitation-top > p:not(.eyebrow){
+    font-size:clamp(15px, 4.5vw, 19px) !important;
+  }
+
+  #guest .guest-love-note::before{
+    margin:clamp(10px, 2.2dvh, 20px) auto;
+  }
+
+  #guest .guest-love-note p{
+    font-size:clamp(15px, 4.6vw, 20px);
+    line-height:1.35;
+  }
+
+  #guest .guest-love-note span{
+    margin-top:clamp(8px, 1.8dvh, 16px);
+    font-size:clamp(13px, 3.8vw, 16px);
+  }
+
+  #guest .guest-love-note strong{
+    font-size:clamp(20px, 6vw, 25px);
+  }
+
+  #guest .invitation-card{
+    margin-top:clamp(12px, 2.5dvh, 22px);
+  }
+
+  #guest .reservation-heading{
+    margin-bottom:clamp(8px, 1.8dvh, 15px) !important;
+    font-size:clamp(17px, 5vw, 21px) !important;
+  }
+
+  #guest .reservation-strip > div{
+    padding:0 clamp(2px, 1.2vw, 6px) !important;
+  }
+
+  #guest .reservation-strip span{
+    font-size:clamp(7px, 2.3vw, 10px) !important;
+  }
+
+  #guest .reservation-strip b{
+    font-size:clamp(17px, 5.5vw, 24px) !important;
+  }
+
+  #guest .privacy-note{
+    margin-top:clamp(7px, 1.6dvh, 12px) !important;
+    font-size:clamp(7px, 2.3vw, 10px);
+  }
+
+  #seating.seating-section{
+    padding:var(--fluid-section-top) 0 var(--fluid-section-bottom) !important;
+  }
+
+  #seating .seating-plan{
+    grid-template-columns:1fr !important;
+    gap:clamp(5px, 1.2dvh, 9px) !important;
+  }
+
+  #seating .seat-table{
+    grid-template-columns:clamp(46px, 14vw, 62px) minmax(0, 1fr) !important;
+    padding:clamp(6px, 1.8vw, 9px) !important;
+  }
+
+  #seating .seat-grid{
+    grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
+    gap:clamp(2px, 1vw, 5px) !important;
+  }
+
+  #seating .seat-chip{
+    min-height:clamp(27px, 4.7dvh, 38px) !important;
+  }
+
+  #seating .seat-chip span{
+    font-size:clamp(8px, 2.7vw, 11px) !important;
+  }
+
+  #seating .seat-chip small{
+    font-size:clamp(5px, 1.7vw, 7px) !important;
+  }
+
+  #theme .attire-grid{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:clamp(6px, 2vw, 12px);
+  }
+
+  #theme .attire-card{
+    padding:clamp(10px, 3vw, 17px) !important;
+  }
+
+  #theme .attire-card h3{
+    margin-bottom:clamp(6px, 1.5dvh, 12px);
+    font-size:clamp(21px, 6.5vw, 31px);
+  }
+
+  #theme .attire-card p,
+  #theme .note-card{
+    font-size:clamp(10px, 3vw, 14px);
+  }
+
+  #theme .palette span,
+  #theme .palette .palette-color{
+    height:clamp(48px, 15vw, 82px);
+  }
+
+  #theme .note-card{
+    margin-top:clamp(7px, 1.5dvh, 14px);
+  }
+
+  #venue{
+    padding:var(--fluid-section-top) 0 var(--fluid-section-bottom) !important;
+  }
+
+  #venue .venue-slideshow,
+  #venue .venue-card{
+    width:100%;
+  }
+
+  #venue .venue-slideshow{
+    height:clamp(155px, 46vw, 260px);
+    aspect-ratio:auto;
+  }
+
+  #venue .venue-card{
+    padding:clamp(12px, 4vw, 20px) !important;
+  }
+
+  #venue .venue-card p{
+    font-size:clamp(11px, 3.7vw, 15px);
+  }
+
+  #venue .venue-map{
+    height:clamp(125px, 21dvh, 185px);
+  }
+
+  #selfie{
+    width:100% !important;
+    padding:var(--fluid-section-top) var(--fluid-page-gutter) var(--fluid-section-bottom) !important;
+  }
+
+  #selfie > .heading,
+  #selfie .selfie-grid,
+  #selfie .my-gallery{
+    max-width:min(94vw, 560px);
+  }
+
+  #selfie .selfie-grid{
+    height:max(310px, calc(100svh - var(--fluid-section-top) - var(--fluid-section-bottom) - clamp(42px, 11dvh, 86px)));
+    height:max(310px, calc(100dvh - var(--fluid-section-top) - var(--fluid-section-bottom) - clamp(42px, 11dvh, 86px)));
+    grid-template-columns:minmax(0, 1fr) clamp(74px, 25vw, 120px) !important;
+    grid-template-rows:minmax(0, 1fr) auto auto;
+  }
+}
+
+/* Extra-small and short phones compress vertically without changing the UI. */
+@media(max-width:360px), (max-width:780px) and (max-height:650px){
+  :root{
+    --fluid-section-top:46px;
+    --fluid-section-bottom:8px;
+  }
+
+  .heading{
+    margin-bottom:7px !important;
+  }
+
+  .heading h2,
+  .heading.small h2{
+    font-size:clamp(31px, 9.5vw, 40px) !important;
+  }
+
+  .hero-content{
+    padding-inline:18px;
+  }
+
+  .hero .hero-content h1{
+    margin-top:9px;
+    font-size:clamp(46px, min(17vw, 9dvh), 62px) !important;
+  }
+
+  .hero .hero-content .lead{
+    margin-top:8px !important;
+    line-height:1.3;
+  }
+
+  .hero .hero-content .date-row{
+    margin-top:8px !important;
+  }
+
+  .hero .hero-content .primary{
+    margin-top:8px;
+  }
+
+  #guest .guest-invitation-top{
+    padding-top:5px;
+  }
+
+  #guest .guest-love-note::before{
+    margin:8px auto;
+  }
+
+  #guest .guest-love-note p{
+    font-size:clamp(14px, 4.3vw, 17px);
+    line-height:1.25;
+  }
+
+  #guest .guest-love-note span{
+    margin-top:6px;
+  }
+
+  #guest .invitation-card{
+    margin-top:8px;
+    padding-block:9px !important;
+  }
+
+  #seating .seat-chip{
+    min-height:24px !important;
+  }
+
+  #seating .seat-table{
+    padding-block:4px !important;
+  }
+
+  #venue .venue-map{
+    height:120px;
+  }
+}
+
+/* Phones in landscape use width efficiently and remain scrollable. */
+@media(max-width:920px) and (orientation:landscape) and (max-height:520px){
+  main > .section{
+    min-height:100dvh !important;
+    padding:52px var(--fluid-page-gutter) 16px !important;
+  }
+
+  .hero-card{
+    width:min(760px, 100%);
+    height:auto;
+    min-height:calc(100dvh - 68px);
+  }
+
+  .hero-content{
+    padding-block:18px;
+  }
+
+  #guest,
+  #selfie{
+    width:100% !important;
+  }
+
+  .guest-invitation-card{
+    min-height:0;
+  }
+
+  #theme .attire-grid{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+  }
+}
