@@ -3160,7 +3160,7 @@ canvas{
 
 #selfie .selfie-grid{
   display:grid !important;
-  grid-template-columns:minmax(0,1fr) 98px !important;
+  grid-template-columns:minmax(0,1fr) clamp(82px,24vw,98px) !important;
   grid-template-rows:min(397px,calc(100dvh - 185px)) auto auto;
   width:100%;
   max-width:420px;
@@ -3236,7 +3236,7 @@ canvas{
   grid-column:2;
   grid-row:1;
   display:flex !important;
-  width:98px;
+  width:100%;
   height:100%;
   min-width:0;
   min-height:0;
@@ -3328,19 +3328,85 @@ canvas{
 
 @media(max-width:780px){
   #selfie{
-    padding:54px 10px 24px !important;
+    padding:clamp(48px,8dvh,62px) clamp(6px,2.5vw,14px) clamp(10px,2dvh,24px) !important;
     justify-content:flex-start;
   }
 
+  #selfie > .heading,
+  #selfie .selfie-grid,
+  #selfie .my-gallery{
+    width:100%;
+    max-width:min(94vw,560px);
+  }
+
   #selfie .selfie-grid{
-    min-height:calc(100svh - 98px);
-    min-height:calc(100dvh - 98px);
-    grid-template-rows:min(397px,calc(133.333vw - 189.33px),calc(100dvh - 175px)) auto auto;
-    align-content:start;
+    height:max(310px,calc(100svh - clamp(88px,17svh,110px)));
+    height:max(310px,calc(100dvh - clamp(88px,17dvh,110px)));
+    min-height:0;
+    grid-template-columns:minmax(0,1fr) clamp(78px,25.8vw,120px) !important;
+    grid-template-rows:minmax(0,1fr) auto auto;
+    gap:clamp(5px,1.7vmin,10px);
+    padding:clamp(6px,1.7vmin,10px) clamp(6px,1.7vmin,10px) clamp(8px,2vmin,12px);
+    border-radius:clamp(13px,4vw,20px);
+    align-content:stretch;
   }
 
   #selfie > .heading h2{
-    font-size:clamp(34px,10vw,44px) !important;
+    font-size:clamp(32px,10vw,52px) !important;
     line-height:.96 !important;
   }
+
+  #selfie .filter-card{
+    gap:clamp(5px,1.7vmin,10px);
+  }
+
+  #selfie .filter-card h3{
+    font-size:clamp(13px,4vw,19px);
+  }
+
+  #selfie .filter{
+    padding:clamp(7px,2.6vmin,14px) 4px;
+    border-radius:clamp(9px,3vw,15px);
+    font-size:clamp(13px,4.2vw,20px);
+  }
+
+  #selfie .camera-actions .btn{
+    padding:clamp(6px,1.8vmin,10px) 6px;
+    font-size:clamp(13px,4.2vw,19px) !important;
+  }
+
+  #selfie .status{
+    font-size:clamp(8px,2.7vw,12px);
+    line-height:1.4;
+  }
+
+  #selfie .overlay-copy small{
+    font-size:clamp(11px,3.5vw,16px);
+  }
+
+  #selfie .overlay-copy strong{
+    font-size:clamp(12px,3.8vw,17px);
+  }
+
+  #selfie .overlay-copy b{
+    font-size:clamp(16px,5vw,23px);
+  }
+}
+
+@media(max-width:340px){
+  #selfie{
+    padding-inline:6px !important;
+  }
+
+  #selfie .selfie-grid{
+    grid-template-columns:minmax(0,1fr) 78px !important;
+  }
+
+  #selfie .overlay-copy{
+    padding:5px 4px 6px !important;
+  }
+
+  #selfie .overlay-copy small{font-size:12px}
+  #selfie .overlay-copy strong{font-size:13px}
+  #selfie .overlay-copy b{font-size:17px}
 }
