@@ -3155,7 +3155,7 @@ canvas{
 #selfie > .heading h2{
   margin:4px 0 0;
   color:var(--selfie-ink);
-  font:500 clamp(34px,10vw,42px)/1.1 "Cormorant Garamond",Georgia,serif !important;
+  font:700 clamp(44px,6vw,70px)/1 "Cormorant Garamond",Georgia,serif !important;
 }
 
 #selfie .selfie-grid{
@@ -3333,6 +3333,14 @@ canvas{
   }
 
   #selfie .selfie-grid{
+    min-height:calc(100svh - 98px);
+    min-height:calc(100dvh - 98px);
     grid-template-rows:min(397px,calc(133.333vw - 189.33px),calc(100dvh - 175px)) auto auto;
+    align-content:start;
+  }
+
+  #selfie > .heading h2{
+    font-size:clamp(34px,10vw,44px) !important;
+    line-height:.96 !important;
   }
 }
