@@ -127,6 +127,85 @@ function setGuestUI() {
   );
 }
 
+const guestSearchForm = $("guestSearchForm");
+const guestSearchInput = $("guestSearchInput");
+const guestSearchResults = $("guestSearchResults");
+
+function showGuestSearchMessage(message) {
+  if (!guestSearchResults) return;
+  const text = document.createElement("p");
+  text.className = "guest-search-hint";
+  text.textContent = message;
+  guestSearchResults.replaceChildren(text);
+}
+
+function renderGuestSearchResults(guests) {
+  if (!guestSearchResults) return;
+
+  if (!guests.length) {
+    showGuestSearchMessage("No matching guest was found.");
+    return;
+  }
+
+  const list = document.createElement("div");
+  list.className = "guest-search-list";
+
+  guests.forEach(result => {
+    const row = document.createElement("div");
+    row.className = "guest-search-result";
+
+    const name = document.createElement("strong");
+    name.textContent = result.name;
+
+    const details = document.createElement("span");
+    const reservation = result.reservation_number || "Not assigned";
+    const table = result.table_number || "-";
+    const seat = result.seat_number || "-";
+    details.textContent = `Reservation ${reservation} · Table ${table} · Seat ${seat}`;
+
+    row.append(name, details);
+    list.appendChild(row);
+  });
+
+  guestSearchResults.replaceChildren(list);
+}
+
+async function searchGuestList(event) {
+  event?.preventDefault();
+  const query = guestSearchInput?.value.trim() || "";
+
+  if (query.length < 2) {
+    showGuestSearchMessage("Enter at least 2 letters to search.");
+    guestSearchInput?.focus();
+    return;
+  }
+
+  if (!sbReady || !sb) {
+    showGuestSearchMessage("Guest search will be available when the site is connected to Supabase.");
+    return;
+  }
+
+  showGuestSearchMessage("Searching…");
+  const safeQuery = query.replaceAll("%", "\\%").replaceAll("_", "\\_");
+  const { data, error } = await sb
+    .from("guests")
+    .select("name,reservation_number,table_number,seat_number")
+    .eq("active", true)
+    .ilike("name", `%${safeQuery}%`)
+    .order("name")
+    .limit(10);
+
+  if (error) {
+    console.error("Could not search the guest list:", error);
+    showGuestSearchMessage("Guest search is unavailable right now. Please try again.");
+    return;
+  }
+
+  renderGuestSearchResults(data || []);
+}
+
+guestSearchForm?.addEventListener("submit", searchGuestList);
+
 let stream = null;
 let photoBlob = null;
 let currentStyle = "accept";

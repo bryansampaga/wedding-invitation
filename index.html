@@ -83,6 +83,25 @@
         </div>
 
         <p class="privacy-note">Please keep this invitation link private. Your seat assignment is shown below.</p>
+
+        <div class="guest-list-search">
+          <p class="guest-list-search-heading">Find another guest</p>
+          <form id="guestSearchForm" class="guest-search-form" role="search">
+            <label class="sr-only" for="guestSearchInput">Search the guest list by name</label>
+            <input
+              id="guestSearchInput"
+              type="search"
+              minlength="2"
+              maxlength="80"
+              autocomplete="off"
+              placeholder="Enter guest name"
+            >
+            <button class="guest-search-button" type="submit">Search</button>
+          </form>
+          <div id="guestSearchResults" class="guest-search-results" aria-live="polite">
+            <p class="guest-search-hint">Enter at least 2 letters to search.</p>
+          </div>
+        </div>
       </div>
     </div>
 
