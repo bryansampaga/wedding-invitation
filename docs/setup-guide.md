@@ -67,6 +67,11 @@ This creates:
 guests
 guest_photos
 
+It also enables personalized RSVP responses and optional guest notes.
+
+If you already created the database using an older version of the setup file,
+run database/add-rsvp-fields.sql once in the SQL Editor instead.
+
 It also creates the database-side maximum:
 3 photos per guest.
 

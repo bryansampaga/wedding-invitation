@@ -128,7 +128,7 @@ async function loadGuests(){
 
   const {data,error}=await sb
     .from("guests")
-    .select("id,name,invite_token,active,reservation_number,table_number,seat_number")
+    .select("id,name,invite_token,active,reservation_number,table_number,seat_number,rsvp_status,rsvp_note,rsvp_responded_at")
     .order("name");
 
   if(error){
@@ -146,6 +146,8 @@ async function loadGuests(){
     row.style.cssText="padding:14px 0;border-top:1px solid rgba(0,0,0,.08);display:grid;gap:6px";
     row.innerHTML=`
       <strong>${escapeHtml(g.name)}</strong>
+      <span class="admin-rsvp admin-rsvp-${escapeHtml(g.rsvp_status || "pending")}">${formatRsvpStatus(g.rsvp_status)}</span>
+      ${g.rsvp_note ? `<em class="admin-rsvp-note">&ldquo;${escapeHtml(g.rsvp_note)}&rdquo;</em>` : ""}
       <code style="word-break:break-all">${url}</code>
       <button class="btn secondary copy" data-url="${url}" style="width:max-content">Copy Invitation Link</button>`;
 
@@ -158,6 +160,12 @@ async function loadGuests(){
       status.textContent="Invitation link copied.";
     };
   });
+}
+
+function formatRsvpStatus(value){
+  if(value === "accepted") return "Joyfully accepted";
+  if(value === "declined") return "Regretfully declined";
+  return "Awaiting response";
 }
 
 async function loadPhotos(){

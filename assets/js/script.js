@@ -20,6 +20,7 @@ $("weddingDay")?.replaceChildren(weddingDateParts[1] || "27");
 $("weddingYear")?.replaceChildren(weddingDateParts[2] || "2026");
 $("venueName").textContent = weddingConfig.venueName;
 $("venueAddress").textContent = weddingConfig.venueAddress;
+$("letterCouple")?.replaceChildren(`${weddingConfig.partnerOne} & ${weddingConfig.partnerTwo}`);
 $("mapLink").href = weddingConfig.mapUrl;
 $("venueMap").src = `https://www.google.com/maps?q=${encodeURIComponent(`${weddingConfig.venueName}, ${weddingConfig.venueAddress}`)}&z=12&output=embed`;
 
@@ -48,6 +49,126 @@ function showNextVenueSlide(){
 venueSlideshow?.addEventListener("click", showNextVenueSlide);
 $("footerCouple").textContent = `${weddingConfig.partnerOne} & ${weddingConfig.partnerTwo}`;
 
+/* Tie the invitation flowers to the visitor's scroll position. The original
+   bloom plays on arrival; after that, scrolling down closes the flowers and
+   scrolling back toward the invitation opens them again. */
+const scrollBloomHero = document.querySelector(".hero");
+const scrollBloomParts = [...document.querySelectorAll(
+  ".invitation-floral .rg, .invitation-floral .lg, .invitation-floral .pop, .invitation-floral .fd, .invitation-floral .st"
+)];
+let scrollBloomAnimations = [];
+let scrollBloomReady = false;
+let scrollBloomFrame = 0;
+let scrollBloomTimer = 0;
+
+function scheduleScrollBloomControl() {
+  window.clearTimeout(scrollBloomTimer);
+  scrollBloomTimer = window.setTimeout(enableScrollBloom, 3400);
+}
+
+function replayInvitationBloom() {
+  if (!scrollBloomHero || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  window.clearTimeout(scrollBloomTimer);
+  if (scrollBloomFrame) window.cancelAnimationFrame(scrollBloomFrame);
+  scrollBloomFrame = 0;
+  scrollBloomReady = false;
+  scrollBloomAnimations = [];
+  document.body.classList.remove("scroll-bloom-active");
+  document.body.classList.add("invitation-bloom-reset");
+  void scrollBloomHero.offsetWidth;
+
+  window.requestAnimationFrame(() => {
+    document.body.classList.remove("invitation-bloom-reset");
+    scheduleScrollBloomControl();
+  });
+}
+
+function updateScrollBloom() {
+  scrollBloomFrame = 0;
+  if (!scrollBloomReady || !scrollBloomHero) return;
+
+  const travel = Math.max(1, scrollBloomHero.offsetHeight * 0.92);
+  const distance = Math.max(0, window.scrollY - scrollBloomHero.offsetTop);
+  const bloom = Math.max(0, Math.min(1, 1 - distance / travel));
+
+  scrollBloomAnimations.forEach(({ animation, delay, duration }) => {
+    animation.currentTime = delay + duration * bloom;
+  });
+}
+
+function requestScrollBloomUpdate() {
+  if (scrollBloomFrame) return;
+  scrollBloomFrame = window.requestAnimationFrame(updateScrollBloom);
+}
+
+function enableScrollBloom() {
+  if (scrollBloomReady || !scrollBloomHero || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  scrollBloomAnimations = scrollBloomParts.flatMap(part =>
+    part.getAnimations().map(animation => {
+      const timing = animation.effect.getTiming();
+      animation.pause();
+      return {
+        animation,
+        delay: Math.max(0, Number(timing.delay) || 0),
+        duration: Math.max(1, Number(timing.duration) || 1)
+      };
+    })
+  );
+
+  if (!scrollBloomAnimations.length) return;
+  scrollBloomReady = true;
+  document.body.classList.add("scroll-bloom-active");
+  updateScrollBloom();
+}
+
+window.requestAnimationFrame(replayInvitationBloom);
+window.addEventListener("scroll", () => {
+  if (!scrollBloomReady) {
+    window.clearTimeout(scrollBloomTimer);
+    enableScrollBloom();
+  }
+  requestScrollBloomUpdate();
+}, { passive: true });
+window.addEventListener("resize", requestScrollBloomUpdate, { passive: true });
+
+document.querySelector('.nav a[href="#home"]')?.addEventListener("click", event => {
+  event.preventDefault();
+  history.replaceState(null, "", "#home");
+  window.scrollTo({ top: scrollBloomHero?.offsetTop || 0, behavior: "smooth" });
+
+  const startedAt = performance.now();
+  const replayAtTop = () => {
+    const atTop = Math.abs(window.scrollY - (scrollBloomHero?.offsetTop || 0)) < 2;
+    if (atTop || performance.now() - startedAt > 1400) {
+      replayInvitationBloom();
+      return;
+    }
+    window.requestAnimationFrame(replayAtTop);
+  };
+  window.requestAnimationFrame(replayAtTop);
+});
+
+const guestFloralFloor = document.querySelector(".guest-floral-floor");
+if (
+  guestFloralFloor &&
+  "IntersectionObserver" in window &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+) {
+  guestFloralFloor.classList.remove("is-blooming");
+  const guestGardenObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        window.requestAnimationFrame(() => guestFloralFloor.classList.add("is-blooming"));
+      } else {
+        guestFloralFloor.classList.remove("is-blooming");
+      }
+    });
+  }, { threshold: 0.22 });
+  guestGardenObserver.observe(guestFloralFloor);
+}
+
 const params = new URLSearchParams(location.search);
 const token = (params.get("invite") || "").trim();
 
@@ -57,8 +178,79 @@ let guest = {
   message: "We would be honored to celebrate this beautiful day with you.",
   reservation_number: "R-001",
   table_number: 1,
-  seat_number: 1
+  seat_number: 1,
+  rsvp_status: "pending",
+  rsvp_note: ""
 };
+
+const rsvpForm = $("rsvpForm");
+const rsvpNote = $("rsvpNote");
+const rsvpSubmitButton = $("rsvpSubmitButton");
+const rsvpStatus = $("rsvpStatus");
+
+function setRsvpStatus(message, type = "") {
+  if (!rsvpStatus) return;
+  rsvpStatus.textContent = message;
+  rsvpStatus.className = `rsvp-status${type ? ` is-${type}` : ""}`;
+}
+
+function setRsvpUI() {
+  if (!rsvpForm) return;
+  const selectedResponse = ["accepted", "declined"].includes(guest.rsvp_status)
+    ? guest.rsvp_status
+    : "";
+  const selectedInput = rsvpForm.querySelector(`input[value="${selectedResponse}"]`);
+  if (selectedInput) selectedInput.checked = true;
+  if (rsvpNote) rsvpNote.value = guest.rsvp_note || "";
+
+  if (selectedResponse === "accepted") {
+    setRsvpStatus("Your response is saved — we are delighted you can join us!", "success");
+  } else if (selectedResponse === "declined") {
+    setRsvpStatus("Your response is saved. Thank you for letting us know.", "success");
+  }
+}
+
+async function submitRsvp(event) {
+  event.preventDefault();
+  const selectedResponse = rsvpForm?.querySelector('input[name="rsvpStatus"]:checked')?.value || "";
+  const note = rsvpNote?.value.trim() || "";
+
+  if (!selectedResponse) {
+    setRsvpStatus("Please choose whether you can attend.", "error");
+    rsvpForm?.querySelector('input[name="rsvpStatus"]')?.focus();
+    return;
+  }
+
+  if (!token || !sbReady) {
+    setRsvpStatus("RSVP saving is available from your private invitation link.", "error");
+    return;
+  }
+
+  rsvpSubmitButton.disabled = true;
+  rsvpForm.setAttribute("aria-busy", "true");
+  setRsvpStatus("Saving your response…");
+
+  const { data, error } = await sb.rpc("submit_guest_rsvp", {
+    p_invite_token: token,
+    p_status: selectedResponse,
+    p_note: note || null
+  });
+
+  rsvpSubmitButton.disabled = false;
+  rsvpForm.removeAttribute("aria-busy");
+
+  if (error || data !== true) {
+    console.error("Could not save RSVP:", error);
+    setRsvpStatus("We could not save your response right now. Please try again in a moment.", "error");
+    return;
+  }
+
+  guest.rsvp_status = selectedResponse;
+  guest.rsvp_note = note;
+  setRsvpUI();
+}
+
+rsvpForm?.addEventListener("submit", submitRsvp);
 
 async function loadGuest() {
   if (!token) {
@@ -81,7 +273,7 @@ async function loadGuest() {
 
   const { data, error } = await sb
     .from("guests")
-    .select("id,name,message,reservation_number,table_number,seat_number")
+    .select("id,name,message,reservation_number,table_number,seat_number,rsvp_status,rsvp_note")
     .eq("invite_token", token)
     .eq("active", true)
     .maybeSingle();
@@ -99,6 +291,7 @@ async function loadGuest() {
 
   guest = data;
   setGuestUI();
+  setRsvpUI();
   await loadMyPhotos();
 }
 
@@ -121,10 +314,6 @@ function setGuestUI() {
   if (tableNumber) tableNumber.textContent = guest.table_number || 1;
   if (seatNumber) seatNumber.textContent = guest.seat_number || 1;
 
-  renderSeatingPlan(
-    Number(guest.table_number || 1),
-    Number(guest.seat_number || 1)
-  );
 }
 
 const guestSearchForm = $("guestSearchForm");
@@ -892,5 +1081,32 @@ if(attirePreviewTriggers.length && attirePreviewModal){
   });
 }
 
-renderSeatingPlan(1, 1);
+const winningTicket = document.querySelector("#reservations .ticket-shadow-wrap");
+if(
+  winningTicket &&
+  "IntersectionObserver" in window &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+){
+  let ticketIsInView = false;
+  const winningTicketObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting && !ticketIsInView){
+        ticketIsInView = true;
+        winningTicket.classList.remove("is-celebrating");
+        void winningTicket.offsetWidth;
+        winningTicket.classList.add("is-celebrating");
+      }else if(!entry.isIntersecting){
+        ticketIsInView = false;
+      }
+    });
+  }, {threshold:.42});
+
+  winningTicket.querySelector(".ticket-win-star")?.addEventListener("animationend", event => {
+    if(event.animationName === "ticket-star-pop"){
+      winningTicket.classList.remove("is-celebrating");
+    }
+  });
+  winningTicketObserver.observe(winningTicket);
+}
+
 loadGuest();

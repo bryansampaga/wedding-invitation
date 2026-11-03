@@ -15,7 +15,7 @@
 <nav class="nav">
   <a href="#home">Invitation</a>
   <a href="#guest">Guest</a>
-    <a href="#seating">Seating</a>
+  <a href="#reservations">Reservations</a>
   <a href="#theme">Attire</a>
   <a href="#venue">Venue</a>
   <a href="#selfie">Selfie</a>
@@ -67,53 +67,198 @@
 
   <section id="guest" class="section">
     <div class="guest-invitation-card">
-      <div class="heading guest-invitation-top">
-        <p class="eyebrow">This invitation is especially for</p>
-        <h2 id="guestName">Our Dear Guest</h2>
-        <p id="guestMessage">We would be honored to celebrate this beautiful day with you.</p>
-      </div>
-
-      <div class="card invitation-card">
-        <p class="reservation-heading">Your reservation details</p>
-
-        <div class="reservation-strip">
-          <div><span>Reservation No.</span><b id="reservationNumber">R-001</b></div>
-          <div><span>Table</span><b id="tableNumber">1</b></div>
-          <div><span>Seat</span><b id="seatNumber">1</b></div>
+      <div class="guest-letter-content">
+        <div class="heading guest-invitation-top">
+          <p class="eyebrow">A little love letter for</p>
+          <p class="letter-salutation">Dear</p>
+          <h2 id="guestName">Our Dear Guest</h2>
         </div>
 
-        <p class="privacy-note">Please keep this invitation link private. Your seat assignment is shown below.</p>
+        <div class="guest-letter-divider" aria-hidden="true"><span>♡</span></div>
 
-        <div class="guest-list-search">
-          <p class="guest-list-search-heading">Find another guest</p>
-          <form id="guestSearchForm" class="guest-search-form" role="search">
-            <label class="sr-only" for="guestSearchInput">Search the guest list by name</label>
-            <input
-              id="guestSearchInput"
-              type="search"
-              minlength="2"
-              maxlength="80"
-              autocomplete="off"
-              placeholder="Enter guest name"
-            >
-            <button class="guest-search-button" type="submit">Search</button>
-          </form>
-          <div id="guestSearchResults" class="guest-search-results" aria-live="polite">
-            <p class="guest-search-hint">Enter at least 2 letters to search.</p>
-          </div>
+        <div class="guest-love-note">
+          <p>Of all the people who have filled our lives with love and laughter, you are one we could not imagine this day without.</p>
+          <p id="guestMessage" class="guest-personal-message">We would be honored to celebrate this beautiful day with you.</p>
+          <p class="guest-extra-message">As we begin this new chapter, we hope to be surrounded by the people who have encouraged us, shared in our story, and made life sweeter along the way.</p>
+          <p class="guest-extra-message">Please join us for happy tears, warm embraces, good food, and the kind of memories we will carry with us into married life.</p>
+          <span>With all our love,</span>
+          <strong id="letterCouple">Judylyn &amp; Bryan</strong>
         </div>
+
       </div>
+
+      <svg class="guest-floral-floor is-blooming" aria-hidden="true" viewBox="0 0 680 178" preserveAspectRatio="xMidYMax meet">
+        <defs>
+          <linearGradient id="gardenLeafLight" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#bac9b7"/><stop offset=".55" stop-color="#819a84"/><stop offset="1" stop-color="#5f7b66"/>
+          </linearGradient>
+          <linearGradient id="gardenLeafDark" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#91a991"/><stop offset="1" stop-color="#526f5b"/>
+          </linearGradient>
+          <radialGradient id="gardenBluePetal" cx=".35" cy=".25" r=".8">
+            <stop offset="0" stop-color="#ffffff"/><stop offset=".48" stop-color="#e1ebef"/><stop offset="1" stop-color="#aebfca"/>
+          </radialGradient>
+          <radialGradient id="gardenBlushPetal" cx=".35" cy=".22" r=".82">
+            <stop offset="0" stop-color="#fffaf6"/><stop offset=".5" stop-color="#f0d9cf"/><stop offset="1" stop-color="#c99f93"/>
+          </radialGradient>
+          <radialGradient id="gardenIvoryPetal" cx=".35" cy=".22" r=".82">
+            <stop offset="0" stop-color="#ffffff"/><stop offset=".58" stop-color="#edf0e6"/><stop offset="1" stop-color="#bbc7b7"/>
+          </radialGradient>
+          <filter id="gardenSoftShadow" x="-40%" y="-40%" width="180%" height="190%">
+            <feDropShadow dx="0" dy="2.5" stdDeviation="2.2" flood-color="#425848" flood-opacity=".24"/>
+          </filter>
+          <path id="gardenLeaf" d="M0 0C-12-9-15-27-2-40C11-35 17-20 10-8C7-3 4-1 0 0Z"/>
+          <path id="gardenRosePetal" d="M0 0C-12-8-13-25 0-33C13-25 12-8 0 0Z"/>
+          <path id="gardenDaisyPetal" d="M0 0C-7-7-7-21 0-29C7-21 7-7 0 0Z"/>
+          <g id="gardenSmallFlower">
+            <g fill="url(#gardenIvoryPetal)" stroke="#aab8a8" stroke-width=".65">
+              <use href="#gardenDaisyPetal" transform="rotate(0) scale(.52)"/><use href="#gardenDaisyPetal" transform="rotate(72) scale(.52)"/>
+              <use href="#gardenDaisyPetal" transform="rotate(144) scale(.52)"/><use href="#gardenDaisyPetal" transform="rotate(216) scale(.52)"/>
+              <use href="#gardenDaisyPetal" transform="rotate(288) scale(.52)"/>
+            </g>
+            <circle r="3.1" fill="#d2bd7f"/>
+          </g>
+        </defs>
+
+        <g class="guest-ground-stems" fill="none" stroke="#617b67" stroke-width="2.15" stroke-linecap="round">
+          <path class="guest-ground-stem" style="--d:.05s" pathLength="1" d="M24 180C45 149 63 116 73 69"/>
+          <path class="guest-ground-stem" style="--d:.18s" pathLength="1" d="M164 180C181 148 193 111 198 77"/>
+          <path class="guest-ground-stem" style="--d:.3s" pathLength="1" d="M314 180C321 143 332 107 346 61"/>
+          <path class="guest-ground-stem" style="--d:.42s" pathLength="1" d="M458 180C469 143 484 111 500 91"/>
+          <path class="guest-ground-stem" style="--d:.54s" pathLength="1" d="M608 180C626 145 642 110 648 59"/>
+        </g>
+
+        <g fill="url(#gardenLeafLight)" stroke="#5f7965" stroke-width=".55">
+          <use class="guest-ground-leaf" style="--d:.22s" href="#gardenLeaf" transform="translate(48 139) rotate(-63) scale(.72)"/>
+          <use class="guest-ground-leaf" style="--d:.3s" href="#gardenLeaf" transform="translate(68 103) rotate(53) scale(.62)"/>
+          <use class="guest-ground-leaf" style="--d:.38s" href="#gardenLeaf" transform="translate(178 143) rotate(-58) scale(.7)"/>
+          <use class="guest-ground-leaf" style="--d:.46s" href="#gardenLeaf" transform="translate(196 104) rotate(55) scale(.62)"/>
+          <use class="guest-ground-leaf" style="--d:.54s" href="#gardenLeaf" transform="translate(324 143) rotate(-63) scale(.7)"/>
+          <use class="guest-ground-leaf" style="--d:.62s" href="#gardenLeaf" transform="translate(342 102) rotate(52) scale(.58)"/>
+          <use class="guest-ground-leaf" style="--d:.7s" href="#gardenLeaf" transform="translate(470 141) rotate(-61) scale(.68)"/>
+          <use class="guest-ground-leaf" style="--d:.78s" href="#gardenLeaf" transform="translate(494 108) rotate(54) scale(.58)"/>
+          <use class="guest-ground-leaf" style="--d:.86s" href="#gardenLeaf" transform="translate(622 132) rotate(-62) scale(.74)"/>
+          <use class="guest-ground-leaf" style="--d:.94s" href="#gardenLeaf" transform="translate(646 91) rotate(52) scale(.62)"/>
+        </g>
+
+        <g filter="url(#gardenSoftShadow)">
+          <g transform="translate(73 68)">
+            <g class="guest-ground-bloom" style="--d:.58s">
+              <g fill="url(#gardenBluePetal)" stroke="#9dafb8" stroke-width=".8">
+                <use href="#gardenRosePetal" transform="rotate(0)"/><use href="#gardenRosePetal" transform="rotate(45)"/><use href="#gardenRosePetal" transform="rotate(90)"/><use href="#gardenRosePetal" transform="rotate(135)"/>
+                <use href="#gardenRosePetal" transform="rotate(180)"/><use href="#gardenRosePetal" transform="rotate(225)"/><use href="#gardenRosePetal" transform="rotate(270)"/><use href="#gardenRosePetal" transform="rotate(315)"/>
+                <use href="#gardenRosePetal" transform="rotate(22.5) scale(.62)"/><use href="#gardenRosePetal" transform="rotate(112.5) scale(.62)"/><use href="#gardenRosePetal" transform="rotate(202.5) scale(.62)"/><use href="#gardenRosePetal" transform="rotate(292.5) scale(.62)"/>
+              </g>
+              <circle r="5" fill="#d2bd7f"/>
+            </g>
+          </g>
+          <g transform="translate(198 76)">
+            <g class="guest-ground-bloom" style="--d:.72s">
+              <g fill="url(#gardenBlushPetal)" stroke="#c39f95" stroke-width=".75">
+                <use href="#gardenRosePetal" transform="rotate(0) scale(.82)"/><use href="#gardenRosePetal" transform="rotate(60) scale(.82)"/><use href="#gardenRosePetal" transform="rotate(120) scale(.82)"/>
+                <use href="#gardenRosePetal" transform="rotate(180) scale(.82)"/><use href="#gardenRosePetal" transform="rotate(240) scale(.82)"/><use href="#gardenRosePetal" transform="rotate(300) scale(.82)"/>
+                <use href="#gardenRosePetal" transform="rotate(30) scale(.48)"/><use href="#gardenRosePetal" transform="rotate(150) scale(.48)"/><use href="#gardenRosePetal" transform="rotate(270) scale(.48)"/>
+              </g>
+              <circle r="4.2" fill="#c6ad72"/>
+            </g>
+          </g>
+          <g transform="translate(346 60)">
+            <g class="guest-ground-bloom" style="--d:.86s">
+              <g fill="url(#gardenIvoryPetal)" stroke="#a8b6a6" stroke-width=".75">
+                <use href="#gardenDaisyPetal" transform="rotate(0)"/><use href="#gardenDaisyPetal" transform="rotate(45)"/><use href="#gardenDaisyPetal" transform="rotate(90)"/><use href="#gardenDaisyPetal" transform="rotate(135)"/>
+                <use href="#gardenDaisyPetal" transform="rotate(180)"/><use href="#gardenDaisyPetal" transform="rotate(225)"/><use href="#gardenDaisyPetal" transform="rotate(270)"/><use href="#gardenDaisyPetal" transform="rotate(315)"/>
+              </g>
+              <circle r="6" fill="#cbb678"/><circle r="2.5" fill="#a68e54"/>
+            </g>
+          </g>
+          <g transform="translate(500 91)">
+            <g class="guest-ground-bloom" style="--d:1s">
+              <use href="#gardenSmallFlower" transform="translate(-18 -7) scale(.9)"/><use href="#gardenSmallFlower" transform="translate(1 -18) scale(1.05)"/>
+              <use href="#gardenSmallFlower" transform="translate(20 -5) scale(.84)"/><use href="#gardenSmallFlower" transform="translate(-7 10) scale(.92)"/>
+              <use href="#gardenSmallFlower" transform="translate(14 14) scale(.76)"/>
+            </g>
+          </g>
+          <g transform="translate(648 58)">
+            <g class="guest-ground-bloom" style="--d:1.14s">
+              <g fill="url(#gardenBluePetal)" stroke="#9dafb8" stroke-width=".8">
+                <use href="#gardenRosePetal" transform="rotate(0) scale(.9)"/><use href="#gardenRosePetal" transform="rotate(60) scale(.9)"/><use href="#gardenRosePetal" transform="rotate(120) scale(.9)"/>
+                <use href="#gardenRosePetal" transform="rotate(180) scale(.9)"/><use href="#gardenRosePetal" transform="rotate(240) scale(.9)"/><use href="#gardenRosePetal" transform="rotate(300) scale(.9)"/>
+                <use href="#gardenRosePetal" transform="rotate(30) scale(.5)"/><use href="#gardenRosePetal" transform="rotate(150) scale(.5)"/><use href="#gardenRosePetal" transform="rotate(270) scale(.5)"/>
+              </g>
+              <circle r="4.5" fill="#d2bd7f"/>
+            </g>
+          </g>
+        </g>
+      </svg>
     </div>
 
   </section>
-
-  <section class="section seating-section" id="seating">
+  <section class="section reservations-section" id="reservations">
     <div class="heading small">
-      <p class="eyebrow">Reception seating</p>
-      <h2>Seating Plan</h2>
-      <p>Three tables with 13, 24, and 13 seats. Your assigned seat is highlighted.</p>
+      <p class="eyebrow">Wedding RSVP</p>
+      <h2>Your Reservation</h2>
+      <p>Review your details and confirm whether you’ll be joining us.</p>
     </div>
-    <div id="seatingPlan" class="seating-plan"></div>
+
+    <div class="reservations-grid">
+      <div class="ticket-shadow-wrap">
+        <span class="ticket-win-star" aria-hidden="true">&#9733;</span>
+        <span class="ticket-win-stamp" aria-hidden="true">Reserved!</span>
+        <div class="card invitation-card">
+          <div class="ticket-copy">
+            <p class="ticket-kicker">Reservation Details</p>
+            <p class="reservation-heading">Your Seat Is Reserved</p>
+            <span class="ticket-flourish" aria-hidden="true"><i></i></span>
+
+            <div class="ticket-seating">
+              <span>Reception Seating</span>
+              <b>To be announced</b>
+            </div>
+
+            <p class="privacy-note">Keep this invitation link private. Your table assignment will appear here once finalized.</p>
+          </div>
+
+          <div class="ticket-stub">
+            <span class="ticket-stub-label">Reservation No.</span>
+            <b id="reservationNumber">R-001</b>
+            <span class="ticket-stub-flourish" aria-hidden="true"><i></i></span>
+            <small>Private Invitation</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="rsvp-card">
+        <h2>Will You Join Us?</h2>
+        <p>Choose your response below. You can return here to update it at any time.</p>
+
+        <form id="rsvpForm" class="rsvp-form" novalidate>
+          <fieldset class="rsvp-choices">
+            <legend class="sr-only">Choose your RSVP response</legend>
+
+            <label class="rsvp-choice rsvp-choice-accept">
+              <input type="radio" name="rsvpStatus" value="accepted">
+              <span class="rsvp-choice-icon" aria-hidden="true">&#10003;</span>
+              <span><strong>Joyfully Accept</strong><small>We will be there</small></span>
+            </label>
+
+            <label class="rsvp-choice rsvp-choice-decline">
+              <input type="radio" name="rsvpStatus" value="declined">
+              <span class="rsvp-choice-icon" aria-hidden="true">&times;</span>
+              <span><strong>Regretfully Decline</strong><small>We cannot attend</small></span>
+            </label>
+          </fieldset>
+
+          <label class="rsvp-note-label" for="rsvpNote">
+            <span class="sr-only">Message to the couple</span>
+            <textarea id="rsvpNote" name="rsvpNote" rows="3" maxlength="500" placeholder="Leave a message for the couple or share why you cannot attend."></textarea>
+          </label>
+
+          <button id="rsvpSubmitButton" class="rsvp-submit" type="submit">Send My Regards</button>
+        </form>
+
+        <div id="rsvpStatus" class="rsvp-status" role="status" aria-live="polite"></div>
+      </div>
+    </div>
   </section>
 
   <section id="theme" class="section">

@@ -14,6 +14,9 @@ create table if not exists public.guests (
   message text default 'We would be honored to celebrate this beautiful day with you.',
   invite_token text unique not null default encode(gen_random_bytes(16), 'hex'),
   active boolean not null default true,
+  rsvp_status text not null default 'pending' check (rsvp_status in ('pending', 'accepted', 'declined')),
+  rsvp_note text check (rsvp_note is null or char_length(rsvp_note) <= 500),
+  rsvp_responded_at timestamptz,
   created_at timestamptz not null default now()
 );
 
@@ -104,6 +107,41 @@ revoke all on table public.guest_photos from anon;
 
 grant select on table public.guests to anon;
 grant select, insert on table public.guest_photos to anon;
+
+-- Guests submit an RSVP through their private invitation token.
+create or replace function public.submit_guest_rsvp(
+  p_invite_token text,
+  p_status text,
+  p_note text default null
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+begin
+  if p_status not in ('accepted', 'declined') then
+    raise exception 'Invalid RSVP status';
+  end if;
+
+  if p_note is not null and char_length(trim(p_note)) > 500 then
+    raise exception 'RSVP note is too long';
+  end if;
+
+  update public.guests
+  set
+    rsvp_status = p_status,
+    rsvp_note = nullif(trim(p_note), ''),
+    rsvp_responded_at = now()
+  where invite_token = p_invite_token
+    and active = true;
+
+  return found;
+end;
+$$;
+
+revoke all on function public.submit_guest_rsvp(text, text, text) from public;
+grant execute on function public.submit_guest_rsvp(text, text, text) to anon;
 
 -- -----------------------------
 -- STORAGE POLICIES

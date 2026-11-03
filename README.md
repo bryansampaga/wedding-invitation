@@ -38,6 +38,7 @@ assets/images/attire/              Attire inspiration galleries
 assets/images/references/          Color-palette reference images
 database/supabase-setup.sql        Database tables and starter RLS
 database/add-seating-fields.sql    Optional seating-field migration
+database/add-rsvp-fields.sql       RSVP migration for an existing database
 docs/setup-guide.md                Detailed deployment instructions
 README.md                          This overview
 
@@ -60,6 +61,9 @@ SUPABASE SETUP
 5. Open SQL Editor and run database/supabase-setup.sql.
 6. Open Storage and create a PRIVATE bucket named:
    wedding-photos
+
+If the database was created before RSVP support was added, also run:
+database/add-rsvp-fields.sql
 
 SECURITY NOTE
 -------------
