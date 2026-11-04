@@ -24,6 +24,38 @@ $("letterCouple")?.replaceChildren(`${weddingConfig.partnerOne} & ${weddingConfi
 $("mapLink").href = weddingConfig.mapUrl;
 $("venueMap").src = `https://www.google.com/maps?q=${encodeURIComponent(`${weddingConfig.venueName}, ${weddingConfig.venueAddress}`)}&z=12&output=embed`;
 
+const weddingCountdownTarget = new Date(`${weddingConfig.weddingDate} ${weddingConfig.weddingTime} GMT+0800`).getTime();
+$("countdownDate")?.replaceChildren(weddingConfig.weddingDate);
+const countdownElements = {
+  days: $("countdownDays"),
+  hours: $("countdownHours"),
+  minutes: $("countdownMinutes"),
+  seconds: $("countdownSeconds")
+};
+
+function updateWeddingCountdown(){
+  if(!Number.isFinite(weddingCountdownTarget) || !countdownElements.days) return;
+  const remaining = Math.max(0, weddingCountdownTarget - Date.now());
+  const days = Math.floor(remaining / 86400000);
+  const hours = Math.floor((remaining % 86400000) / 3600000);
+  const minutes = Math.floor((remaining % 3600000) / 60000);
+  const seconds = Math.floor((remaining % 60000) / 1000);
+
+  countdownElements.days.textContent = String(days).padStart(3, "0");
+  countdownElements.hours.textContent = String(hours).padStart(2, "0");
+  countdownElements.minutes.textContent = String(minutes).padStart(2, "0");
+  countdownElements.seconds.textContent = String(seconds).padStart(2, "0");
+  countdownElements.seconds.classList.remove("is-ticking");
+  void countdownElements.seconds.offsetWidth;
+  countdownElements.seconds.classList.add("is-ticking");
+  $("venueCountdown")?.setAttribute("aria-label", remaining
+    ? `${days} days, ${hours} hours, ${minutes} minutes until the wedding`
+    : "Today is the wedding day");
+}
+
+updateWeddingCountdown();
+window.setInterval(updateWeddingCountdown, 1000);
+
 const venueSlideshow = $("venueSlideshow");
 const venueSlideCount = $("venueSlideCount");
 let venueSlideIndex = 0;
@@ -187,6 +219,38 @@ const rsvpForm = $("rsvpForm");
 const rsvpNote = $("rsvpNote");
 const rsvpSubmitButton = $("rsvpSubmitButton");
 const rsvpStatus = $("rsvpStatus");
+const ticketAnimation = {
+  play: () => $("btn")?.click(),
+  reserve: (animate = true) => {
+    if (animate) return $("rsv")?.click();
+    const reservedStamp = $("stamp");
+    const declinedStamp = $("stamp2");
+    if (reservedStamp) { reservedStamp.style.opacity = "1"; reservedStamp.style.transform = "rotate(-12deg) scale(1)"; }
+    if (declinedStamp) declinedStamp.style.opacity = "0";
+  },
+  decline: (animate = true) => {
+    if (animate) return $("dcl")?.click();
+    const reservedStamp = $("stamp");
+    const declinedStamp = $("stamp2");
+    if (reservedStamp) reservedStamp.style.opacity = "0";
+    if (declinedStamp) { declinedStamp.style.opacity = "1"; declinedStamp.style.transform = "rotate(10deg) scale(1)"; }
+    const ticketCard = $("card");
+    if (ticketCard) ticketCard.style.filter = "grayscale(.9) brightness(.92)";
+  },
+  reset: () => {
+    [$("stamp"), $("stamp2")].forEach(stamp => { if (stamp) stamp.style.opacity = "0"; });
+    const ticketCard = $("card");
+    if (ticketCard) ticketCard.style.filter = "";
+  }
+};
+
+rsvpForm?.querySelectorAll('input[name="rsvpStatus"]').forEach(input => {
+  input.addEventListener("change", () => {
+    if (!input.checked || !ticketAnimation) return;
+    if (input.value === "accepted") ticketAnimation.reserve();
+    if (input.value === "declined") ticketAnimation.decline();
+  });
+});
 
 function setRsvpStatus(message, type = "") {
   if (!rsvpStatus) return;
@@ -204,9 +268,13 @@ function setRsvpUI() {
   if (rsvpNote) rsvpNote.value = guest.rsvp_note || "";
 
   if (selectedResponse === "accepted") {
+    ticketAnimation?.reserve(false);
     setRsvpStatus("Your response is saved — we are delighted you can join us!", "success");
   } else if (selectedResponse === "declined") {
+    ticketAnimation?.decline(false);
     setRsvpStatus("Your response is saved. Thank you for letting us know.", "success");
+  } else {
+    ticketAnimation?.reset();
   }
 }
 
@@ -1004,6 +1072,8 @@ function openAttireModal(event){
   const trigger = event?.currentTarget instanceof HTMLElement ? event.currentTarget : activeAttireTrigger;
   if(!attirePreviewModal || !trigger) return;
 
+  trigger.closest(".palette")?.classList.add("has-been-used");
+
   window.clearTimeout(attireModalCloseTimer);
   selectAttireGallery(trigger);
   attirePreviewTriggers.forEach(item => item.setAttribute("aria-expanded", "false"));
@@ -1079,34 +1149,6 @@ if(attirePreviewTriggers.length && attirePreviewModal){
       if(!isButtonActivation) event.preventDefault();
     }
   });
-}
-
-const winningTicket = document.querySelector("#reservations .ticket-shadow-wrap");
-if(
-  winningTicket &&
-  "IntersectionObserver" in window &&
-  !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-){
-  let ticketIsInView = false;
-  const winningTicketObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if(entry.isIntersecting && !ticketIsInView){
-        ticketIsInView = true;
-        winningTicket.classList.remove("is-celebrating");
-        void winningTicket.offsetWidth;
-        winningTicket.classList.add("is-celebrating");
-      }else if(!entry.isIntersecting){
-        ticketIsInView = false;
-      }
-    });
-  }, {threshold:.42});
-
-  winningTicket.querySelector(".ticket-win-star")?.addEventListener("animationend", event => {
-    if(event.animationName === "ticket-star-pop"){
-      winningTicket.classList.remove("is-celebrating");
-    }
-  });
-  winningTicketObserver.observe(winningTicket);
 }
 
 loadGuest();

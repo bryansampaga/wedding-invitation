@@ -201,28 +201,37 @@
     </div>
 
     <div class="reservations-grid">
-      <div class="ticket-shadow-wrap">
-        <span class="ticket-win-star" aria-hidden="true">&#9733;</span>
-        <span class="ticket-win-stamp" aria-hidden="true">Reserved!</span>
-        <div class="card invitation-card">
-          <div class="ticket-copy">
-            <p class="ticket-kicker">Reservation Details</p>
-            <p class="reservation-heading">Your Seat Is Reserved</p>
-            <span class="ticket-flourish" aria-hidden="true"><i></i></span>
-
-            <div class="ticket-seating">
-              <span>Reception Seating</span>
-              <b>To be announced</b>
+      <div id="fit" class="ticket-animation-fit">
+        <div id="stage" class="ticket-animation-stage">
+          <div id="ticket" class="ticket-shadow-wrap" role="button" tabindex="0" aria-label="Replay ticket animation">
+            <div class="ticket-card">
+              <div id="flash" aria-hidden="true"></div>
+              <div id="fx" aria-hidden="true"></div>
+              <div id="card">
+                <div class="main">
+                  <div class="k gold">Reservation Details</div>
+                  <div class="h">Your Seat Is Reserved</div>
+                  <div class="div" aria-hidden="true"><i></i><b></b><i></i></div>
+                  <div class="k sl ticket-reception-label">Reception Seating</div>
+                  <div class="it">To be announced</div>
+                  <p class="note">Keep this invitation link private. Your table assignment will appear here once finalized.</p>
+                </div>
+                <div class="side">
+                  <div class="k sl">Reservation No.</div>
+                  <div class="no" id="reservationNumber">R-001</div>
+                  <div class="div" aria-hidden="true"><i></i><b></b><i></i></div>
+                  <div class="k gold ticket-private-label">Private Invitation</div>
+                </div>
+                <div id="shine" aria-hidden="true"></div>
+                <div id="gtint" aria-hidden="true"></div>
+                <div id="gband" aria-hidden="true"></div>
+              </div>
+              <div id="stamp" aria-hidden="true">RESERVED<small>SEAT CONFIRMED</small></div>
+              <div id="stamp2" aria-hidden="true">DECLINED<small>SEAT RELEASED</small></div>
+              <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+                <filter id="rough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4" result="d"/><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="1" seed="8" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 9 0 0 0 -3.6" result="m"/><feComposite in="d" in2="m" operator="in"/></filter>
+              </svg>
             </div>
-
-            <p class="privacy-note">Keep this invitation link private. Your table assignment will appear here once finalized.</p>
-          </div>
-
-          <div class="ticket-stub">
-            <span class="ticket-stub-label">Reservation No.</span>
-            <b id="reservationNumber">R-001</b>
-            <span class="ticket-stub-flourish" aria-hidden="true"><i></i></span>
-            <small>Private Invitation</small>
           </div>
         </div>
       </div>
@@ -260,6 +269,12 @@
       </div>
     </div>
   </section>
+
+  <div id="btns" hidden aria-hidden="true">
+    <button id="btn" type="button">REPLAY</button>
+    <button id="rsv" type="button">RESERVE</button>
+    <button id="dcl" type="button">DECLINE</button>
+  </div>
 
   <section id="theme" class="section">
     <div class="heading">
@@ -336,6 +351,15 @@
       <strong>Please avoid:</strong>
       <span>full white outfits, neon colors, and extremely bright tones.</span>
     </div>
+
+    <a class="attire-next" href="#venue" aria-label="Continue to the venue section">
+      <span class="attire-next-flourish" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+      </span>
+      <span class="attire-next-script">Dressed in love</span>
+      <span class="attire-next-label">Continue to the venue <b aria-hidden="true">&#8595;</b></span>
+    </a>
   </section>
 
   <section id="venue" class="section">
@@ -366,8 +390,19 @@
         <div class="venue-map">
           <iframe id="venueMap" title="Map showing Alvarez Park Cafe" loading="lazy"
             referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+          <span class="venue-map-hint" aria-hidden="true">Tap map for directions</span>
           <a id="mapLink" target="_blank" rel="noopener" aria-label="Open Alvarez Park Cafe in Google Maps"></a>
         </div>
+      </div>
+    </div>
+
+    <div class="venue-countdown" id="venueCountdown" role="timer" aria-label="Countdown to the wedding">
+      <p><span>Counting down to</span> <b id="countdownDate">December 27, 2026</b></p>
+      <div class="venue-countdown-grid">
+        <div><strong id="countdownDays">000</strong><small>Days</small></div>
+        <div><strong id="countdownHours">00</strong><small>Hours</small></div>
+        <div><strong id="countdownMinutes">00</strong><small>Minutes</small></div>
+        <div><strong id="countdownSeconds">00</strong><small>Seconds</small></div>
       </div>
     </div>
   </section>
@@ -534,6 +569,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/config.js"></script>
+<script src="assets/js/ticket-animation.js"></script>
 <script src="assets/js/script.js"></script>
 </body>
 </html>

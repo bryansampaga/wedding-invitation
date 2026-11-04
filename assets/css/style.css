@@ -4717,21 +4717,45 @@ main > .section{
   will-change:transform;
 }
 
-#reservations .ticket-shadow-wrap.is-celebrating{
-  z-index:4;
-  animation:ticket-winning-entry 1.85s cubic-bezier(.22,.8,.25,1) both;
+#reservations .ticket-card{
+  position:relative;
+  width:100%;
 }
 
-@keyframes ticket-winning-entry{
-  0%{transform:translateY(0) rotate(0) scale(1)}
-  13%{transform:translateY(-24px) rotate(0) scale(1.025)}
-  24%{transform:translateY(0) rotate(0) scale(1)}
-  30%{transform:translateY(-5px) rotate(0) scale(.98)}
-  61%{transform:translateY(-8px) rotate(360deg) scale(1.025)}
-  70%{transform:translateY(0) rotate(360deg) scaleX(1.09) scaleY(.82)}
-  79%{transform:translateY(-4px) rotate(360deg) scaleX(.95) scaleY(1.06)}
-  89%{transform:translateY(0) rotate(360deg) scaleX(1.025) scaleY(.98)}
-  100%{transform:translateY(0) rotate(360deg) scale(1)}
+#reservations .ticket-shadow-wrap.ticket-is-playing{
+  z-index:4;
+  animation:ticket-intro .9s cubic-bezier(.22,.8,.25,1) both;
+}
+
+@keyframes ticket-intro{
+  0%{opacity:0;transform:translateY(34px) rotate(-2deg) scale(.96)}
+  58%{opacity:1;transform:translateY(-7px) rotate(.8deg) scale(1.01)}
+  100%{opacity:1;transform:translateY(0) rotate(0) scale(1)}
+}
+
+#reservations .ticket-shadow-wrap.ticket-is-reserving{
+  z-index:4;
+  animation:ticket-reserve .95s cubic-bezier(.2,.9,.25,1) both;
+}
+
+@keyframes ticket-reserve{
+  0%,100%{transform:translateY(0) rotate(0) scale(1)}
+  30%{transform:translateY(-13px) rotate(-1deg) scale(1.025)}
+  55%{transform:translateY(2px) rotate(.5deg) scale(.99)}
+  75%{transform:translateY(-3px) rotate(0) scale(1.008)}
+}
+
+#reservations .ticket-shadow-wrap.ticket-is-declining{
+  z-index:4;
+  animation:ticket-decline .72s ease-out both;
+}
+
+@keyframes ticket-decline{
+  0%,100%{transform:translateX(0) rotate(0);filter:drop-shadow(0 16px 22px rgba(47,65,82,.24))}
+  18%{transform:translateX(-10px) rotate(-1deg)}
+  36%{transform:translateX(9px) rotate(.8deg)}
+  54%{transform:translateX(-6px) rotate(-.5deg)}
+  72%{transform:translateX(4px) rotate(.3deg);filter:drop-shadow(0 10px 14px rgba(79,51,51,.22))}
 }
 
 #reservations .ticket-win-stamp,
@@ -4754,19 +4778,32 @@ main > .section{
   font:700 clamp(18px,3vw,29px)/1 Montserrat,sans-serif;
   letter-spacing:.13em;
   text-transform:uppercase;
-  transform:translate(-50%,-50%) rotate(-8deg) scale(2.5);
+  transform:translate(-50%,-50%) rotate(-8deg) scale(1);
+  transition:opacity .25s ease,color .25s ease,border-color .25s ease,background .25s ease;
 }
 
-#reservations .ticket-shadow-wrap.is-celebrating .ticket-win-stamp{
-  animation:ticket-stamp-pop .82s 1.12s cubic-bezier(.2,.9,.25,1) both;
+#reservations .ticket-shadow-wrap.ticket-state-reserved .ticket-win-stamp,
+#reservations .ticket-shadow-wrap.ticket-state-declined .ticket-win-stamp{
+  opacity:.94;
+}
+
+#reservations .ticket-shadow-wrap.ticket-is-reserving .ticket-win-stamp,
+#reservations .ticket-shadow-wrap.ticket-is-declining .ticket-win-stamp{
+  animation:ticket-stamp-pop .58s .16s cubic-bezier(.2,.9,.25,1) both;
+}
+
+#reservations .ticket-shadow-wrap.ticket-state-declined .ticket-win-stamp{
+  border-color:#a55f5b;
+  color:#914e4a;
+  background:rgba(250,239,237,.94);
+  transform:translate(-50%,-50%) rotate(7deg) scale(1);
 }
 
 @keyframes ticket-stamp-pop{
-  0%{opacity:0;transform:translate(-50%,-50%) rotate(-8deg) scale(2.5)}
-  38%{opacity:1;transform:translate(-50%,-50%) rotate(-8deg) scale(.88)}
-  57%{opacity:1;transform:translate(-50%,-50%) rotate(-8deg) scale(1.08)}
-  75%{opacity:1;transform:translate(-50%,-50%) rotate(-8deg) scale(1)}
-  100%{opacity:0;transform:translate(-50%,-50%) rotate(-8deg) scale(1)}
+  0%{opacity:0;scale:2.4}
+  55%{opacity:1;scale:.88}
+  76%{opacity:1;scale:1.08}
+  100%{opacity:.94;scale:1}
 }
 
 #reservations .ticket-win-star{
@@ -4777,8 +4814,8 @@ main > .section{
   transform:translateX(-50%) scale(.1) rotate(-35deg);
 }
 
-#reservations .ticket-shadow-wrap.is-celebrating .ticket-win-star{
-  animation:ticket-star-pop .72s 1.45s ease-out both;
+#reservations .ticket-shadow-wrap.ticket-is-reserving .ticket-win-star{
+  animation:ticket-star-pop .7s .32s ease-out both;
 }
 
 @keyframes ticket-star-pop{
@@ -4790,8 +4827,8 @@ main > .section{
 
 @media(prefers-reduced-motion:reduce){
   #reservations .ticket-shadow-wrap{will-change:auto}
-  #reservations .ticket-win-stamp,
   #reservations .ticket-win-star{display:none}
+  #reservations .ticket-win-stamp{transition:none}
 }
 
 #reservations .invitation-card{
@@ -5018,6 +5055,308 @@ main > .section{
 }
 
 /* Botanical letter inspired by the supplied reference, in the existing palette. */
+
+/* Ticket effects ported from the supplied reservation-ticket animation. */
+#theme .attire-card > .eyebrow{
+  margin-bottom:8px !important;
+  font-size:clamp(11px,1.1vw,14px) !important;
+  line-height:1.2;
+  letter-spacing:.18em;
+}
+
+#theme .attire-card .palette{
+  width:100%;
+  margin-left:0;
+  margin-right:0;
+}
+
+#theme .palette .palette-color{
+  position:relative;
+  z-index:1;
+  display:block;
+  margin:0;
+  overflow:hidden;
+  animation:palette-swatch-cue 5.2s ease-in-out infinite;
+  transition:filter .28s ease;
+}
+
+#theme .palette{gap:0}
+
+#theme .palette .palette-color::after{
+  content:"";
+  position:absolute;
+  inset:-30% -65%;
+  pointer-events:none;
+  background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.58) 50%,transparent 62%);
+  opacity:0;
+  transform:translateX(-55%);
+  animation:palette-swatch-shine 5.2s ease-in-out infinite;
+}
+
+#theme .palette .palette-color:nth-child(2),
+#theme .palette .palette-color:nth-child(2)::after{animation-delay:.18s}
+#theme .palette .palette-color:nth-child(3),
+#theme .palette .palette-color:nth-child(3)::after{animation-delay:.36s}
+#theme .palette .palette-color:nth-child(4),
+#theme .palette .palette-color:nth-child(4)::after{animation-delay:.54s}
+
+#theme .palette:hover .palette-color,
+#theme .palette:focus-within .palette-color,
+#theme .palette.has-been-used .palette-color,
+#theme .palette:hover .palette-color::after,
+#theme .palette:focus-within .palette-color::after,
+#theme .palette.has-been-used .palette-color::after{
+  animation:none;
+}
+
+#theme .palette .palette-color:hover,
+#theme .palette .palette-color:focus-visible{
+  z-index:2;
+  filter:brightness(1.08);
+}
+
+#theme .palette:not(.has-been-used) + .palette-hint{
+  animation:palette-hint-cue 2.4s ease-in-out infinite;
+}
+
+@keyframes palette-swatch-cue{
+  0%,3%,24%,100%{filter:brightness(1)}
+  10%{filter:brightness(1.09)}
+  19%{filter:brightness(1)}
+}
+
+@keyframes palette-swatch-shine{
+  0%,3%,24%,100%{opacity:0;transform:translateX(-55%)}
+  9%{opacity:.58}
+  20%{opacity:0;transform:translateX(55%)}
+}
+
+@keyframes palette-hint-cue{
+  0%,100%{opacity:.68;transform:translateY(0)}
+  50%{opacity:1;transform:translateY(-1px)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #theme .palette .palette-color,
+  #theme .palette .palette-color::after,
+  #theme .palette-hint{animation:none !important}
+}
+
+#theme .attire-next{
+  display:grid;
+  width:min(360px,100%);
+  margin:clamp(18px,3vh,32px) auto 0;
+  place-items:center;
+  color:#697763;
+  text-align:center;
+}
+
+#theme .attire-next-flourish{
+  position:relative;
+  display:block;
+  width:220px;
+  height:42px;
+  overflow:visible;
+}
+
+#theme .attire-next-flourish i{
+  position:absolute;
+  z-index:1;
+  width:9px;
+  height:9px;
+  border-radius:70% 10% 70% 10%;
+  opacity:.86;
+  box-shadow:0 2px 5px rgba(48,63,53,.12);
+  transform-origin:0 0;
+  animation:attire-petal-window var(--duration,6s) linear infinite;
+}
+
+#theme .attire-next-flourish i:nth-child(1){--duration:5.8s;--y1:-12px;--y2:7px;--y3:-7px;left:-13px;top:21px;background:#697763;animation-delay:-1.2s}
+#theme .attire-next-flourish i:nth-child(2){--duration:6.7s;--y1:8px;--y2:-11px;--y3:5px;left:-13px;top:8px;background:#8c9984;animation-delay:-4.7s}
+#theme .attire-next-flourish i:nth-child(3){--duration:5.4s;--y1:-7px;--y2:10px;--y3:-12px;left:-13px;top:26px;background:#aab6a2;animation-delay:-2.8s}
+#theme .attire-next-flourish i:nth-child(4){--duration:7.2s;--y1:10px;--y2:-6px;--y3:8px;left:-13px;top:5px;background:#d5ddd1;animation-delay:-6.1s}
+#theme .attire-next-flourish i:nth-child(5){--duration:6.1s;--y1:-10px;--y2:5px;--y3:-4px;left:-13px;top:19px;background:#c7d0d5;animation-delay:-.5s}
+#theme .attire-next-flourish i:nth-child(6){--duration:5.6s;--y1:6px;--y2:-13px;--y3:9px;left:-13px;top:11px;background:#a3b1bc;animation-delay:-3.6s}
+#theme .attire-next-flourish i:nth-child(7){--duration:6.9s;--y1:-9px;--y2:12px;--y3:-5px;left:-13px;top:27px;background:#8195a4;animation-delay:-5.3s}
+#theme .attire-next-flourish i:nth-child(8){--duration:5.2s;--y1:11px;--y2:-8px;--y3:6px;left:-13px;top:7px;background:#607485;animation-delay:-2s}
+#theme .attire-next-flourish i:nth-child(9){--duration:6.4s;--y1:-5px;--y2:9px;--y3:-10px;left:-13px;top:31px;width:7px;height:7px;background:#8195a4;animation-delay:-4.1s}
+#theme .attire-next-flourish i:nth-child(10){--duration:5.5s;--y1:9px;--y2:-12px;--y3:4px;left:-13px;top:14px;width:7px;height:7px;background:#697763;animation-delay:-.9s}
+#theme .attire-next-flourish i:nth-child(11){--duration:7.1s;--y1:-11px;--y2:6px;--y3:-8px;left:-13px;top:24px;width:6px;height:6px;background:#8c9984;animation-delay:-5.8s}
+#theme .attire-next-flourish i:nth-child(12){--duration:5.9s;--y1:7px;--y2:-9px;--y3:11px;left:-13px;top:10px;width:7px;height:7px;background:#a3b1bc;animation-delay:-3s}
+
+#theme .attire-next-script{
+  color:#435447;
+  font:italic 500 clamp(20px,2.2vw,27px)/1 "Cormorant Garamond",serif;
+}
+
+#theme .attire-next-label{
+  display:flex;
+  margin-top:6px;
+  align-items:center;
+  gap:7px;
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+
+#theme .attire-next-label b{
+  display:inline-block;
+  color:#8195a4;
+  font-size:15px;
+  animation:attire-arrow-bounce 1.8s ease-in-out infinite;
+}
+
+#theme .attire-next:hover .attire-next-script,
+#theme .attire-next:focus-visible .attire-next-script{color:#607485}
+#theme .attire-next:focus-visible{outline:2px solid rgba(105,119,99,.35);outline-offset:7px;border-radius:10px}
+
+@keyframes attire-petal-window{
+  0%{opacity:0;transform:translate(-8px,0) rotate(0deg) scale(.75)}
+  8%{opacity:.9}
+  26%{transform:translate(58px,var(--y1)) rotate(105deg) scale(1)}
+  49%{transform:translate(122px,var(--y2)) rotate(215deg) scale(.9)}
+  73%{transform:translate(184px,var(--y3)) rotate(330deg) scale(1.08)}
+  92%{opacity:.88}
+  100%{opacity:0;transform:translate(246px,1px) rotate(455deg) scale(.72)}
+}
+
+@keyframes attire-arrow-bounce{
+  0%,100%{transform:translateY(0)}
+  45%{transform:translateY(4px)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #theme .attire-next-flourish i{display:none}
+  #theme .attire-next-label b{animation:none}
+}
+
+#venue .venue-map-hint{position:absolute;z-index:3;right:10px;bottom:9px;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.86);color:#4f6275;font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;pointer-events:none;box-shadow:0 5px 14px rgba(39,52,43,.12)}
+#venue .venue-map > a{z-index:4}
+
+#venue .venue-map::before,
+#venue .venue-map::after{
+  content:"";
+  position:absolute;
+  z-index:2;
+  left:50%;
+  top:50%;
+  width:28px;
+  height:28px;
+  border:2px solid rgba(196,58,48,.78);
+  border-radius:50%;
+  pointer-events:none;
+  translate:-50% -50%;
+  animation:venue-map-pin-pulse 2.2s ease-out infinite;
+}
+
+#venue .venue-map::after{animation-delay:1.1s}
+
+#venue .venue-slide-name,
+#venue .venue-slide-hint{z-index:3}
+
+#venue .venue-countdown{
+  width:min(100%,clamp(620px,68vw,860px));
+  margin:clamp(18px,2.5vh,28px) auto 0;
+  padding:clamp(16px,2.2vw,23px);
+  border:1px solid rgba(105,119,99,.2);
+  border-radius:22px;
+  background:rgba(255,255,255,.58);
+  box-shadow:0 13px 32px rgba(47,64,80,.09);
+  backdrop-filter:blur(10px);
+  text-align:center;
+}
+
+#venue .venue-countdown > p{margin:0 0 14px;color:#435447;line-height:1.1}
+#venue .venue-countdown > p span{display:block;margin-bottom:6px;color:#697763;font:700 8px/1 Montserrat,sans-serif;letter-spacing:.22em;text-transform:uppercase}
+#venue .venue-countdown > p b{display:block;font:italic 600 clamp(21px,2.5vw,28px)/1 "Cormorant Garamond",serif}
+#venue .venue-countdown-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;overflow:hidden;border:1px solid rgba(129,149,164,.2);border-radius:15px;background:linear-gradient(90deg,rgba(237,242,234,.7),rgba(236,241,244,.7))}
+#venue .venue-countdown-grid div{padding:clamp(9px,1.4vw,14px) 4px}
+#venue .venue-countdown-grid div + div{border-left:1px solid rgba(129,149,164,.34)}
+#venue .venue-countdown-grid strong,#venue .venue-countdown-grid small{display:block}
+#venue .venue-countdown-grid strong{color:#2f4050;font:500 clamp(27px,3.8vw,42px)/.9 "Cormorant Garamond",serif;font-variant-numeric:lining-nums tabular-nums}
+#venue .venue-countdown-grid small{margin-top:7px;color:#6e776f;font-size:8px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+#venue .venue-countdown-grid strong.is-ticking{animation:venue-countdown-tick .42s cubic-bezier(.2,.8,.25,1)}
+
+@keyframes venue-countdown-tick{0%{opacity:.25;transform:translateY(-5px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes venue-map-pin-pulse{0%{opacity:.82;scale:.35}70%,100%{opacity:0;scale:1.85}}
+
+@media(max-width:780px){
+  #venue .venue-countdown{width:100%;padding:13px;border-radius:18px}
+  #venue .venue-countdown-grid div{padding:4px 2px}
+  #venue .venue-countdown-grid small{font-size:6px;letter-spacing:.1em}
+  #venue .venue-map-hint{right:7px;bottom:7px;font-size:7px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #venue .venue-map::before,
+  #venue .venue-map::after,
+  #venue .venue-countdown-grid strong.is-ticking{animation:none}
+}
+
+#reservations #flash{position:absolute;inset:0;border-radius:24px;background:#fff;opacity:0;pointer-events:none;z-index:10}
+#reservations #fx{position:absolute;inset:calc(-1 * var(--fx-pad,100px));pointer-events:none;overflow:hidden;z-index:8}
+#reservations .ticket-animation-fit{width:min(720px,100%);margin-inline:auto;display:flex;align-items:center;justify-content:center;position:relative;z-index:2}
+#reservations .ticket-animation-stage{width:100%;position:relative;flex:none;perspective:1400px}
+#reservations #ticket{position:relative;inset:auto;z-index:2;width:100%;opacity:0;cursor:pointer;filter:drop-shadow(0 12px 12px rgba(30,60,100,.22));will-change:transform}
+#reservations #stage .ring{position:absolute;left:50%;top:50%;width:min(38vw,260px);aspect-ratio:1;border-radius:50%;border:6px solid #fff;box-shadow:0 0 22px #fff,inset 0 0 22px #fff;opacity:0;pointer-events:none;z-index:8;transform:translate(-50%,-50%)}
+#fx .gs{position:absolute;opacity:0;background:radial-gradient(circle,#fff 12%,#ffd34d 45%,#ff9f1c);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+#reservations .ticket-card{position:relative;width:100%;overflow:visible;border-radius:24px}
+#reservations #card{
+  --source-ticket-side:170px;
+  position:relative;
+  display:flex;
+  min-height:256px;
+  gap:11px;
+  padding:16px;
+  overflow:hidden;
+  border-radius:27px;
+  background:#f5f5ef;
+  transform-style:preserve-3d;
+  -webkit-mask:radial-gradient(circle 13px at calc(100% - var(--source-ticket-side) - 19px) 0,#0000 12px,#000 13px),radial-gradient(circle 13px at calc(100% - var(--source-ticket-side) - 19px) 100%,#0000 12px,#000 13px);
+  -webkit-mask-composite:source-in;
+  mask:radial-gradient(circle 13px at calc(100% - var(--source-ticket-side) - 19px) 0,#0000 12px,#000 13px),radial-gradient(circle 13px at calc(100% - var(--source-ticket-side) - 19px) 100%,#0000 12px,#000 13px);
+  mask-composite:intersect;
+}
+#reservations #card .main,#reservations #card .side{position:relative;border:1px solid #a67c3d;border-radius:13px}
+#reservations #card .main{min-width:0;flex:1;padding:22px 35px;background:#fbfaf5}
+#reservations #card .side{width:var(--source-ticket-side);flex:0 0 var(--source-ticket-side);display:flex;align-items:center;flex-direction:column;justify-content:center;background:linear-gradient(135deg,#eaeee3,#eff1e8);text-align:center}
+#reservations #card .side::before{content:"";position:absolute;left:-7px;top:-12px;bottom:-12px;border-left:1px dashed #b9bdb5}
+#reservations #card .k{font-size:9px;font-weight:600;letter-spacing:.24em;text-transform:uppercase}
+#reservations #card .gold{color:#a67c3d}
+#reservations #card .sl{color:#5d6f7e}
+#reservations #card .h{margin:10px 0 11px;color:#2f4050;font:500 20px/1.15 "Cormorant Garamond",Georgia,serif}
+#reservations #card .it{margin:6px 0 11px;color:#2f4050;font:italic 500 30px/1.05 "Cormorant Garamond",Georgia,serif}
+#reservations #card .div{display:flex;width:142px;align-items:center;gap:8px}
+#reservations #card .div i{height:1px;flex:1;background:#a67c3d}
+#reservations #card .div b{width:6px;height:6px;background:#a67c3d;transform:rotate(45deg)}
+#reservations #card .ticket-reception-label{margin-top:11px}
+#reservations #card .note{max-width:336px;margin:0 0 0 38px;color:#8a949c;font-size:10px;font-weight:300;line-height:1.8}
+#reservations #card .no{margin:8px 0 11px;color:#2f4050;font-size:43px;font-weight:300;letter-spacing:.04em}
+#reservations #card .side .div{width:69px}
+#reservations #card .ticket-private-label{margin-top:11px;font-size:8px}
+@media(max-width:560px){
+  #reservations .ticket-animation-fit{width:min(430px,100%)}
+  #reservations #card{--source-ticket-side:108px;min-height:164px;gap:7px;padding:8px;border-radius:18px;-webkit-mask:radial-gradient(circle 9px at calc(100% - var(--source-ticket-side) - 11px) 0,#0000 8px,#000 9px),radial-gradient(circle 9px at calc(100% - var(--source-ticket-side) - 11px) 100%,#0000 8px,#000 9px);-webkit-mask-composite:source-in;mask:radial-gradient(circle 9px at calc(100% - var(--source-ticket-side) - 11px) 0,#0000 8px,#000 9px),radial-gradient(circle 9px at calc(100% - var(--source-ticket-side) - 11px) 100%,#0000 8px,#000 9px);mask-composite:intersect}
+  #reservations #card .main{padding:12px 14px}
+  #reservations #card .side{border-radius:9px}
+  #reservations #card .k{font-size:6px;letter-spacing:.16em}
+  #reservations #card .h{margin:5px 0;font-size:16px}
+  #reservations #card .it{margin:3px 0 5px;font-size:19px}
+  #reservations #card .div{width:75px;gap:5px}
+  #reservations #card .ticket-reception-label{margin-top:5px}
+  #reservations #card .note{margin:0;font-size:7px;line-height:1.35}
+  #reservations #card .no{margin:6px 0;font-size:24px}
+  #reservations #card .side .div{width:42px}
+  #reservations #card .ticket-private-label{margin-top:7px;font-size:5px}
+}
+#reservations #shine{position:absolute;z-index:6;top:-20%;bottom:-20%;left:-30%;width:22%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);transform:skewX(-20deg) translateX(-200%);pointer-events:none}
+#reservations #gtint{position:absolute;z-index:5;inset:0;border-radius:24px;background:radial-gradient(circle at 50% 50%,rgba(255,214,90,.5),rgba(255,170,30,.6));opacity:0;pointer-events:none;mix-blend-mode:multiply}
+#reservations #gband{position:absolute;z-index:6;top:-10%;bottom:-10%;left:0;width:35%;background:linear-gradient(90deg,transparent,rgba(255,244,190,.95),rgba(255,200,60,.85),transparent);transform:skewX(-20deg) translateX(-120%);pointer-events:none}
+#reservations #stamp,#reservations #stamp2{position:absolute;left:14%;top:39%;padding:4px 28px 6px;border:7px double #c0392b;border-radius:12px;color:#c0392b;background:rgba(251,250,245,.82);font:700 clamp(22px,6vw,54px)/1.1 Montserrat,system-ui,sans-serif;letter-spacing:.14em;text-align:center;opacity:0;pointer-events:none;filter:url(#rough);transform:rotate(-12deg);z-index:9;white-space:nowrap}
+#reservations #stamp small,#reservations #stamp2 small{display:block;font-size:clamp(7px,1.6vw,14px);letter-spacing:.38em;font-weight:600;margin-top:2px}
+#reservations #stamp2{left:15%;top:40%;border-style:solid;border-color:#56626d;color:#56626d;transform:rotate(10deg)}
+@media(prefers-reduced-motion:reduce){#reservations #ticket{opacity:1!important;transform:none!important}#flash,#fx{display:none}}
 #guest.section{
   position:relative;
   width:100% !important;
