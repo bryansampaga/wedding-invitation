@@ -139,6 +139,11 @@ async function loadGuests(){
   const box=document.getElementById("guestList");
   box.innerHTML="";
 
+  const accepted=data.filter(g=>g.rsvp_status==="accepted").length;
+  const declined=data.filter(g=>g.rsvp_status==="declined").length;
+  const pending=data.length-accepted-declined;
+  status.textContent=`RSVP totals: ${accepted} accepted · ${declined} declined · ${pending} awaiting response`;
+
   data.forEach(g=>{
     const url=`${location.origin}${location.pathname.replace("admin.html","index.html")}?invite=${g.invite_token}`;
 
@@ -148,6 +153,7 @@ async function loadGuests(){
       <strong>${escapeHtml(g.name)}</strong>
       <span class="admin-rsvp admin-rsvp-${escapeHtml(g.rsvp_status || "pending")}">${formatRsvpStatus(g.rsvp_status)}</span>
       ${g.rsvp_note ? `<em class="admin-rsvp-note">&ldquo;${escapeHtml(g.rsvp_note)}&rdquo;</em>` : ""}
+      ${g.rsvp_responded_at ? `<small>Responded ${escapeHtml(new Date(g.rsvp_responded_at).toLocaleString())}</small>` : ""}
       <code style="word-break:break-all">${url}</code>
       <button class="btn secondary copy" data-url="${url}" style="width:max-content">Copy Invitation Link</button>`;
 

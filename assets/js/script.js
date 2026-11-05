@@ -24,38 +24,6 @@ $("letterCouple")?.replaceChildren(`${weddingConfig.partnerOne} & ${weddingConfi
 $("mapLink").href = weddingConfig.mapUrl;
 $("venueMap").src = `https://www.google.com/maps?q=${encodeURIComponent(`${weddingConfig.venueName}, ${weddingConfig.venueAddress}`)}&z=12&output=embed`;
 
-const weddingCountdownTarget = new Date(`${weddingConfig.weddingDate} ${weddingConfig.weddingTime} GMT+0800`).getTime();
-$("countdownDate")?.replaceChildren(weddingConfig.weddingDate);
-const countdownElements = {
-  days: $("countdownDays"),
-  hours: $("countdownHours"),
-  minutes: $("countdownMinutes"),
-  seconds: $("countdownSeconds")
-};
-
-function updateWeddingCountdown(){
-  if(!Number.isFinite(weddingCountdownTarget) || !countdownElements.days) return;
-  const remaining = Math.max(0, weddingCountdownTarget - Date.now());
-  const days = Math.floor(remaining / 86400000);
-  const hours = Math.floor((remaining % 86400000) / 3600000);
-  const minutes = Math.floor((remaining % 3600000) / 60000);
-  const seconds = Math.floor((remaining % 60000) / 1000);
-
-  countdownElements.days.textContent = String(days).padStart(3, "0");
-  countdownElements.hours.textContent = String(hours).padStart(2, "0");
-  countdownElements.minutes.textContent = String(minutes).padStart(2, "0");
-  countdownElements.seconds.textContent = String(seconds).padStart(2, "0");
-  countdownElements.seconds.classList.remove("is-ticking");
-  void countdownElements.seconds.offsetWidth;
-  countdownElements.seconds.classList.add("is-ticking");
-  $("venueCountdown")?.setAttribute("aria-label", remaining
-    ? `${days} days, ${hours} hours, ${minutes} minutes until the wedding`
-    : "Today is the wedding day");
-}
-
-updateWeddingCountdown();
-window.setInterval(updateWeddingCountdown, 1000);
-
 const venueSlideshow = $("venueSlideshow");
 const venueSlideCount = $("venueSlideCount");
 let venueSlideIndex = 0;
@@ -95,7 +63,6 @@ let scrollBloomTimer = 0;
 
 function scheduleScrollBloomControl() {
   window.clearTimeout(scrollBloomTimer);
-  scrollBloomTimer = window.setTimeout(enableScrollBloom, 3400);
 }
 
 function replayInvitationBloom() {
@@ -155,20 +122,24 @@ function enableScrollBloom() {
   updateScrollBloom();
 }
 
-window.requestAnimationFrame(replayInvitationBloom);
-window.addEventListener("scroll", () => {
-  if (!scrollBloomReady) {
-    window.clearTimeout(scrollBloomTimer);
-    enableScrollBloom();
-  }
-  requestScrollBloomUpdate();
-}, { passive: true });
-window.addEventListener("resize", requestScrollBloomUpdate, { passive: true });
+let invitationWasVisible = false;
+if (scrollBloomHero && "IntersectionObserver" in window) {
+  const invitationBloomObserver = new IntersectionObserver(entries => {
+    const entry = entries[0];
+    const isInvitationVisible = Boolean(entry?.isIntersecting && entry.intersectionRatio >= .65);
+    if (isInvitationVisible && !invitationWasVisible) replayInvitationBloom();
+    invitationWasVisible = isInvitationVisible;
+  }, {threshold:[0, .65]});
+  invitationBloomObserver.observe(scrollBloomHero);
+} else {
+  window.requestAnimationFrame(replayInvitationBloom);
+}
 
 document.querySelector('.nav a[href="#home"]')?.addEventListener("click", event => {
   event.preventDefault();
   history.replaceState(null, "", "#home");
   window.scrollTo({ top: scrollBloomHero?.offsetTop || 0, behavior: "smooth" });
+  if ("IntersectionObserver" in window) return;
 
   const startedAt = performance.now();
   const replayAtTop = () => {
@@ -258,6 +229,20 @@ function setRsvpStatus(message, type = "") {
   rsvpStatus.className = `rsvp-status${type ? ` is-${type}` : ""}`;
 }
 
+function setRsvpFormFinal(isFinal) {
+  if (!rsvpForm) return;
+  rsvpForm.dataset.final = String(isFinal);
+  rsvpForm.classList.toggle("is-final", isFinal);
+  rsvpForm.querySelectorAll('input[name="rsvpStatus"]').forEach(input => {
+    input.disabled = isFinal;
+  });
+  if (rsvpNote) rsvpNote.disabled = isFinal;
+  if (rsvpSubmitButton) {
+    rsvpSubmitButton.disabled = isFinal;
+    rsvpSubmitButton.textContent = isFinal ? "Response Recorded" : "Send My Regards";
+  }
+}
+
 function setRsvpUI() {
   if (!rsvpForm) return;
   const selectedResponse = ["accepted", "declined"].includes(guest.rsvp_status)
@@ -266,12 +251,15 @@ function setRsvpUI() {
   const selectedInput = rsvpForm.querySelector(`input[value="${selectedResponse}"]`);
   if (selectedInput) selectedInput.checked = true;
   if (rsvpNote) rsvpNote.value = guest.rsvp_note || "";
+  setRsvpFormFinal(Boolean(selectedResponse));
 
   if (selectedResponse === "accepted") {
     ticketAnimation?.reserve(false);
+    window.syncTicketToRsvpChoice?.();
     setRsvpStatus("Your response is saved — we are delighted you can join us!", "success");
   } else if (selectedResponse === "declined") {
     ticketAnimation?.decline(false);
+    window.syncTicketToRsvpChoice?.();
     setRsvpStatus("Your response is saved. Thank you for letting us know.", "success");
   } else {
     ticketAnimation?.reset();
@@ -280,6 +268,10 @@ function setRsvpUI() {
 
 async function submitRsvp(event) {
   event.preventDefault();
+  if (["accepted", "declined"].includes(guest.rsvp_status)) {
+    setRsvpUI();
+    return;
+  }
   const selectedResponse = rsvpForm?.querySelector('input[name="rsvpStatus"]:checked')?.value || "";
   const note = rsvpNote?.value.trim() || "";
 
@@ -306,6 +298,22 @@ async function submitRsvp(event) {
 
   rsvpSubmitButton.disabled = false;
   rsvpForm.removeAttribute("aria-busy");
+
+  if (!error && data !== true) {
+    const { data: savedResponse } = await sb
+      .from("guests")
+      .select("rsvp_status,rsvp_note,rsvp_responded_at")
+      .eq("invite_token", token)
+      .eq("active", true)
+      .maybeSingle();
+
+    if (savedResponse && ["accepted", "declined"].includes(savedResponse.rsvp_status)) {
+      guest.rsvp_status = savedResponse.rsvp_status;
+      guest.rsvp_note = savedResponse.rsvp_note || "";
+      setRsvpUI();
+      return;
+    }
+  }
 
   if (error || data !== true) {
     console.error("Could not save RSVP:", error);
@@ -467,6 +475,356 @@ let stream = null;
 let photoBlob = null;
 let currentStyle = "accept";
 let currentDecor = "flowers";
+let faceLandmarker = null;
+let faceTrackingFrame = 0;
+let faceTrackingActive = false;
+let currentFaceEffect = "crown";
+let latestFaceLandmarks = null;
+let lastTrackedVideoTime = -1;
+
+const faceFilterCanvas = $("faceFilterCanvas");
+const faceFilterOptions = [...document.querySelectorAll(".face-filter-option")];
+
+function flowerCrownPoint(landmarks,index,width,height){
+  const point=landmarks[index];
+  return point ? {x:point.x*width,y:point.y*height} : null;
+}
+
+function drawCrownFlower(ctx,x,y,r,petalColor,centerColor){
+  ctx.save();
+  ctx.translate(x,y);
+  for(let i=0;i<6;i+=1){
+    const angle=(Math.PI*2*i)/6;
+    ctx.beginPath();
+    ctx.ellipse(Math.cos(angle)*r*.72,Math.sin(angle)*r*.72,r*.54,r*.34,angle,0,Math.PI*2);
+    ctx.fillStyle=petalColor;
+    ctx.fill();
+  }
+  ctx.beginPath();
+  ctx.arc(0,0,r*.34,0,Math.PI*2);
+  ctx.fillStyle=centerColor;
+  ctx.fill();
+  ctx.restore();
+}
+
+function faceEffectAnchor(landmarks,mapPoint){
+  if(!landmarks?.length) return;
+  const left=mapPoint(127);
+  const right=mapPoint(356);
+  const top=mapPoint(10);
+  if(!left||!right||!top) return;
+
+  const dx=right.x-left.x;
+  const dy=right.y-left.y;
+  const headWidth=Math.hypot(dx,dy);
+  if(!Number.isFinite(headWidth)||headWidth<20) return;
+
+  let angle=Math.atan2(dy,dx);
+  // Mirrored captures reverse the landmark order. Keep the crown upright while
+  // preserving the natural tilt of the guest's head.
+  if(angle>Math.PI/2) angle-=Math.PI;
+  if(angle<-Math.PI/2) angle+=Math.PI;
+  return {left,right,top,headWidth,angle};
+}
+
+function drawWeddingCrown(ctx,landmarks,mapPoint){
+  const anchor=faceEffectAnchor(landmarks,mapPoint);
+  if(!anchor) return;
+  const {top,headWidth,angle}=anchor;
+  const crownWidth=headWidth*.82;
+  const flowerRadius=Math.max(5,crownWidth*.055);
+
+  ctx.save();
+  ctx.translate(top.x,top.y-headWidth*.045);
+  ctx.rotate(angle);
+  ctx.lineCap="round";
+  ctx.lineJoin="round";
+  ctx.shadowColor="rgba(39,49,41,.22)";
+  ctx.shadowBlur=flowerRadius*.65;
+  ctx.shadowOffsetY=flowerRadius*.18;
+
+  ctx.beginPath();
+  ctx.moveTo(-crownWidth*.5,flowerRadius*.18);
+  ctx.quadraticCurveTo(0,-flowerRadius*1.15,crownWidth*.5,flowerRadius*.18);
+  ctx.strokeStyle="#71806a";
+  ctx.lineWidth=Math.max(2,flowerRadius*.24);
+  ctx.stroke();
+
+  [-.42,-.29,-.15,.15,.29,.42].forEach((position,index)=>{
+    const leafY=-flowerRadius*(index%2 ? .3 : .05);
+    ctx.save();
+    ctx.translate(crownWidth*position,leafY);
+    ctx.rotate(position<0 ? -.65 : .65);
+    ctx.beginPath();
+    ctx.ellipse(0,0,flowerRadius*.72,flowerRadius*.3,0,0,Math.PI*2);
+    ctx.fillStyle=index%2 ? "#91a08a" : "#687860";
+    ctx.fill();
+    ctx.restore();
+  });
+
+  const flowers=[
+    [-.42,.08,.72,"#f8f5ea"],[-.27,-.2,.9,"#dce5e9"],[-.1,-.52,.78,"#f8f5ea"],
+    [0,-.68,1.15,"#e7edf0"],[.1,-.52,.78,"#f8f5ea"],[.27,-.2,.9,"#dce5e9"],[.42,.08,.72,"#f8f5ea"]
+  ];
+  flowers.forEach(([position,y,size,color])=>{
+    drawCrownFlower(ctx,crownWidth*position,flowerRadius*y,flowerRadius*size,color,"#c8ad69");
+  });
+  ctx.restore();
+}
+
+function traceHeart(ctx,size){
+  ctx.beginPath();
+  ctx.moveTo(0,size*.78);
+  ctx.bezierCurveTo(-size*1.25,size*.02,-size*.88,-size*.82,0,-size*.34);
+  ctx.bezierCurveTo(size*.88,-size*.82,size*1.25,size*.02,0,size*.78);
+  ctx.closePath();
+}
+
+function drawHeart(ctx,x,y,size,color){
+  ctx.save();
+  ctx.translate(x,y);
+  traceHeart(ctx,size);
+  ctx.fillStyle=color;
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawHeartHalo(ctx,landmarks,mapPoint){
+  const anchor=faceEffectAnchor(landmarks,mapPoint);
+  if(!anchor) return;
+  const {top,headWidth,angle}=anchor;
+  const radius=Math.max(6,headWidth*.052);
+  const positions=[[-.38,.05,.76],[-.21,-.48,.95],[0,-.72,1.15],[.21,-.48,.95],[.38,.05,.76]];
+  const colors=["#bd746f","#e4aaa4","#c98680","#e4aaa4","#bd746f"];
+  const bob=Math.sin(performance.now()/360)*radius*.08;
+
+  ctx.save();
+  ctx.translate(top.x,top.y-headWidth*.08+bob);
+  ctx.rotate(angle);
+  ctx.shadowColor="rgba(96,52,52,.22)";
+  ctx.shadowBlur=radius*.65;
+  positions.forEach(([x,y,size],index)=>drawHeart(ctx,headWidth*x,radius*y,radius*size,colors[index]));
+  ctx.restore();
+}
+
+function drawWeddingVeil(ctx,landmarks,mapPoint){
+  const anchor=faceEffectAnchor(landmarks,mapPoint);
+  if(!anchor) return;
+  const {top,headWidth,angle}=anchor;
+  const veilLength=headWidth*1.38;
+
+  ctx.save();
+  ctx.translate(top.x,top.y-headWidth*.035);
+  ctx.rotate(angle);
+  const veilGradient=ctx.createLinearGradient(0,0,0,veilLength);
+  veilGradient.addColorStop(0,"rgba(245,248,247,.62)");
+  veilGradient.addColorStop(.62,"rgba(224,232,234,.24)");
+  veilGradient.addColorStop(1,"rgba(245,248,247,0)");
+
+  ctx.beginPath();
+  ctx.moveTo(-headWidth*.18,0);
+  ctx.quadraticCurveTo(-headWidth*.72,headWidth*.42,-headWidth*.58,veilLength);
+  ctx.quadraticCurveTo(-headWidth*.22,veilLength*.83,-headWidth*.08,headWidth*.1);
+  ctx.closePath();
+  ctx.fillStyle=veilGradient;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(headWidth*.18,0);
+  ctx.quadraticCurveTo(headWidth*.72,headWidth*.42,headWidth*.58,veilLength);
+  ctx.quadraticCurveTo(headWidth*.22,veilLength*.83,headWidth*.08,headWidth*.1);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(-headWidth*.23,headWidth*.015);
+  ctx.quadraticCurveTo(0,-headWidth*.11,headWidth*.23,headWidth*.015);
+  ctx.strokeStyle="#d1b875";
+  ctx.lineWidth=Math.max(2,headWidth*.012);
+  ctx.stroke();
+  [-.18,-.09,0,.09,.18].forEach((position,index)=>{
+    drawCrownFlower(ctx,headWidth*position,-headWidth*(index===2?.075:.035),headWidth*(index===2?.037:.026),"#f7f5ed","#c8ad69");
+  });
+  ctx.restore();
+}
+
+function drawStar(ctx,x,y,outerRadius,color,rotation){
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.rotate(rotation);
+  ctx.beginPath();
+  for(let i=0;i<8;i+=1){
+    const radius=i%2===0 ? outerRadius : outerRadius*.22;
+    const angle=-Math.PI/2+(Math.PI*i)/4;
+    const px=Math.cos(angle)*radius;
+    const py=Math.sin(angle)*radius;
+    if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.closePath();
+  ctx.fillStyle=color;
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSparkleGlow(ctx,landmarks,mapPoint){
+  const anchor=faceEffectAnchor(landmarks,mapPoint);
+  if(!anchor) return;
+  const {top,headWidth,angle}=anchor;
+  const time=performance.now()/700;
+  const sparkles=[[-.5,.02,1],[-.35,-.5,.62],[-.12,-.78,.82],[.14,-.72,.58],[.38,-.4,.95],[.51,.12,.6]];
+
+  ctx.save();
+  ctx.translate(top.x,top.y-headWidth*.02);
+  ctx.rotate(angle);
+  ctx.globalCompositeOperation="screen";
+  sparkles.forEach(([x,y,size],index)=>{
+    const pulse=.8+Math.sin(time+index*1.3)*.2;
+    drawStar(ctx,headWidth*x,headWidth*y*.42,Math.max(5,headWidth*.045*size*pulse),index%2?"rgba(255,255,255,.92)":"rgba(239,216,151,.95)",time+index);
+  });
+  ctx.restore();
+}
+
+function drawHeartGlasses(ctx,landmarks,mapPoint){
+  if(!landmarks?.length) return;
+  const leftOuter=mapPoint(33);
+  const leftInner=mapPoint(133);
+  const rightInner=mapPoint(362);
+  const rightOuter=mapPoint(263);
+  if(!leftOuter||!leftInner||!rightInner||!rightOuter) return;
+
+  const leftEye={x:(leftOuter.x+leftInner.x)/2,y:(leftOuter.y+leftInner.y)/2};
+  const rightEye={x:(rightOuter.x+rightInner.x)/2,y:(rightOuter.y+rightInner.y)/2};
+  const dx=rightEye.x-leftEye.x;
+  const dy=rightEye.y-leftEye.y;
+  const eyeDistance=Math.hypot(dx,dy);
+  if(!Number.isFinite(eyeDistance)||eyeDistance<12) return;
+
+  let angle=Math.atan2(dy,dx);
+  if(angle>Math.PI/2) angle-=Math.PI;
+  if(angle<-Math.PI/2) angle+=Math.PI;
+  const center={x:(leftEye.x+rightEye.x)/2,y:(leftEye.y+rightEye.y)/2};
+  const lensSize=eyeDistance*.3;
+
+  ctx.save();
+  ctx.translate(center.x,center.y-lensSize*.02);
+  ctx.rotate(angle);
+  ctx.lineCap="round";
+  ctx.lineJoin="round";
+  ctx.shadowColor="rgba(75,31,40,.25)";
+  ctx.shadowBlur=lensSize*.28;
+
+  ctx.beginPath();
+  ctx.moveTo(-eyeDistance*.5-lensSize*1.05,-lensSize*.1);
+  ctx.lineTo(-eyeDistance*.5-lensSize*.72,-lensSize*.05);
+  ctx.moveTo(eyeDistance*.5+lensSize*.72,-lensSize*.05);
+  ctx.lineTo(eyeDistance*.5+lensSize*1.05,-lensSize*.1);
+  ctx.moveTo(-eyeDistance*.5+lensSize*.92,-lensSize*.1);
+  ctx.quadraticCurveTo(0,-lensSize*.32,eyeDistance*.5-lensSize*.92,-lensSize*.1);
+  ctx.strokeStyle="#8f3f51";
+  ctx.lineWidth=Math.max(2,lensSize*.13);
+  ctx.stroke();
+
+  [-eyeDistance*.5,eyeDistance*.5].forEach(x=>{
+    ctx.save();
+    ctx.translate(x,0);
+    traceHeart(ctx,lensSize);
+    ctx.fillStyle="rgba(194,72,98,.48)";
+    ctx.fill();
+    ctx.strokeStyle="#9d4055";
+    ctx.lineWidth=Math.max(2,lensSize*.13);
+    ctx.stroke();
+    ctx.restore();
+  });
+  ctx.restore();
+}
+
+function drawSelectedFaceEffect(ctx,landmarks,mapPoint){
+  if(currentFaceEffect==="crown") drawWeddingCrown(ctx,landmarks,mapPoint);
+  if(currentFaceEffect==="veil") drawWeddingVeil(ctx,landmarks,mapPoint);
+  if(currentFaceEffect==="hearts") drawHeartHalo(ctx,landmarks,mapPoint);
+  if(currentFaceEffect==="sparkles") drawSparkleGlow(ctx,landmarks,mapPoint);
+  if(currentFaceEffect==="heart-glasses") drawHeartGlasses(ctx,landmarks,mapPoint);
+}
+
+function renderLiveFaceEffect(){
+  const video=$("camera");
+  if(!faceFilterCanvas||!video.videoWidth) return;
+  if(faceFilterCanvas.width!==video.videoWidth||faceFilterCanvas.height!==video.videoHeight){
+    faceFilterCanvas.width=video.videoWidth;
+    faceFilterCanvas.height=video.videoHeight;
+  }
+  const ctx=faceFilterCanvas.getContext("2d");
+  ctx.clearRect(0,0,faceFilterCanvas.width,faceFilterCanvas.height);
+  if(currentFaceEffect==="none"||!latestFaceLandmarks) return;
+  drawSelectedFaceEffect(
+    ctx,
+    latestFaceLandmarks,
+    index=>flowerCrownPoint(latestFaceLandmarks,index,faceFilterCanvas.width,faceFilterCanvas.height)
+  );
+}
+
+function trackFaceFrame(){
+  if(!faceTrackingActive) return;
+  const video=$("camera");
+  if(faceLandmarker&&video.readyState>=2&&video.currentTime!==lastTrackedVideoTime){
+    lastTrackedVideoTime=video.currentTime;
+    try {
+      const result=faceLandmarker.detectForVideo(video,performance.now());
+      latestFaceLandmarks=result.faceLandmarks?.[0]||null;
+    } catch(error) {
+      console.warn("Face tracking frame skipped:",error);
+    }
+    renderLiveFaceEffect();
+  }
+  faceTrackingFrame=requestAnimationFrame(trackFaceFrame);
+}
+
+async function startFaceTracking(){
+  faceTrackingActive=true;
+  cancelAnimationFrame(faceTrackingFrame);
+  faceTrackingFrame=requestAnimationFrame(trackFaceFrame);
+  if(faceLandmarker) return;
+
+  try {
+    const {FaceLandmarker,FilesetResolver}=await import("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.2/+esm");
+    const vision=await FilesetResolver.forVisionTasks(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.2/wasm"
+    );
+    const modelAssetPath="https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task";
+    const landmarkerOptions={
+      baseOptions:{modelAssetPath,delegate:"GPU"},
+      runningMode:"VIDEO",
+      numFaces:1,
+      minFaceDetectionConfidence:.55,
+      minFacePresenceConfidence:.55,
+      minTrackingConfidence:.55
+    };
+    try {
+      faceLandmarker=await FaceLandmarker.createFromOptions(vision,landmarkerOptions);
+    } catch(gpuError) {
+      console.warn("GPU face tracking unavailable; using CPU:",gpuError);
+      faceLandmarker=await FaceLandmarker.createFromOptions(vision,{
+        ...landmarkerOptions,
+        baseOptions:{modelAssetPath,delegate:"CPU"}
+      });
+    }
+    $("uploadStatus").textContent="Camera ready — choose a face filter from the Message panel.";
+  } catch(error) {
+    console.warn("MediaPipe face filter unavailable:",error);
+    $("uploadStatus").textContent="Camera ready. The face filter could not load, but selfies still work.";
+  }
+}
+
+faceFilterOptions.forEach(option=>{
+  option.addEventListener("click",()=>{
+    currentFaceEffect=option.dataset.faceEffect||"none";
+    faceFilterOptions.forEach(button=>{
+      const isActive=button===option;
+      button.classList.toggle("active",isActive);
+      button.setAttribute("aria-pressed",String(isActive));
+    });
+    renderLiveFaceEffect();
+  });
+});
 
 const filterDefinitions = {
   accept: { small:"With love,", main:"Yes, I do accept the invitation!", decor:"flowers" },
@@ -506,10 +864,13 @@ $("startBtn").addEventListener("click", async () => {
       audio: false
     });
     $("camera").srcObject = stream;
+    await $("camera").play();
     $("placeholder").classList.add("hidden");
     $("captureBtn").disabled = false;
     $("startBtn").disabled = true;
     $("startBtn").textContent = "Camera Ready";
+    $("uploadStatus").textContent = "Loading floral face filter…";
+    startFaceTracking();
   } catch (e) {
     $("uploadStatus").textContent = "Camera access was blocked. Use HTTPS and allow camera permission.";
   }
@@ -524,42 +885,87 @@ $("captureBtn").addEventListener("click", async () => {
   if (!video.videoWidth) return;
 
   const canvas = $("snapshotCanvas");
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
+  const sourceWidth = video.videoWidth;
+  const sourceHeight = video.videoHeight;
+  const stageRatio = video.clientWidth && video.clientHeight
+    ? video.clientWidth / video.clientHeight
+    : sourceWidth / sourceHeight;
+  const sourceRatio = sourceWidth / sourceHeight;
+  let sx = 0, sy = 0, sw = sourceWidth, sh = sourceHeight;
+
+  // Crop the camera feed to the visible booth frame before drawing the caption.
+  // This keeps the saved photo identical to the preview and prevents side text
+  // from being removed later by object-fit: cover.
+  if (sourceRatio > stageRatio) {
+    sw = sourceHeight * stageRatio;
+    sx = (sourceWidth - sw) / 2;
+  } else if (sourceRatio < stageRatio) {
+    sh = sourceWidth / stageRatio;
+    sy = (sourceHeight - sh) / 2;
+  }
+
+  canvas.width = Math.max(1, Math.round(sw));
+  canvas.height = Math.max(1, Math.round(sh));
   const ctx = canvas.getContext("2d");
   const w = canvas.width, h = canvas.height;
 
   ctx.save();
   ctx.translate(w, 0);
   ctx.scale(-1, 1);
-  ctx.drawImage(video, 0, 0, w, h);
+  ctx.drawImage(video, sx, sy, sw, sh, 0, 0, w, h);
   ctx.restore();
 
-  // Caption background
-  const bg = {
-    accept:"rgba(238,243,235,.91)",
-    honored:"rgba(215,225,231,.91)",
-    celebrate:"rgba(226,234,220,.92)",
-    forever:"rgba(244,238,226,.93)"
-  }[currentStyle];
+  if(currentFaceEffect!=="none"&&latestFaceLandmarks){
+    drawSelectedFaceEffect(ctx,latestFaceLandmarks,index=>{
+      const point=latestFaceLandmarks[index];
+      if(!point) return null;
+      return {
+        x:w-((point.x*sourceWidth-sx)/sw)*w,
+        y:((point.y*sourceHeight-sy)/sh)*h
+      };
+    });
+  }
 
-  const x=w*.07,y=h*.75,bw=w*.86,bh=h*.19;
+  // Caption background
+  const bg="rgba(251,250,245,.95)";
+
+  const x=w*.035,y=h*.775,bw=w*.93,bh=h*.19;
   roundRect(ctx,x,y,bw,bh,Math.max(22,w*.025));
-  ctx.fillStyle=bg; ctx.fill();
+  ctx.fillStyle=bg;
+  ctx.fill();
+  ctx.strokeStyle="rgba(117,83,70,.58)";
+  ctx.lineWidth=Math.max(1.5,w*.004);
+  ctx.stroke();
 
   ctx.fillStyle="#273129";
   ctx.textAlign="center";
-  ctx.font=`italic ${Math.max(28,w*.034)}px Georgia`;
-  ctx.fillText($("filterSmall").textContent,w/2,y+bh*.27);
+  ctx.textBaseline="alphabetic";
 
-  ctx.font=`600 ${Math.max(22,w*.025)}px Arial`;
-  wrapText(ctx,$("filterMain").textContent,w/2,y+bh*.51,bw*.82,Math.max(29,h*.029));
+  const smallText = $("filterSmall").textContent;
+  fitCanvasFont(ctx,smallText,bw*.9,Math.max(17,w*.039),Math.max(12,w*.025),"500","Georgia, serif","italic");
+  ctx.fillText(smallText,w/2,y+bh*.22);
+
+  const mainText = $("filterMain").textContent;
+  const mainWidth = bw*.9;
+  let mainSize = Math.max(15,w*.032);
+  const minimumMainSize = Math.max(11,w*.023);
+  let mainLines=[];
+  do {
+    ctx.font=`500 ${mainSize}px Georgia, serif`;
+    mainLines=canvasTextLines(ctx,mainText,mainWidth);
+    if(mainLines.length<=2||mainSize<=minimumMainSize) break;
+    mainSize-=1;
+  } while(mainSize>=minimumMainSize);
+  const mainLineHeight=mainSize*1.05;
+  const mainStart=y+bh*(mainLines.length>1?.4:.46);
+  mainLines.slice(0,2).forEach((line,index)=>ctx.fillText(line,w/2,mainStart+index*mainLineHeight));
 
   // Automatic guest name on the actual saved image
-  ctx.font=`700 ${Math.max(34,w*.043)}px Georgia`;
-  ctx.fillText(guest.name,w/2,y+bh*.82);
+  fitCanvasFont(ctx,guest.name,bw*.9,Math.max(22,w*.052),Math.max(15,w*.032),"700","Georgia, serif");
+  ctx.fillText(guest.name,w/2,y+bh*.84);
 
   $("camera").style.display="none";
+  if(faceFilterCanvas) faceFilterCanvas.style.display="none";
   $("snapshotCanvas").style.display="block";
   $("liveOverlay").style.display="none";
   $("captureBtn").classList.add("hidden");
@@ -574,6 +980,7 @@ $("captureBtn").addEventListener("click", async () => {
 $("retakeBtn").addEventListener("click", () => {
   $("snapshotCanvas").style.display="none";
   $("camera").style.display="block";
+  if(faceFilterCanvas) faceFilterCanvas.style.display="block";
   $("liveOverlay").style.display="flex";
   $("captureBtn").classList.remove("hidden");
   $("retakeBtn").classList.add("hidden");
@@ -966,11 +1373,22 @@ function roundRect(ctx,x,y,w,h,r){
   r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);
   ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
 }
-function wrapText(ctx,text,x,y,maxWidth,lineHeight){
+function canvasTextLines(ctx,text,maxWidth){
   const words=text.split(" ");let line="",lines=[];
   words.forEach(word=>{const test=line?`${line} ${word}`:word;
     if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word}else line=test;});
-  if(line)lines.push(line);lines.slice(0,2).forEach((l,i)=>ctx.fillText(l,x,y+i*lineHeight));
+  if(line)lines.push(line);
+  return lines;
+}
+
+function fitCanvasFont(ctx,text,maxWidth,maxSize,minSize,weight,family,style="normal"){
+  let size=maxSize;
+  do {
+    ctx.font=`${style} ${weight} ${size}px ${family}`;
+    if(ctx.measureText(text).width<=maxWidth||size<=minSize) break;
+    size-=1;
+  } while(size>=minSize);
+  return size;
 }
 
 // Slate-blue attire preview modal.
@@ -1150,5 +1568,108 @@ if(attirePreviewTriggers.length && attirePreviewModal){
     }
   });
 }
+
+// Move exactly one main invitation tab for each mouse-wheel or trackpad gesture.
+const invitationSections = [...document.querySelectorAll("main > .section, #selfie .my-gallery")];
+let sectionScrollLocked = false;
+let sectionScrollUnlockTimer = 0;
+
+function canScrollInside(element, direction){
+  for(let node = element; node && node !== document.body; node = node.parentElement){
+    const style = getComputedStyle(node);
+    const scrollable = /(auto|scroll)/.test(style.overflowY) && node.scrollHeight > node.clientHeight + 2;
+    if(!scrollable) continue;
+    if(direction > 0 && node.scrollTop + node.clientHeight < node.scrollHeight - 2) return true;
+    if(direction < 0 && node.scrollTop > 2) return true;
+  }
+  return false;
+}
+
+function canScrollPageContent(element,direction){
+  // Let small screens read a tall page before the next tab is selected.
+  const page=element?.closest('#selfie .my-gallery, main > .section');
+  if(!page) return false;
+  const rect=page.getBoundingClientRect();
+  const gallery=page.querySelector('.my-gallery');
+  const bottom=gallery ? gallery.getBoundingClientRect().top : rect.bottom;
+  if(bottom-rect.top<=innerHeight+8) return false;
+  return direction>0 ? bottom>innerHeight+8 : rect.top < -8;
+}
+
+function activeInvitationSectionIndex(){
+  const anchor = innerHeight * .3;
+  return invitationSections.reduce((closestIndex, section, index) => {
+    const distance = Math.abs(section.getBoundingClientRect().top - anchor);
+    const closestDistance = Math.abs(invitationSections[closestIndex].getBoundingClientRect().top - anchor);
+    return distance < closestDistance ? index : closestIndex;
+  }, 0);
+}
+
+function moveInvitationSection(direction){
+  if(sectionScrollLocked || invitationSections.length < 2) return;
+  const currentIndex = activeInvitationSectionIndex();
+  const nextIndex = Math.max(0, Math.min(invitationSections.length - 1, currentIndex + direction));
+  if(nextIndex === currentIndex) return;
+
+  sectionScrollLocked = true;
+  invitationSections[nextIndex].scrollIntoView({
+    behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    block: "start"
+  });
+
+  clearTimeout(sectionScrollUnlockTimer);
+  sectionScrollUnlockTimer = window.setTimeout(() => {
+    sectionScrollLocked = false;
+  }, 850);
+}
+
+window.addEventListener("wheel", event => {
+  if(event.ctrlKey || Math.abs(event.deltaY) < 8 || document.documentElement.classList.contains("attire-modal-open")) return;
+  const direction = event.deltaY > 0 ? 1 : -1;
+  const target = event.target instanceof Element ? event.target : null;
+  if(target && canScrollInside(target, direction)) return;
+  if(!sectionScrollLocked && canScrollPageContent(target,direction)) return;
+
+  event.preventDefault();
+  moveInvitationSection(direction);
+}, {passive:false});
+
+let sectionTouchStartX = 0;
+let sectionTouchStartY = 0;
+let sectionTouchCurrentY = 0;
+let sectionTouchTarget = null;
+let sectionTouchIsVertical = false;
+
+window.addEventListener("touchstart", event => {
+  if(event.touches.length !== 1) return;
+  sectionTouchStartX = event.touches[0].clientX;
+  sectionTouchStartY = event.touches[0].clientY;
+  sectionTouchCurrentY = sectionTouchStartY;
+  sectionTouchTarget = event.target instanceof Element ? event.target : null;
+  sectionTouchIsVertical = false;
+}, {passive:true});
+
+window.addEventListener("touchmove", event => {
+  if(event.touches.length !== 1 || document.documentElement.classList.contains("attire-modal-open")) return;
+  const deltaX = event.touches[0].clientX - sectionTouchStartX;
+  const deltaY = event.touches[0].clientY - sectionTouchStartY;
+  sectionTouchCurrentY = event.touches[0].clientY;
+  if(Math.abs(deltaY) < 10 || Math.abs(deltaY) <= Math.abs(deltaX)) return;
+
+  const direction = deltaY < 0 ? 1 : -1;
+  if(sectionTouchTarget && canScrollInside(sectionTouchTarget, direction)) return;
+  if(!sectionScrollLocked && canScrollPageContent(sectionTouchTarget,direction)) return;
+  sectionTouchIsVertical = true;
+  event.preventDefault();
+}, {passive:false});
+
+window.addEventListener("touchend", () => {
+  const distance = sectionTouchCurrentY - sectionTouchStartY;
+  if(sectionTouchIsVertical && Math.abs(distance) >= 42){
+    moveInvitationSection(distance < 0 ? 1 : -1);
+  }
+  sectionTouchTarget = null;
+  sectionTouchIsVertical = false;
+}, {passive:true});
 
 loadGuest();

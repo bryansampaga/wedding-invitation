@@ -38,7 +38,8 @@ begin
     rsvp_note = nullif(trim(p_note), ''),
     rsvp_responded_at = now()
   where invite_token = p_invite_token
-    and active = true;
+    and active = true
+    and rsvp_status = 'pending';
 
   return found;
 end;

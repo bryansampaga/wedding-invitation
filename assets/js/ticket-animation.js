@@ -87,10 +87,23 @@ function goldSparks(n){
   p.animate([{opacity:0,transform:'scale(0) rotate(0deg)'},{opacity:1,transform:`translate(${dx*.4}px,${dy*.4}px) scale(1.1) rotate(90deg)`,offset:.3},{opacity:0,transform:`translate(${dx}px,${dy}px) scale(0) rotate(240deg)`}],{duration:rnd(600,1000)}).onfinish=()=>p.remove();
  }
 }
-const STP=$('#stamp'),STP2=$('#stamp2'),rsv=$('#rsv'),dcl=$('#dcl');
+const STP=$('#stamp'),STP2=$('#stamp2'),rsv=$('#rsv'),dcl=$('#dcl'),RSVPFORM=$('#rsvpForm');
 const RSVP=[...document.querySelectorAll('input[name="rsvpStatus"]')];
+const hasRSVPChoice=()=>RSVP.some(control=>control.checked);
 const lockRSVP=locked=>RSVP.forEach(control=>{control.disabled=locked});
 const afterTwoFrames=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+function revealChosenTicket(){
+ T.getAnimations().forEach(animation=>animation.cancel());
+ $('#card').getAnimations().forEach(animation=>animation.cancel());
+ T.style.opacity=1;T.style.transform='none';T.style.willChange='auto';
+ const isFinal=RSVPFORM?.dataset.final==='true';
+ btn.disabled=false;rsv.disabled=false;dcl.disabled=false;lockRSVP(isFinal);
+}
+function playOrRevealChoice(){
+ if(hasRSVPChoice()){revealChosenTicket();return}
+ play();
+}
+window.syncTicketToRsvpChoice=revealChosenTicket;
 async function settleTicket(){
  T.style.transform='none';
  T.getAnimations().forEach(animation=>animation.cancel());
@@ -153,7 +166,9 @@ async function play(){
  FL.animate([{opacity:0},{opacity:.95,offset:.25},{opacity:0}],{duration:700});
  await wait(250);
  // 2. rubber ball drops in and bounces
- const fy=-(S.getBoundingClientRect().top/sc)-130;T.style.opacity=1;trail=true;
+ const reservations=document.getElementById('reservations');
+ const sectionTop=reservations?.getBoundingClientRect().top??S.getBoundingClientRect().top;
+ const fy=(sectionTop-S.getBoundingClientRect().top)/sc+18;T.style.opacity=1;trail=true;
  const D=1700;
  [.3,.6,.8,1].forEach(o=>setTimeout(()=>{landPuffs();F.animate([{transform:'translateY(0)'},{transform:'translateY(6px)'},{transform:'translateY(0)'}],{duration:200})},D*o));
  await T.animate([
@@ -218,9 +233,15 @@ async function play(){
  await wait(120);
  btn.disabled=false;rsv.disabled=false;dcl.disabled=false;lockRSVP(false);
 }
-dcl.onclick=decline;rsv.onclick=reserve;btn.onclick=play;T.onclick=()=>{if(!btn.disabled)play()};
+dcl.onclick=decline;rsv.onclick=reserve;btn.onclick=()=>{if(!hasRSVPChoice())play()};T.onclick=()=>{if(!hasRSVPChoice()&&!btn.disabled)play()};
 if('IntersectionObserver' in window){
- const observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting)){observer.disconnect();play()}},{threshold:.35});
+ const observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting&&entry.intersectionRatio>=.6)){observer.disconnect();playOrRevealChoice()}},{threshold:[.6]});
  observer.observe(T);
-}else{play()}
+}else{
+ const playInReservations=()=>{
+  const r=T.getBoundingClientRect();
+  if(r.top<innerHeight*.8&&r.bottom>innerHeight*.2){removeEventListener('scroll',playInReservations);playOrRevealChoice()}
+ };
+ addEventListener('scroll',playInReservations,{passive:true});playInReservations();
+}
 })();

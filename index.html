@@ -9,6 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Great+Vibes&family=Jost:wght@400;500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <link rel="stylesheet" href="assets/css/phone-view.css">
+  <script src="assets/js/phone-view.js"></script>
 </head>
 <body>
 
@@ -238,7 +241,7 @@
 
       <div class="rsvp-card">
         <h2>Will You Join Us?</h2>
-        <p>Choose your response below. You can return here to update it at any time.</p>
+        <p>Choose carefully. Your submitted response will be saved as final.</p>
 
         <form id="rsvpForm" class="rsvp-form" novalidate>
           <fieldset class="rsvp-choices">
@@ -267,6 +270,14 @@
 
         <div id="rsvpStatus" class="rsvp-status" role="status" aria-live="polite"></div>
       </div>
+
+      <aside class="reservation-guest-note" aria-labelledby="guestLimitHeading">
+        <span class="reservation-guest-note-heart" aria-hidden="true">&#9825;</span>
+        <h3 id="guestLimitHeading">A gentle note about guests</h3>
+        <p>With all our love and our sincerest apologies, we&rsquo;re only able to welcome the guests named on your invitation.</p>
+        <p>Our venue has very limited space, and we&rsquo;re truly sorry we can&rsquo;t offer a plus one.</p>
+        <p>Thank you so much for understanding.</p>
+      </aside>
     </div>
   </section>
 
@@ -368,49 +379,49 @@
       <h2>One Place, One Celebration</h2>
     </div>
 
-    <button class="venue-slideshow" id="venueSlideshow" type="button"
-      aria-label="Show venue photo 2 of 6">
-      <img class="is-active" src="assets/images/venue/venue-01.webp" alt="Alvarez Park Cafe beside the water during the day" draggable="false">
-      <img src="assets/images/venue/venue-02.webp" alt="Alvarez Park Cafe illuminated at night" draggable="false">
-      <img src="assets/images/venue/venue-03.webp" alt="Outdoor dining area at Alvarez Park Cafe" draggable="false">
-      <img src="assets/images/venue/venue-04.webp" alt="Wide evening view of Alvarez Park Cafe and the water" draggable="false">
-      <img src="assets/images/venue/venue-05.webp" alt="Waterfront buildings and lights at Alvarez Park Cafe at night" draggable="false">
-      <img src="assets/images/venue/venue-06.webp" alt="Covered dining area at Alvarez Park Cafe at night" draggable="false">
-      <span class="venue-slide-name">
-        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"></path><circle cx="12" cy="9" r="2.4"></circle></svg>
-        <span id="venueName">The Garden Venue</span>
-      </span>
-      <span class="venue-slide-hint">Tap photo for next <b id="venueSlideCount">1 of 6</b></span>
-    </button>
+    <div class="venue-combined-card">
+      <button class="venue-slideshow" id="venueSlideshow" type="button"
+        aria-label="Show venue photo 2 of 6">
+        <img class="is-active" src="assets/images/venue/venue-01.webp" alt="Alvarez Park Cafe beside the water during the day" draggable="false">
+        <img src="assets/images/venue/venue-02.webp" alt="Alvarez Park Cafe illuminated at night" draggable="false">
+        <img src="assets/images/venue/venue-03.webp" alt="Outdoor dining area at Alvarez Park Cafe" draggable="false">
+        <img src="assets/images/venue/venue-04.webp" alt="Wide evening view of Alvarez Park Cafe and the water" draggable="false">
+        <img src="assets/images/venue/venue-05.webp" alt="Waterfront buildings and lights at Alvarez Park Cafe at night" draggable="false">
+        <img src="assets/images/venue/venue-06.webp" alt="Covered dining area at Alvarez Park Cafe at night" draggable="false">
+        <span class="venue-slide-name">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"></path><circle cx="12" cy="9" r="2.4"></circle></svg>
+          <span id="venueName">The Garden Venue</span>
+        </span>
+        <span class="venue-slide-hint">Tap photo for next <b id="venueSlideCount">1 of 6</b></span>
+      </button>
 
-    <div class="card venue-card">
-      <div>
-        <span class="mini-label">Address</span>
-        <p id="venueAddress">Replace this with your complete wedding venue address.</p>
-        <div class="venue-map">
-          <iframe id="venueMap" title="Map showing Alvarez Park Cafe" loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
-          <span class="venue-map-hint" aria-hidden="true">Tap map for directions</span>
-          <a id="mapLink" target="_blank" rel="noopener" aria-label="Open Alvarez Park Cafe in Google Maps"></a>
+      <div class="card venue-card">
+        <div>
+          <span class="mini-label">Address</span>
+          <p id="venueAddress">Replace this with your complete wedding venue address.</p>
+          <div class="venue-map">
+            <iframe id="venueMap" title="Map showing Alvarez Park Cafe" loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+            <span class="venue-map-hint" aria-hidden="true">Tap map for directions</span>
+            <a id="mapLink" target="_blank" rel="noopener" aria-label="Open Alvarez Park Cafe in Google Maps"></a>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="venue-countdown" id="venueCountdown" role="timer" aria-label="Countdown to the wedding">
-      <p><span>Counting down to</span> <b id="countdownDate">December 27, 2026</b></p>
-      <div class="venue-countdown-grid">
-        <div><strong id="countdownDays">000</strong><small>Days</small></div>
-        <div><strong id="countdownHours">00</strong><small>Hours</small></div>
-        <div><strong id="countdownMinutes">00</strong><small>Minutes</small></div>
-        <div><strong id="countdownSeconds">00</strong><small>Seconds</small></div>
-      </div>
+    <div class="venue-walk-animation" aria-label="Bride and groom walking animation">
+      <iframe
+        id="venueWalkAnimation"
+        title="Animated bride and groom walking together"
+      ></iframe>
     </div>
+
   </section>
 
   <section id="selfie" class="section">
     <div class="heading">
       <p class="eyebrow">Private wedding selfie booth</p>
-      <h2>Your Wedding Photo</h2>
+      <h2>Show Us Your Reaction!</h2>
     </div>
 
     <div class="selfie-grid">
@@ -418,6 +429,7 @@
         <div class="camera-stage">
           <video id="camera" autoplay playsinline muted></video>
           <canvas id="snapshotCanvas"></canvas>
+          <canvas id="faceFilterCanvas" aria-hidden="true"></canvas>
 
           <div id="placeholder" class="placeholder">
             <div class="lens">◎</div>
@@ -468,6 +480,30 @@
         <button class="filter" data-style="lovebirds" data-small="Two hearts, one forever," data-main="Celebrating your love story!" data-decor="birds">Kissing love birds</button>
         <button class="filter" data-style="floralarch" data-small="Under a garden of love," data-main="A beautiful beginning!" data-decor="arch">Floral arch</button>
         <button class="filter" data-style="rings" data-small="With all my love," data-main="To forever and always!" data-decor="rings">Rings & roses</button>
+
+        <div class="face-filter-picker">
+          <p>Face Filter</p>
+          <div class="face-filter-options" role="group" aria-label="Choose a face filter">
+            <button class="face-filter-option active" type="button" data-face-effect="crown" aria-pressed="true">
+              <span aria-hidden="true">&#9813;</span><small>Crown</small>
+            </button>
+            <button class="face-filter-option" type="button" data-face-effect="veil" aria-pressed="false">
+              <span aria-hidden="true">&#10047;</span><small>Veil</small>
+            </button>
+            <button class="face-filter-option" type="button" data-face-effect="hearts" aria-pressed="false">
+              <span aria-hidden="true">&#9825;</span><small>Hearts</small>
+            </button>
+            <button class="face-filter-option" type="button" data-face-effect="sparkles" aria-pressed="false">
+              <span aria-hidden="true">&#10022;</span><small>Glow</small>
+            </button>
+            <button class="face-filter-option" type="button" data-face-effect="heart-glasses" aria-pressed="false">
+              <span aria-hidden="true">&#9829;</span><small>Shades</small>
+            </button>
+            <button class="face-filter-option face-filter-none" type="button" data-face-effect="none" aria-pressed="false">
+              <span aria-hidden="true">&#8709;</span><small>None</small>
+            </button>
+          </div>
+        </div>
       </aside>
     </div>
 
@@ -567,9 +603,10 @@
 
 <footer>Made with love for <span id="footerCouple">Your Name & Partner Name</span></footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/js/config.js"></script>
-<script src="assets/js/ticket-animation.js"></script>
-<script src="assets/js/script.js"></script>
+<script data-invitation-src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script data-invitation-src="assets/js/config.js"></script>
+<script data-invitation-src="assets/js/ticket-animation.js"></script>
+<script data-invitation-src="assets/js/bride-groom-walk.js"></script>
+<script data-invitation-src="assets/js/script.js"></script>
 </body>
 </html>

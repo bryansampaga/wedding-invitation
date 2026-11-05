@@ -4515,7 +4515,7 @@ main > .section{
   display:flex;
   align-items:center;
   gap:10px;
-  min-height:56px;
+  min-height:66px;
   padding:8px 10px;
   overflow:hidden;
   border:1px solid var(--guest-line);
@@ -4564,7 +4564,7 @@ main > .section{
 #reservations .rsvp-choice small{
   margin-top:3px;
   color:var(--guest-soft);
-  font-size:11px;
+  font-size:13px;
   letter-spacing:.03em;
 }
 
@@ -4656,6 +4656,22 @@ main > .section{
 
 #reservations .rsvp-status.is-error{color:#8a4545}
 #reservations .rsvp-status.is-success{color:#44634e}
+
+#reservations .rsvp-form.is-final .rsvp-choice,
+#reservations .rsvp-form.is-final textarea{
+  cursor:default;
+}
+
+#reservations .rsvp-form.is-final .rsvp-choice:not(:has(input:checked)){
+  opacity:.52;
+}
+
+#reservations .rsvp-form.is-final textarea:disabled{
+  color:var(--guest-soft);
+  background:rgba(245,247,243,.82);
+  -webkit-text-fill-color:var(--guest-soft);
+  opacity:1;
+}
 
 .admin-rsvp{
   width:max-content;
@@ -5234,26 +5250,136 @@ main > .section{
 #venue .venue-map-hint{position:absolute;z-index:3;right:10px;bottom:9px;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.86);color:#4f6275;font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;pointer-events:none;box-shadow:0 5px 14px rgba(39,52,43,.12)}
 #venue .venue-map > a{z-index:4}
 
-#venue .venue-map::before,
-#venue .venue-map::after{
-  content:"";
-  position:absolute;
-  z-index:2;
-  left:50%;
-  top:50%;
-  width:28px;
-  height:28px;
-  border:2px solid rgba(196,58,48,.78);
-  border-radius:50%;
-  pointer-events:none;
-  translate:-50% -50%;
-  animation:venue-map-pin-pulse 2.2s ease-out infinite;
-}
-
-#venue .venue-map::after{animation-delay:1.1s}
-
 #venue .venue-slide-name,
 #venue .venue-slide-hint{z-index:3}
+
+.hero-card > .invitation-floral{
+  overflow:visible;
+}
+
+.invitation-floral-top{
+  top:6px;
+  right:8px;
+}
+
+.invitation-floral .st{
+  stroke-width:1.15px;
+  stroke-opacity:.62;
+}
+
+@media(max-width:780px){
+  .hero-card > .invitation-floral{
+    width:clamp(92px,28vw,138px);
+  }
+
+  .invitation-floral-top{
+    top:8px;
+    right:9px;
+  }
+}
+
+html{
+  scroll-snap-type:y mandatory;
+  scroll-padding-top:0;
+  overscroll-behavior-y:none;
+}
+
+main > .section{
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+}
+
+#selfie .my-gallery{
+  min-height:100svh;
+  min-height:100dvh;
+  margin:clamp(32px,5dvh,54px) auto 0 !important;
+  padding:clamp(66px,8dvh,90px) 0 clamp(24px,4dvh,42px);
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+}
+
+@media(max-width:780px){
+  #selfie .my-gallery{
+    margin-top:30px !important;
+    padding-top:clamp(56px,7.5dvh,70px);
+  }
+}
+
+#reservations{
+  position:relative;
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{
+    scroll-behavior:auto;
+  }
+}
+
+#venue .venue-combined-card{
+  width:min(100%,clamp(620px,68vw,860px));
+  margin-inline:auto;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.9);
+  border-radius:26px;
+  background:rgba(255,255,255,.76);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(14px);
+}
+
+#venue .venue-combined-card .venue-slideshow{
+  width:100%;
+  margin:0;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+}
+
+#venue .venue-combined-card .venue-card{
+  width:100%;
+  margin:0;
+  border:0;
+  border-top:1px solid rgba(52,68,57,.12);
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  backdrop-filter:none;
+}
+
+@media(max-width:780px){
+  #venue .venue-combined-card{
+    width:100%;
+    border-radius:20px;
+  }
+}
+
+#venue .venue-walk-animation{
+  width:min(100%,464px);
+  aspect-ratio:440/125;
+  flex:0 0 auto;
+  margin:clamp(14px,2vh,22px) auto 0;
+  position:relative;
+  z-index:1;
+  border-radius:22px;
+  overflow:hidden;
+  background:#f1f4ee;
+  box-shadow:0 18px 40px -26px rgba(60,75,55,.22);
+}
+
+#venue .venue-walk-animation iframe{
+  display:block;
+  width:100%;
+  height:100%;
+  border:0;
+  background:#f1f4ee;
+}
+
+@media(max-width:780px){
+  #venue .venue-walk-animation{
+    width:min(100%,464px);
+    margin-top:12px;
+    border-radius:16px;
+  }
+}
 
 #venue .venue-countdown{
   width:min(100%,clamp(620px,68vw,860px));
@@ -5279,8 +5405,6 @@ main > .section{
 #venue .venue-countdown-grid strong.is-ticking{animation:venue-countdown-tick .42s cubic-bezier(.2,.8,.25,1)}
 
 @keyframes venue-countdown-tick{0%{opacity:.25;transform:translateY(-5px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes venue-map-pin-pulse{0%{opacity:.82;scale:.35}70%,100%{opacity:0;scale:1.85}}
-
 @media(max-width:780px){
   #venue .venue-countdown{width:100%;padding:13px;border-radius:18px}
   #venue .venue-countdown-grid div{padding:4px 2px}
@@ -5289,8 +5413,6 @@ main > .section{
 }
 
 @media(prefers-reduced-motion:reduce){
-  #venue .venue-map::before,
-  #venue .venue-map::after,
   #venue .venue-countdown-grid strong.is-ticking{animation:none}
 }
 
@@ -5582,4 +5704,471 @@ main > .section{
     transform:none !important;
     filter:none !important;
   }
+}
+
+/* Keep the complete love letter within its snapped Guest tab. */
+#guest .guest-invitation-card{
+  height:calc(100svh - 128px);
+  height:calc(100dvh - 128px);
+  min-height:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:clamp(42px,6dvh,68px) clamp(30px,7vw,78px) clamp(112px,15dvh,142px) !important;
+}
+
+#guest .guest-invitation-top .eyebrow{
+  margin-bottom:clamp(14px,2.2dvh,24px);
+  font-size:clamp(11px,1.25vw,14px) !important;
+}
+
+#guest .letter-salutation{
+  font-size:clamp(22px,2.5vw,29px);
+}
+
+#guest .guest-invitation-top h2{
+  font-size:clamp(52px,7.4vw,82px) !important;
+}
+
+#guest .guest-letter-divider{
+  margin:clamp(18px,2.6dvh,27px) auto clamp(17px,2.5dvh,25px);
+}
+
+#guest .guest-love-note p{
+  font-size:clamp(19px,2.2vw,25px);
+  line-height:1.42;
+}
+
+#guest .guest-love-note p + p{
+  margin-top:clamp(12px,1.9dvh,18px);
+}
+
+#guest .guest-love-note .guest-extra-message{
+  font-size:clamp(18px,1.95vw,22px);
+  line-height:1.38;
+}
+
+#guest .guest-love-note span{
+  margin-top:clamp(16px,2.4dvh,25px);
+  font-size:clamp(17px,1.7vw,20px);
+}
+
+#guest .guest-love-note strong{
+  font-size:clamp(30px,4.3vw,44px);
+}
+
+@media(max-width:600px){
+  #guest .guest-invitation-card{
+    height:calc(100svh - 98px);
+    height:calc(100dvh - 98px);
+    min-height:0;
+    padding:clamp(25px,4.5dvh,42px) 18px clamp(92px,14dvh,122px) !important;
+  }
+
+  #guest .guest-invitation-top .eyebrow{
+    margin-bottom:clamp(10px,1.8dvh,17px);
+    font-size:clamp(10px,2.8vw,12px) !important;
+  }
+
+  #guest .letter-salutation{
+    font-size:clamp(20px,5.4vw,24px);
+  }
+
+  #guest .guest-invitation-top h2{
+    font-size:clamp(45px,12vw,58px) !important;
+  }
+
+  #guest .guest-letter-divider{
+    margin:clamp(13px,2dvh,20px) auto;
+  }
+
+  #guest .guest-love-note p{
+    font-size:clamp(16.5px,4.45vw,19px);
+    line-height:1.34;
+  }
+
+  #guest .guest-love-note p + p{
+    margin-top:clamp(10px,1.55dvh,14px);
+  }
+
+  #guest .guest-love-note .guest-extra-message{
+    font-size:clamp(15.5px,4.1vw,18px);
+    line-height:1.32;
+  }
+
+  #guest .guest-love-note span{
+    margin-top:clamp(11px,1.8dvh,17px);
+    font-size:clamp(15px,4vw,18px);
+  }
+
+  #guest .guest-love-note strong{
+    font-size:clamp(25px,7vw,34px);
+  }
+}
+
+@media(max-width:600px) and (max-height:680px){
+  #guest .guest-invitation-card{
+    padding-top:18px !important;
+    padding-bottom:82px !important;
+  }
+
+  #guest .guest-invitation-top .eyebrow{margin-bottom:7px}
+  #guest .guest-invitation-top h2{font-size:clamp(40px,10.5vw,49px) !important}
+  #guest .guest-letter-divider{margin:9px auto}
+  #guest .guest-love-note p{font-size:clamp(15px,4vw,17px);line-height:1.25}
+  #guest .guest-love-note p + p{margin-top:8px}
+  #guest .guest-love-note .guest-extra-message{font-size:clamp(14px,3.7vw,16px);line-height:1.22}
+  #guest .guest-love-note span{margin-top:8px}
+  #guest .guest-love-note strong{font-size:clamp(22px,6.4vw,30px)}
+}
+
+/* Keep the complete RSVP experience in one snapped tab. */
+#reservations{
+  min-height:100svh !important;
+  min-height:100dvh !important;
+  padding-top:clamp(70px,8dvh,92px) !important;
+  padding-bottom:clamp(14px,2dvh,24px) !important;
+  justify-content:flex-start;
+}
+
+#reservations > .heading{
+  margin-bottom:clamp(9px,1.5dvh,16px) !important;
+}
+
+#reservations > .heading .eyebrow{
+  margin-bottom:5px !important;
+}
+
+#reservations > .heading h2{
+  margin-bottom:4px;
+}
+
+#reservations .reservations-grid{
+  gap:clamp(8px,1.4dvh,14px);
+}
+
+@media(max-width:780px){
+  #reservations{
+    padding:clamp(54px,7.5dvh,64px) 0 10px !important;
+  }
+
+  #reservations > .heading{
+    margin-bottom:8px !important;
+  }
+
+  #reservations > .heading .eyebrow{
+    margin-bottom:4px !important;
+  }
+
+  #reservations > .heading h2{
+    margin:0 0 3px;
+    font-size:clamp(34px,10vw,44px) !important;
+    line-height:.96;
+  }
+
+  #reservations > .heading > p:not(.eyebrow){
+    margin:0 auto;
+    font-size:clamp(10px,3vw,12px) !important;
+    line-height:1.35 !important;
+  }
+
+  #reservations .reservations-grid{
+    gap:15px;
+    margin-top:8px;
+  }
+
+  #reservations .rsvp-card{
+    padding:15px 11px 10px;
+    border-radius:17px;
+  }
+
+  #reservations .rsvp-card h2{
+    margin-bottom:2px;
+    font-size:clamp(25px,7.5vw,31px);
+  }
+
+  #reservations .rsvp-card > p:not(.eyebrow){
+    font-size:clamp(9px,2.65vw,11px);
+    line-height:1.3;
+  }
+
+  #reservations .rsvp-form{
+    margin-top:7px;
+  }
+
+  #reservations .rsvp-choice{
+    min-height:72px;
+    padding:8px 5px;
+    gap:5px;
+    border-radius:12px;
+  }
+
+  #reservations .rsvp-choice-icon{
+    width:25px;
+    height:25px;
+    flex-basis:25px;
+    font-size:13px;
+  }
+
+  #reservations .rsvp-choice strong{
+    font-size:clamp(16px,4.8vw,20px);
+  }
+
+  #reservations .rsvp-choice small{
+    margin-top:3px;
+    font-size:clamp(10px,3vw,12px);
+  }
+
+  #reservations .rsvp-note-label{
+    margin-top:6px;
+  }
+
+  #reservations .rsvp-note-label textarea{
+    height:46px;
+    min-height:46px;
+    max-height:46px;
+    padding:7px 10px;
+    resize:none;
+    border-radius:12px;
+    font-size:11px;
+    line-height:1.35;
+  }
+
+  #reservations .rsvp-submit{
+    min-height:35px;
+    margin-top:6px;
+    font-size:10px;
+  }
+
+  #reservations .rsvp-status{
+    min-height:11px;
+    margin-top:2px;
+    font-size:9px;
+    line-height:1.25;
+  }
+
+}
+
+@media(max-width:780px) and (max-height:680px){
+  #reservations{
+    padding-top:50px !important;
+    padding-bottom:6px !important;
+  }
+
+  #reservations > .heading{margin-bottom:5px !important}
+  #reservations > .heading > p:not(.eyebrow){display:none}
+  #reservations .reservations-grid{gap:9px;margin-top:5px}
+  #reservations #card{min-height:150px}
+  #reservations .rsvp-card{padding:10px 9px 7px}
+  #reservations .rsvp-card > p:not(.eyebrow){display:none}
+  #reservations .rsvp-form{margin-top:4px}
+  #reservations .rsvp-choice{min-height:58px;padding-block:6px}
+  #reservations .rsvp-note-label{margin-top:4px}
+  #reservations .rsvp-note-label textarea{height:38px;min-height:38px;max-height:38px}
+  #reservations .rsvp-submit{min-height:31px;margin-top:4px}
+}
+
+#reservations .reservation-guest-note{
+  width:100%;
+  margin:0;
+  padding:19px clamp(20px,4.5vw,42px) 20px;
+  border:1px solid rgba(183,157,99,.55);
+  border-radius:15px;
+  background:rgba(248,246,237,.88);
+  color:#3f4b4d;
+  text-align:center;
+}
+
+#reservations .reservation-guest-note-heart{
+  display:block;
+  margin-bottom:5px;
+  color:#b65f5b;
+  font:400 23px/1 Georgia,serif;
+}
+
+#reservations .reservation-guest-note h3{
+  margin:0 0 6px;
+  color:#34424a;
+  font:600 clamp(21px,2.3vw,26px)/1.1 "Cormorant Garamond",Georgia,serif;
+}
+
+#reservations .reservation-guest-note p{
+  max-width:65ch;
+  margin:0 auto;
+  color:#4e5b5d;
+  font:italic 400 clamp(18px,1.95vw,23px)/1.42 "Cormorant Garamond",Georgia,serif;
+}
+
+#reservations .reservation-guest-note p + p{
+  margin-top:5px;
+}
+
+@media(max-width:780px){
+  #reservations .reservation-guest-note{
+    padding:13px 16px 14px;
+    border-radius:13px;
+  }
+
+  #reservations .reservation-guest-note-heart{
+    margin-bottom:3px;
+    font-size:19px;
+  }
+
+  #reservations .reservation-guest-note h3{
+    margin-bottom:5px;
+    font-size:clamp(18px,5.2vw,22px);
+  }
+
+  #reservations .reservation-guest-note p{
+    font-size:clamp(14px,4vw,17px);
+    line-height:1.34;
+  }
+
+  #reservations .reservation-guest-note p + p{
+    margin-top:4px;
+  }
+}
+
+@media(max-width:780px) and (max-height:680px){
+  #reservations .reservation-guest-note{padding:8px 12px 9px}
+  #reservations .reservation-guest-note-heart{display:none}
+  #reservations .reservation-guest-note h3{margin-bottom:3px;font-size:16px}
+  #reservations .reservation-guest-note p{font-size:12px;line-height:1.22}
+  #reservations .reservation-guest-note p + p{margin-top:2px}
+}
+
+/* Keep every selfie caption inside the visible camera frame. */
+#selfie .overlay-copy{
+  width:100%;
+  max-width:100% !important;
+  padding:4px 8px 5px !important;
+  border:1px solid rgba(117,83,70,.48);
+  border-radius:11px !important;
+  background:rgba(251,250,245,.95) !important;
+  overflow:hidden;
+}
+
+#selfie .overlay-copy small,
+#selfie .overlay-copy strong,
+#selfie .overlay-copy b{
+  width:100%;
+  max-width:100%;
+  white-space:normal !important;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  text-wrap:balance;
+}
+
+#selfie .overlay-copy small{
+  font:italic 500 clamp(12px,3.5vw,15px)/1.02 "Cormorant Garamond",Georgia,serif !important;
+}
+
+#selfie .overlay-copy strong{
+  margin:1px 0 2px;
+  font:500 clamp(11px,3.35vw,14px)/1.05 "Cormorant Garamond",Georgia,serif !important;
+}
+
+#selfie .overlay-copy b{
+  font:600 clamp(17px,5.2vw,22px)/1 "Cormorant Garamond",Georgia,serif !important;
+}
+
+/* MediaPipe-powered face effect layer. */
+#selfie #faceFilterCanvas{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  pointer-events:none;
+  transform:scaleX(-1);
+}
+
+#selfie .live-overlay{
+  z-index:3;
+}
+
+#selfie .face-filter-picker{
+  margin-top:auto;
+  padding-top:7px;
+  border-top:1px solid rgba(91,113,132,.22);
+}
+
+#selfie .filter-card{
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(91,113,132,.32) transparent;
+}
+
+#selfie .filter-card::-webkit-scrollbar{width:4px}
+#selfie .filter-card::-webkit-scrollbar-thumb{
+  border-radius:999px;
+  background:rgba(91,113,132,.32);
+}
+
+#selfie .face-filter-picker > p{
+  margin:0 0 6px;
+  color:var(--selfie-soft);
+  font:italic 600 clamp(12px,1.25vw,16px)/1.1 "Cormorant Garamond",Georgia,serif;
+  text-align:center;
+}
+
+#selfie .face-filter-options{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:5px;
+}
+
+#selfie .face-filter-option{
+  display:flex;
+  min-width:0;
+  min-height:42px;
+  padding:4px 2px;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:1px;
+  border:1px solid var(--selfie-frame);
+  border-radius:9px;
+  color:var(--selfie-soft);
+  background:rgba(255,255,255,.28);
+  cursor:pointer;
+}
+
+#selfie .face-filter-option span{
+  color:#8b7953;
+  font:600 17px/1 Georgia,serif;
+}
+
+#selfie .face-filter-option small{
+  max-width:100%;
+  overflow:hidden;
+  font:600 clamp(8px,.75vw,10px)/1.1 Montserrat,system-ui,sans-serif;
+  text-overflow:ellipsis;
+}
+
+#selfie .face-filter-option.active{
+  border-color:var(--selfie-accent);
+  color:#fff;
+  background:var(--selfie-accent);
+  box-shadow:0 5px 12px rgba(47,65,82,.15);
+}
+
+#selfie .face-filter-option.active span{
+  color:#f0ddb0;
+}
+
+#selfie .face-filter-none{
+  min-height:42px;
+}
+
+@media(max-width:360px), (max-width:780px) and (max-height:650px){
+  #selfie .face-filter-picker{padding-top:4px}
+  #selfie .face-filter-picker > p{margin-bottom:3px;font-size:11px}
+  #selfie .face-filter-options{gap:3px}
+  #selfie .face-filter-option{min-height:34px;padding:2px 1px}
+  #selfie .face-filter-option span{font-size:14px}
+  #selfie .face-filter-none{min-height:34px}
 }

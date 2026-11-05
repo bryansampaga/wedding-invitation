@@ -1,0 +1,155 @@
+/* Match the invitation's desktop paper width and edge-to-edge mobile layout. */
+:root{
+  --page-paper-width:clamp(560px,58vw,820px);
+  --invitation-background:#eef2ed;
+}
+html{background:var(--invitation-background)}
+body{min-width:0;background:var(--invitation-background)}
+main{min-width:0}
+main > #guest.section,
+main > #reservations.section,
+main > #theme.section,
+main > #venue.section,
+main > #selfie.section{
+  width:min(var(--page-paper-width),calc(100% - 30px)) !important;
+  max-width:none;
+  margin-inline:auto;
+  padding-inline:0 !important;
+  background:transparent;
+  min-width:0;
+}
+
+#guest .guest-invitation-card,
+#reservations .reservations-grid,
+#theme .attire-grid,
+#theme .note-card,
+#venue .venue-combined-card,
+#venue .venue-walk-animation,
+#selfie > .heading,
+#selfie .selfie-grid,
+#selfie .my-gallery{
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  margin-inline:auto;
+}
+
+#guest .guest-invitation-card{
+  height:auto !important;
+  min-height:calc(100svh - 128px);
+  padding-inline:clamp(18px,3vw,40px) !important;
+}
+#guest .guest-letter-content{min-width:0}
+#guest .guest-invitation-top h2{overflow-wrap:anywhere}
+#guest .guest-love-note p{overflow-wrap:break-word}
+#guest .guest-love-note strong{font-size:clamp(25px,3vw,34px)}
+
+#theme .attire-grid{grid-template-columns:minmax(0,1fr)}
+#theme .attire-card{min-width:0}
+#theme .palette{grid-template-columns:repeat(4,minmax(0,1fr))}
+#theme .palette .palette-color{min-width:0;height:clamp(64px,10vw,100px)}
+#theme .attire-card p{overflow-wrap:break-word}
+
+#reservations .reservations-grid{grid-template-columns:minmax(0,1fr)}
+#reservations .rsvp-card{min-width:0}
+#reservations .rsvp-choice{min-width:0}
+#reservations .rsvp-choice strong,
+#reservations .rsvp-choice small{white-space:normal;overflow-wrap:break-word}
+#reservations .reservation-guest-note{min-width:0}
+
+#venue .venue-combined-card .venue-slideshow{
+  height:auto !important;
+  aspect-ratio:2 / 1;
+}
+#venue .venue-combined-card .venue-card{width:100%;min-width:0}
+#venue .venue-card > div{width:100%;min-width:0}
+#venue .venue-card p{overflow-wrap:break-word}
+#venue .venue-map{height:clamp(155px,23dvh,230px)}
+
+#selfie .selfie-grid{
+  grid-template-columns:minmax(0,1fr) clamp(90px,12vw,125px) !important;
+  min-height:420px;
+}
+#selfie .filter-card > *{flex-shrink:0}
+#selfie .filter-card{
+  margin:0;
+  height:auto;
+  min-height:0;
+  max-height:100% !important;
+  align-self:stretch;
+  padding:0 0 4px;
+  overflow-x:hidden;
+  overflow-y:auto;
+}
+#selfie .camera-actions .btn{overflow-wrap:break-word}
+#selfie .photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#selfie .photo-grid figure{min-width:0}
+#selfie .photo-grid figcaption{overflow-wrap:anywhere}
+
+@media(min-width:781px){
+  #reservations > .heading h2,
+  #theme > .heading h2,
+  #venue > .heading h2,
+  #selfie > .heading h2{font-size:clamp(42px,5vw,60px) !important}
+  #guest .guest-invitation-top h2{font-size:clamp(48px,6vw,68px) !important}
+  #guest .guest-love-note p{font-size:clamp(19px,2vw,23px)}
+  #guest .guest-love-note .guest-extra-message{font-size:clamp(18px,1.8vw,21px)}
+  #theme .attire-card{padding:24px !important}
+  #venue .venue-card{padding:22px !important}
+  #selfie .selfie-grid{
+    height:auto;
+    grid-template-rows:clamp(390px,57dvh,570px) auto auto;
+  }
+}
+
+@media(max-width:780px){
+  main > #guest.section,
+  main > #reservations.section,
+  main > #theme.section,
+  main > #venue.section,
+  main > #selfie.section{
+    width:calc(100% - clamp(10px,4.5vw,30px)) !important;
+  }
+  #guest .guest-invitation-card{min-height:calc(100svh - 98px)}
+  #selfie .selfie-grid{
+    grid-template-columns:minmax(0,1fr) clamp(78px,25vw,120px) !important;
+  }
+  #reservations .reservation-guest-note p{font-size:clamp(14px,4vw,17px)}
+  #selfie .face-filter-option{min-height:40px}
+}
+
+/* Narrow phones: reserve usable space for text, ticket stub and controls. */
+@media(max-width:360px){
+  .nav{width:calc(100% - 8px) !important;gap:0 !important;padding:4px !important}
+  .nav a{min-width:0;padding-inline:2px !important;font-size:8px !important}
+  #guest .guest-invitation-top h2{font-size:clamp(34px,11vw,40px) !important}
+  #guest .guest-love-note p{font-size:16px}
+  #guest .guest-love-note .guest-extra-message{font-size:15px}
+  #reservations #card{--source-ticket-side:78px;min-height:164px}
+  #reservations #card .main{padding:10px 8px}
+  #reservations #card .h{font-size:15px}
+  #reservations #card .it{font-size:17px}
+  #reservations #card .no{font-size:21px}
+  #reservations #card .k{letter-spacing:.09em}
+  #reservations .rsvp-choice{padding-inline:4px;min-height:72px}
+  #reservations .rsvp-choice strong{font-size:16px}
+  #reservations .rsvp-choice small{font-size:11px}
+  #theme .attire-card{padding:12px !important}
+  #theme .attire-card h3{font-size:26px}
+  #theme .palette-hint{font-size:9px}
+  #venue .venue-slide-name{max-width:65%;font-size:10px}
+  #venue .venue-slide-hint{font-size:8px}
+  #selfie .selfie-grid{gap:5px;padding:6px;grid-template-columns:minmax(0,1fr) 78px !important}
+  #selfie .filter{font-size:14px;padding:8px 3px}
+  #selfie .camera-actions .btn{font-size:13px !important;min-height:40px !important}
+  #selfie .photo-grid{grid-template-columns:minmax(0,1fr)}
+}
+
+/* Short screens and text zoom must be able to reveal the entire card. */
+@media(max-height:650px){
+  html{scroll-snap-type:y proximity}
+  main > .section{justify-content:flex-start !important}
+  .hero-card{height:auto !important;min-height:580px}
+  #guest .guest-invitation-card{height:auto !important}
+  #selfie .selfie-grid{height:auto !important;grid-template-rows:360px auto auto !important}
+}

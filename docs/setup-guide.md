@@ -72,6 +72,11 @@ It also enables personalized RSVP responses and optional guest notes.
 If you already created the database using an older version of the setup file,
 run database/add-rsvp-fields.sql once in the SQL Editor instead.
 
+If RSVP was already enabled before permanent responses were added, also run
+database/lock-rsvp-responses.sql once. The first submitted Accept or Decline
+will then be final. Each guest's answer, note, and response time appear in
+admin.html and in the Supabase guests table.
+
 It also creates the database-side maximum:
 3 photos per guest.
 
