@@ -151,5 +151,18 @@ main > #selfie.section{
   main > .section{justify-content:flex-start !important}
   .hero-card{height:auto !important;min-height:580px}
   #guest .guest-invitation-card{height:auto !important}
-  #selfie .selfie-grid{height:auto !important;grid-template-rows:360px auto auto !important}
+}
+
+/* Reserve the actual heading space so camera actions stay inside the tab. */
+#selfie > .heading h2{
+  font-size:clamp(24px,7.2vw,40px) !important;
+  line-height:1.05 !important;
+  text-wrap:balance;
+}
+#selfie .selfie-grid{
+  height:max(320px,calc(100svh - var(--booth-heading-space,160px))) !important;
+  height:max(320px,calc(100dvh - var(--booth-heading-space,160px))) !important;
+  min-height:320px;
+  grid-template-rows:minmax(0,1fr) auto auto !important;
+  flex-shrink:0;
 }

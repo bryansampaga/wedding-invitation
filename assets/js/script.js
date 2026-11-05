@@ -8,6 +8,25 @@ const sb = sbReady ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : nu
 
 const $ = (id) => document.getElementById(id);
 
+// Account for wrapped headings, loaded fonts and changing phone viewport sizes.
+const selfieSection = $("selfie");
+const selfieHeading = selfieSection?.querySelector(":scope > .heading");
+function fitSelfieBooth(){
+  if(!selfieHeading) return;
+  const sectionStyle=getComputedStyle(selfieSection);
+  const headingStyle=getComputedStyle(selfieHeading);
+  const space=selfieHeading.getBoundingClientRect().height+
+    parseFloat(headingStyle.marginTop)+parseFloat(headingStyle.marginBottom)+
+    parseFloat(sectionStyle.paddingTop)+parseFloat(sectionStyle.paddingBottom)+4;
+  selfieSection.style.setProperty("--booth-heading-space",`${Math.ceil(space)}px`);
+}
+if(selfieHeading){
+  if(typeof ResizeObserver!=="undefined") new ResizeObserver(fitSelfieBooth).observe(selfieHeading);
+  window.addEventListener("resize",fitSelfieBooth);
+  document.fonts?.ready.then(fitSelfieBooth);
+  fitSelfieBooth();
+}
+
 $("partnerOne")?.replaceChildren(weddingConfig.partnerOne);
 $("partnerTwo")?.replaceChildren(weddingConfig.partnerTwo);
 const weddingDateParts = new Date(weddingConfig.weddingDate.replace(/,/g, "")).toLocaleDateString("en-US", {
