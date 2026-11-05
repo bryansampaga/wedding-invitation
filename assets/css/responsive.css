@@ -317,3 +317,34 @@ main > #guest.section{
   padding:0;
   border:0;
 }
+
+/* A compact ticket; scale from its own width, including the desktop phone frame. */
+#reservations .ticket-animation-fit{
+  width:min(440px,94%);
+  max-width:100%;
+  margin-inline:auto;
+  container-type:inline-size;
+}
+#reservations #card{
+  --source-ticket-side:clamp(70px,24cqw,106px);
+  min-height:clamp(128px,34cqw,150px);
+  padding:7px;
+  gap:6px;
+  border-radius:clamp(13px,4cqw,18px);
+}
+#reservations #card .main{padding:clamp(8px,2.5cqw,11px)}
+#reservations #card .main,#reservations #card .side{border-radius:9px}
+#reservations #card .k{font-size:clamp(6px,1.6cqw,7px);letter-spacing:.12em}
+#reservations #card .h{font-size:clamp(14px,4cqw,18px);margin:4px 0 5px}
+#reservations #card .it{font-size:clamp(17px,4.8cqw,21px);margin:3px 0 5px}
+#reservations #card .div{width:min(82px,100%);gap:5px}
+#reservations #card .ticket-reception-label{margin-top:5px}
+#reservations #card .note{margin:0;font-size:clamp(7px,1.8cqw,8px);line-height:1.35}
+#reservations #card .no{font-size:clamp(21px,6cqw,27px);margin:5px 0 7px}
+#reservations #card .side .div{width:42px}
+#reservations #card .ticket-private-label{font-size:clamp(5px,1.35cqw,6px);margin-top:6px}
+#reservations #stamp,#reservations #stamp2{
+  font-size:clamp(18px,6cqw,27px);
+  padding-inline:clamp(8px,3cqw,14px);
+  border-width:clamp(3px,1cqw,5px);
+}
