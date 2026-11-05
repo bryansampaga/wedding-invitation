@@ -348,3 +348,14 @@ main > #guest.section{
   padding-inline:clamp(8px,3cqw,14px);
   border-width:clamp(3px,1cqw,5px);
 }
+
+/* Keep the guest note compact without making the apology harder to read. */
+#reservations .reservation-guest-note{
+  padding:10px clamp(12px,3vw,18px);
+  border-radius:12px;
+  border-width:1px;
+}
+#reservations .reservation-guest-note-heart{font-size:17px;margin-bottom:2px}
+#reservations .reservation-guest-note h3{font-size:clamp(18px,4.5vw,22px);margin-bottom:4px}
+#reservations .reservation-guest-note p{font-size:clamp(14px,3.5vw,17px);line-height:1.28}
+#reservations .reservation-guest-note p + p{margin-top:3px}

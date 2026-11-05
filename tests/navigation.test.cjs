@@ -71,3 +71,18 @@ test('a cancelled swipe cannot navigate on a later touchend',()=>{
   events.touchcancel();events.touchend();
   assert.deepEqual(jumps,[]);
 });
+
+test('visible browser height determines when the page has been fully read',()=>{
+  const {run}=setup([{top:0,bottom:800},{top:800,bottom:1600}]);
+  run('window.visualViewport={height:700,offsetTop:0,scale:1}');
+  assert.equal(run('canScrollPageContent(1)'),true);
+  run('window.visualViewport.height=800');
+  assert.equal(run('canScrollPageContent(1)'),false);
+});
+
+test('pinch-zoom leaves wheel navigation to the browser',()=>{
+  const {run,wheel,jumps}=setup([{top:0,bottom:800},{top:800,bottom:1600}]);
+  run('window.visualViewport={height:400,offsetTop:0,scale:2}');
+  wheel(120);
+  assert.deepEqual(jumps,[]);
+});

@@ -1592,6 +1592,17 @@ if(attirePreviewTriggers.length && attirePreviewModal){
 const invitationSections = [...document.querySelectorAll("main > .section, #selfie .my-gallery")];
 let sectionScrollLocked = false;
 let sectionScrollUnlockTimer = 0;
+let navigationViewportChanged = false;
+function visiblePageBounds(){
+  const viewport=window.visualViewport;
+  const top=viewport?.offsetTop||0;
+  return {top,bottom:top+(viewport?.height||innerHeight)};
+}
+function noteNavigationResize(){
+  if(sectionScrollLocked) navigationViewportChanged=true;
+}
+window.addEventListener("resize",noteNavigationResize);
+window.visualViewport?.addEventListener("resize",noteNavigationResize);
 
 function canScrollInside(element, direction){
   for(let node = element; node && node !== document.body; node = node.parentElement){
@@ -1611,14 +1622,15 @@ function canScrollPageContent(direction){
   const rect=page.getBoundingClientRect();
   const next=invitationSections[index+1];
   const bottom=next ? Math.min(rect.bottom,next.getBoundingClientRect().top) : rect.bottom;
-  return direction>0 ? bottom>innerHeight+8 : rect.top < -8;
+  const visible=visiblePageBounds();
+  return direction>0 ? bottom>visible.bottom+8 : rect.top < visible.top-8;
 }
 
 function activeInvitationSectionIndex(){
   // Use the page at the top, not whichever next heading is nearest the center.
   let index=0;
   invitationSections.forEach((section,i)=>{
-    if(section.getBoundingClientRect().top<=8) index=i;
+    if(section.getBoundingClientRect().top<=visiblePageBounds().top+8) index=i;
   });
   return index;
 }
@@ -1630,6 +1642,7 @@ function moveInvitationSection(direction){
   if(nextIndex === currentIndex) return;
 
   sectionScrollLocked = true;
+  navigationViewportChanged = false;
   invitationSections[nextIndex].scrollIntoView({
     behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
     block: "start"
@@ -1637,6 +1650,11 @@ function moveInvitationSection(direction){
 
   clearTimeout(sectionScrollUnlockTimer);
   sectionScrollUnlockTimer = window.setTimeout(() => {
+    // Collapsing browser chrome can move a dvh-sized destination mid-animation.
+    // Align that same destination once, without advancing to another tab.
+    if(navigationViewportChanged && (window.visualViewport?.scale||1)===1){
+      invitationSections[nextIndex].scrollIntoView({behavior:"instant",block:"start"});
+    }
     sectionScrollLocked = false;
   }, 850);
 }
@@ -1645,7 +1663,7 @@ let wheelGestureUsed=false;
 let wheelGestureTimer=0;
 let wheelDistance=0;
 window.addEventListener("wheel", event => {
-  if(event.ctrlKey || Math.abs(event.deltaY)<=Math.abs(event.deltaX) || document.documentElement.classList.contains("attire-modal-open")) return;
+  if(event.ctrlKey || (window.visualViewport?.scale||1)>1.01 || Math.abs(event.deltaY)<=Math.abs(event.deltaX) || document.documentElement.classList.contains("attire-modal-open")) return;
   const direction = event.deltaY > 0 ? 1 : -1;
   const target = event.target instanceof Element ? event.target : null;
   clearTimeout(wheelGestureTimer);
@@ -1682,7 +1700,7 @@ window.addEventListener("touchstart", event => {
 }, {passive:true});
 
 window.addEventListener("touchmove", event => {
-  if(event.touches.length !== 1 || !sectionTouchTarget || document.documentElement.classList.contains("attire-modal-open")) return;
+  if(event.touches.length !== 1 || !sectionTouchTarget || (window.visualViewport?.scale||1)>1.01 || document.documentElement.classList.contains("attire-modal-open")) return;
   const deltaX = event.touches[0].clientX - sectionTouchStartX;
   const deltaY = event.touches[0].clientY - sectionTouchStartY;
   sectionTouchCurrentY = event.touches[0].clientY;
