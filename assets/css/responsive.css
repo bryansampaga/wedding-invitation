@@ -275,3 +275,45 @@ main > #selfie.section{
   #reservations #stamp,#reservations #stamp2{letter-spacing:.07em}
   #theme .attire-card > .eyebrow{letter-spacing:.12em}
 }
+
+/* Fill the visible viewport even when mobile browser toolbars retract. */
+main > #guest.section{
+  --guest-page-top:clamp(64px,8dvh,86px);
+  --guest-page-bottom:24px;
+  min-height:100vh !important;
+  min-height:100dvh !important;
+  padding-top:var(--guest-page-top) !important;
+  padding-bottom:var(--guest-page-bottom) !important;
+  justify-content:flex-start;
+  scroll-margin-top:0;
+}
+#guest .guest-invitation-card{
+  flex-shrink:0;
+  margin:0 auto;
+  min-height:calc(100vh - var(--guest-page-top) - var(--guest-page-bottom));
+  min-height:calc(100dvh - var(--guest-page-top) - var(--guest-page-bottom));
+}
+@media(max-width:780px){
+  main > #guest.section{
+    --guest-page-top:clamp(54px,7.5dvh,64px);
+    --guest-page-bottom:16px;
+  }
+}
+
+/* Each swatch scales from its own card width, independently of screen height. */
+#theme .attire-card .palette{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  width:100%;
+  max-width:100%;
+  gap:0;
+}
+#theme .attire-card .palette .palette-color{
+  width:100%;
+  min-width:0;
+  height:auto;
+  min-height:36px;
+  aspect-ratio:3 / 2;
+  padding:0;
+  border:0;
+}
