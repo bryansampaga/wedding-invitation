@@ -1,9 +1,13 @@
 /* Match the invitation's desktop paper width and edge-to-edge mobile layout. */
 :root{
+  color-scheme:only light;
+  --ui-space:clamp(10px,3vw,18px);
+  --ui-radius:clamp(12px,3.6vw,22px);
+  --ui-copy:clamp(12px,3vw,16px);
   --page-paper-width:clamp(560px,58vw,820px);
   --invitation-background:#eef2ed;
 }
-html{background:var(--invitation-background)}
+html{background:var(--invitation-background);scroll-snap-type:y proximity}
 body{min-width:0;background:var(--invitation-background)}
 main{min-width:0}
 main > #guest.section,
@@ -165,4 +169,109 @@ main > #selfie.section{
   min-height:320px;
   grid-template-rows:minmax(0,1fr) auto auto !important;
   flex-shrink:0;
+}
+
+/* Fluid RSVP and attire sizing across phone widths and short viewports. */
+@media(max-width:780px){
+  #reservations, #theme{
+    height:auto !important;
+    justify-content:flex-start;
+    padding-top:clamp(50px,7.5svh,64px) !important;
+    padding-bottom:16px !important;
+  }
+  #reservations > .heading h2,
+  #theme > .heading h2{
+    font-size:clamp(28px,8vw,44px) !important;
+    line-height:1.05;
+    overflow-wrap:break-word;
+  }
+  #reservations .reservations-grid{gap:clamp(9px,2.5vw,15px);margin-top:6px}
+  #reservations .ticket-animation-fit{width:100%;max-width:100%}
+  #reservations #card{
+    --source-ticket-side:clamp(76px,22vw,130px);
+    min-height:clamp(150px,38vw,210px);
+    padding:8px;
+    gap:7px;
+  }
+  #reservations #card .main{padding:clamp(9px,2.5vw,16px)}
+  #reservations #card .h{font-size:clamp(15px,3.8vw,20px);margin:5px 0}
+  #reservations #card .it{font-size:clamp(17px,4.5vw,26px);margin:4px 0 6px}
+  #reservations #card .k{font-size:clamp(6px,1.5vw,8px);letter-spacing:.12em}
+  #reservations #card .div{width:min(100%,100px)}
+  #reservations #card .note{margin:0;font-size:clamp(7px,1.65vw,9px);line-height:1.4}
+  #reservations #card .no{font-size:clamp(22px,5.7vw,34px)}
+  #reservations #card .ticket-private-label{font-size:clamp(5px,1.25vw,7px)}
+  #reservations .rsvp-card{padding:clamp(10px,3vw,16px)}
+  #reservations .rsvp-choice{min-height:70px;padding:7px 4px}
+  #reservations .rsvp-choice strong{font-size:clamp(15px,4.1vw,21px)}
+  #reservations .rsvp-choice small{font-size:clamp(10px,2.7vw,13px)}
+  #reservations .rsvp-note-label textarea{
+    height:auto;
+    min-height:48px;
+    max-height:150px;
+    font-size:16px;
+    resize:vertical;
+  }
+  #reservations .rsvp-submit{min-height:44px}
+  #reservations .reservation-guest-note{padding:clamp(10px,3vw,16px)}
+  #reservations .reservation-guest-note p{font-size:clamp(14px,3.7vw,18px);line-height:1.35}
+  #theme .attire-grid{gap:clamp(8px,2.5vw,16px)}
+  #theme .attire-card{padding:clamp(12px,3.2vw,20px) !important}
+  #theme .attire-card h3{font-size:clamp(24px,6vw,34px);margin-bottom:10px}
+  #theme .palette .palette-color{height:clamp(44px,min(14vw,9svh),78px)}
+  #theme .palette{margin-bottom:10px}
+  #theme .attire-card p,
+  #theme .note-card{font-size:clamp(12px,3vw,15px);line-height:1.5}
+  #theme .palette-hint{font-size:clamp(9px,2.2vw,11px);white-space:normal}
+  #theme .note-card{padding:clamp(12px,3vw,18px) !important}
+  #theme .attire-next{margin-top:clamp(12px,2svh,22px)}
+}
+
+/* Shared proportions: keep type readable while frames and spacing grow together. */
+@media(max-width:780px){
+  main > .section{min-width:0;min-height:100svh !important}
+  main > .section > .heading{margin-bottom:var(--ui-space) !important}
+  .heading > p:not(.eyebrow){font-size:var(--ui-copy) !important;line-height:1.45}
+  #guest .guest-invitation-card{border-radius:2px}
+  #guest .guest-invitation-top h2{font-size:clamp(34px,10.5vw,58px) !important}
+  #guest .guest-love-note p{font-size:clamp(16px,4.1vw,21px);line-height:1.38}
+  #guest .guest-love-note .guest-extra-message{font-size:clamp(15px,3.9vw,20px)}
+  #guest .guest-love-note strong{font-size:clamp(24px,6vw,32px)}
+  #reservations .rsvp-card,
+  #reservations .reservation-guest-note,
+  #theme .attire-card,
+  #theme .note-card,
+  #venue .venue-combined-card,
+  #selfie .selfie-grid{border-radius:var(--ui-radius)}
+  #reservations .rsvp-choice{border-radius:clamp(9px,2.7vw,15px)}
+  #reservations #card{border-radius:clamp(15px,4vw,24px)}
+  #reservations #card .main,
+  #reservations #card .side{border-radius:clamp(8px,2vw,12px)}
+  #reservations #stamp,
+  #reservations #stamp2{
+    max-width:85%;
+    padding:4px clamp(8px,3vw,20px);
+    border-width:clamp(3px,1vw,6px);
+    font-size:clamp(18px,5.5vw,32px);
+  }
+  #theme .palette{border-radius:clamp(9px,2.8vw,16px)}
+  #venue > .heading h2{font-size:clamp(28px,7.5vw,44px) !important;line-height:1.08}
+  #venue .venue-card{padding:var(--ui-space) !important}
+  #venue .venue-card p{font-size:var(--ui-copy);line-height:1.5}
+  #venue .venue-walk-animation{border-radius:var(--ui-radius)}
+  #venue .venue-map{border-radius:clamp(9px,2.8vw,16px)}
+  #selfie .camera-stage{border-radius:clamp(9px,2.8vw,16px) !important}
+  #selfie .filter{font-size:clamp(14px,3.6vw,19px);padding:clamp(8px,2vw,12px) 4px}
+  #selfie .face-filter-option{border-radius:clamp(7px,2vw,11px);min-height:40px}
+  #selfie .face-filter-option small{font-size:clamp(8px,2vw,10px)}
+  #selfie .camera-actions .btn{min-height:44px !important;font-size:clamp(13px,3.4vw,18px) !important}
+  #selfie .status{overflow-wrap:anywhere}
+  .attire-modal-panel{max-width:calc(100vw - 20px);max-height:calc(100svh - 24px);overflow-y:auto}
+}
+@media(max-width:340px){
+  #reservations .rsvp-choices{gap:5px}
+  #reservations #card .k{letter-spacing:.04em}
+  #reservations #card .main{padding:8px 6px}
+  #reservations #stamp,#reservations #stamp2{letter-spacing:.07em}
+  #theme .attire-card > .eyebrow{letter-spacing:.12em}
 }

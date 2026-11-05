@@ -1604,24 +1604,23 @@ function canScrollInside(element, direction){
   return false;
 }
 
-function canScrollPageContent(element,direction){
-  // Let small screens read a tall page before the next tab is selected.
-  const page=element?.closest('#selfie .my-gallery, main > .section');
+function canScrollPageContent(direction){
+  const index=activeInvitationSectionIndex();
+  const page=invitationSections[index];
   if(!page) return false;
   const rect=page.getBoundingClientRect();
-  const gallery=page.querySelector('.my-gallery');
-  const bottom=gallery ? gallery.getBoundingClientRect().top : rect.bottom;
-  if(bottom-rect.top<=innerHeight+8) return false;
+  const next=invitationSections[index+1];
+  const bottom=next ? Math.min(rect.bottom,next.getBoundingClientRect().top) : rect.bottom;
   return direction>0 ? bottom>innerHeight+8 : rect.top < -8;
 }
 
 function activeInvitationSectionIndex(){
-  const anchor = innerHeight * .3;
-  return invitationSections.reduce((closestIndex, section, index) => {
-    const distance = Math.abs(section.getBoundingClientRect().top - anchor);
-    const closestDistance = Math.abs(invitationSections[closestIndex].getBoundingClientRect().top - anchor);
-    return distance < closestDistance ? index : closestIndex;
-  }, 0);
+  // Use the page at the top, not whichever next heading is nearest the center.
+  let index=0;
+  invitationSections.forEach((section,i)=>{
+    if(section.getBoundingClientRect().top<=8) index=i;
+  });
+  return index;
 }
 
 function moveInvitationSection(direction){
@@ -1642,15 +1641,27 @@ function moveInvitationSection(direction){
   }, 850);
 }
 
+let wheelGestureUsed=false;
+let wheelGestureTimer=0;
+let wheelDistance=0;
 window.addEventListener("wheel", event => {
-  if(event.ctrlKey || Math.abs(event.deltaY) < 8 || document.documentElement.classList.contains("attire-modal-open")) return;
+  if(event.ctrlKey || Math.abs(event.deltaY)<=Math.abs(event.deltaX) || document.documentElement.classList.contains("attire-modal-open")) return;
   const direction = event.deltaY > 0 ? 1 : -1;
   const target = event.target instanceof Element ? event.target : null;
+  clearTimeout(wheelGestureTimer);
+  wheelGestureTimer=setTimeout(()=>{wheelGestureUsed=false;wheelDistance=0},220);
+  if(sectionScrollLocked||wheelGestureUsed){event.preventDefault();return}
   if(target && canScrollInside(target, direction)) return;
-  if(!sectionScrollLocked && canScrollPageContent(target,direction)) return;
+  if(canScrollPageContent(direction)) return;
 
   event.preventDefault();
-  moveInvitationSection(direction);
+  const delta=event.deltaY*(event.deltaMode===1?16:event.deltaMode===2?innerHeight:1);
+  if(Math.sign(wheelDistance)!==direction) wheelDistance=0;
+  wheelDistance+=delta;
+  if(Math.abs(wheelDistance)>=32){
+    wheelGestureUsed=true;
+    moveInvitationSection(direction);
+  }
 }, {passive:false});
 
 let sectionTouchStartX = 0;
@@ -1658,26 +1669,33 @@ let sectionTouchStartY = 0;
 let sectionTouchCurrentY = 0;
 let sectionTouchTarget = null;
 let sectionTouchIsVertical = false;
+let sectionTouchNative = false;
 
 window.addEventListener("touchstart", event => {
-  if(event.touches.length !== 1) return;
+  if(event.touches.length !== 1){sectionTouchTarget=null;sectionTouchIsVertical=false;return}
   sectionTouchStartX = event.touches[0].clientX;
   sectionTouchStartY = event.touches[0].clientY;
   sectionTouchCurrentY = sectionTouchStartY;
   sectionTouchTarget = event.target instanceof Element ? event.target : null;
   sectionTouchIsVertical = false;
+  sectionTouchNative = false;
 }, {passive:true});
 
 window.addEventListener("touchmove", event => {
-  if(event.touches.length !== 1 || document.documentElement.classList.contains("attire-modal-open")) return;
+  if(event.touches.length !== 1 || !sectionTouchTarget || document.documentElement.classList.contains("attire-modal-open")) return;
   const deltaX = event.touches[0].clientX - sectionTouchStartX;
   const deltaY = event.touches[0].clientY - sectionTouchStartY;
   sectionTouchCurrentY = event.touches[0].clientY;
   if(Math.abs(deltaY) < 10 || Math.abs(deltaY) <= Math.abs(deltaX)) return;
 
   const direction = deltaY < 0 ? 1 : -1;
-  if(sectionTouchTarget && canScrollInside(sectionTouchTarget, direction)) return;
-  if(!sectionScrollLocked && canScrollPageContent(sectionTouchTarget,direction)) return;
+  // Once a swipe is scrolling content, do not turn it into a tab jump mid-swipe.
+  if(sectionTouchNative) return;
+  if(sectionScrollLocked){event.preventDefault();return}
+  if(canScrollInside(sectionTouchTarget,direction)||canScrollPageContent(direction)){
+    sectionTouchNative=true;
+    return;
+  }
   sectionTouchIsVertical = true;
   event.preventDefault();
 }, {passive:false});
@@ -1690,5 +1708,11 @@ window.addEventListener("touchend", () => {
   sectionTouchTarget = null;
   sectionTouchIsVertical = false;
 }, {passive:true});
+
+window.addEventListener("touchcancel",()=>{
+  sectionTouchTarget=null;
+  sectionTouchIsVertical=false;
+  sectionTouchNative=false;
+},{passive:true});
 
 loadGuest();

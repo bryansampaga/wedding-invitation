@@ -1,7 +1,7 @@
 (function(){
 const $=s=>document.querySelector(s),T=$('#ticket'),S=$('#stage'),FX=$('#fx'),FL=$('#flash'),F=$('#fit'),btn=$('#btn'),SHN=$('#shine');
 let sc=1;
-function fit(){sc=1;S.style.transform='';F.style.height=''}
+function fit(){sc=Math.max(.5,Math.min(1.35,T.offsetWidth/534));S.style.transform='';F.style.height=''}
 fit();addEventListener('resize',fit);
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const rnd=(a,b)=>a+Math.random()*(b-a);
@@ -12,6 +12,7 @@ const localRect=e=>({left:fxPad+e.offsetLeft,top:fxPad+e.offsetTop,width:e.offse
 const SM=document.createElement('canvas');SM.style.cssText='position:absolute;inset:0;width:100%;height:100%';FX.appendChild(SM);
 const sx=SM.getContext('2d'),dpr=Math.min(devicePixelRatio||1,2);
 function rs(){fxPad=Math.min(120,Math.max(70,T.offsetWidth*.17));FX.style.setProperty('--fx-pad',`${fxPad}px`);SM.width=FX.offsetWidth*dpr;SM.height=FX.offsetHeight*dpr}rs();addEventListener('resize',rs);
+if(typeof ResizeObserver!=='undefined') new ResizeObserver(()=>{fit();rs()}).observe(T);
 const sprites=[];
 for(let k=0;k<4;k++){
  const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d');
@@ -168,7 +169,7 @@ async function play(){
  // 2. rubber ball drops in and bounces
  const reservations=document.getElementById('reservations');
  const sectionTop=reservations?.getBoundingClientRect().top??S.getBoundingClientRect().top;
- const fy=(sectionTop-S.getBoundingClientRect().top)/sc+18;T.style.opacity=1;trail=true;
+ const fy=sectionTop-S.getBoundingClientRect().top+18;T.style.opacity=1;trail=true;
  const D=1700;
  [.3,.6,.8,1].forEach(o=>setTimeout(()=>{landPuffs();F.animate([{transform:'translateY(0)'},{transform:'translateY(6px)'},{transform:'translateY(0)'}],{duration:200})},D*o));
  await T.animate([
