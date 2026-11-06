@@ -35,7 +35,7 @@ test('portrait camera is primary and controls begin hidden underneath',()=>{
 });
 
 test('phone camera and filter controls fit in a compact viewport',()=>{
-  assert.match(responsive,/Compact phone booth:[\s\S]*?height:clamp\(220px,42svh,330px\) !important/);
+  assert.match(responsive,/Compact phone booth:[\s\S]*?height:clamp\(260px,48svh,390px\) !important/);
   assert.match(responsive,/Compact phone booth:[\s\S]*?grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
   assert.match(responsive,/Compact phone booth:[\s\S]*?min-height:36px !important/);
 });
