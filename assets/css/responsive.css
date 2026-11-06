@@ -432,3 +432,35 @@ main > #guest.section{
     height:clamp(36px, 14cqw, 52px);
   }
 }
+
+/*
+ * Uniform phone-tab fitting.  JavaScript updates one scale per tab from the
+ * real visual viewport, including Android browser chrome. CSS zoom participates
+ * in layout, so every border, radius, card, control and gap keeps its shape.
+ */
+@media(max-width:780px){
+  #reservations > *,
+  #theme > *,
+  #venue > *{
+    zoom:var(--phone-tab-scale, 1);
+  }
+
+  #selfie > .heading,
+  #selfie > .selfie-grid{
+    zoom:var(--phone-tab-scale, 1);
+  }
+
+  #selfie > .my-gallery > *{
+    zoom:var(--phone-gallery-scale, 1);
+  }
+
+  #reservations > *,
+  #theme > *,
+  #venue > *,
+  #selfie > .heading,
+  #selfie > .selfie-grid,
+  #selfie > .my-gallery > *{
+    margin-right:auto;
+    margin-left:auto;
+  }
+}

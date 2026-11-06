@@ -8,6 +8,112 @@ const sb = sbReady ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : nu
 
 const $ = (id) => document.getElementById(id);
 
+// Fit every post-invitation tab into the part of the phone screen that is
+// actually visible. Chrome's address/search bar changes visualViewport.height
+// while scrolling, so one uniform scale is applied to every direct component
+// in a tab. This keeps type, cards, borders, radii and spacing proportional.
+const phoneFitMedia = matchMedia("(max-width: 780px)");
+let phoneFitFrame = 0;
+
+function calculatePhoneFitScale(visibleHeight, contentHeight, visibleWidth){
+  if(!contentHeight || !visibleHeight) return 1;
+  const heightScale = visibleHeight / contentHeight;
+  const widthScale = (visibleWidth || 390) / 390;
+  return Math.max(.52, Math.min(1, heightScale, widthScale));
+}
+
+function phoneFitSpan(elements){
+  const visible = elements.filter(element => element && getComputedStyle(element).display !== "none");
+  if(!visible.length) return 0;
+  let top = Infinity;
+  let bottom = -Infinity;
+  visible.forEach(element => {
+    const style = getComputedStyle(element);
+    const marginTop = parseFloat(style.marginTop) || 0;
+    const marginBottom = parseFloat(style.marginBottom) || 0;
+    top = Math.min(top, element.offsetTop - marginTop);
+    bottom = Math.max(bottom, element.offsetTop + element.offsetHeight + marginBottom);
+  });
+  return Math.max(0, bottom - top);
+}
+
+function fitPhoneTabs(){
+  const targets = [$("reservations"), $("theme"), $("venue")].filter(Boolean);
+  const selfie = $("selfie");
+  const gallery = selfie?.querySelector(":scope > .my-gallery");
+
+  if(!phoneFitMedia.matches){
+    targets.forEach(section => section.style.removeProperty("--phone-tab-scale"));
+    selfie?.style.removeProperty("--phone-tab-scale");
+    gallery?.style.removeProperty("--phone-gallery-scale");
+    return;
+  }
+
+  // Measure at the design size first; otherwise each address-bar resize would
+  // measure an already-scaled tab and gradually change its proportions.
+  targets.forEach(section => section.style.setProperty("--phone-tab-scale", "1"));
+  selfie?.style.setProperty("--phone-tab-scale", "1");
+  gallery?.style.setProperty("--phone-gallery-scale", "1");
+
+  const viewport = window.visualViewport;
+  const visibleHeight = viewport?.height || window.innerHeight;
+  const visibleWidth = viewport?.width || window.innerWidth;
+
+  targets.forEach(section => {
+    const sectionStyle = getComputedStyle(section);
+    const availableHeight = visibleHeight
+      - (parseFloat(sectionStyle.paddingTop) || 0)
+      - (parseFloat(sectionStyle.paddingBottom) || 0);
+    const scale = calculatePhoneFitScale(
+      availableHeight,
+      phoneFitSpan([...section.children]),
+      visibleWidth
+    );
+    section.style.setProperty("--phone-tab-scale", scale.toFixed(4));
+  });
+
+  if(selfie){
+    const sectionStyle = getComputedStyle(selfie);
+    const availableHeight = visibleHeight
+      - (parseFloat(sectionStyle.paddingTop) || 0)
+      - (parseFloat(sectionStyle.paddingBottom) || 0);
+    const boothParts = [
+      selfie.querySelector(":scope > .heading"),
+      selfie.querySelector(":scope > .selfie-grid")
+    ].filter(Boolean);
+    const scale = calculatePhoneFitScale(
+      availableHeight,
+      phoneFitSpan(boothParts),
+      visibleWidth
+    );
+    selfie.style.setProperty("--phone-tab-scale", scale.toFixed(4));
+  }
+
+  if(gallery){
+    const galleryStyle = getComputedStyle(gallery);
+    const availableHeight = visibleHeight
+      - (parseFloat(galleryStyle.paddingTop) || 0)
+      - (parseFloat(galleryStyle.paddingBottom) || 0);
+    const scale = calculatePhoneFitScale(
+      availableHeight,
+      phoneFitSpan([...gallery.children]),
+      visibleWidth
+    );
+    gallery.style.setProperty("--phone-gallery-scale", scale.toFixed(4));
+  }
+}
+
+function schedulePhoneTabFit(){
+  cancelAnimationFrame(phoneFitFrame);
+  phoneFitFrame = requestAnimationFrame(fitPhoneTabs);
+}
+
+window.addEventListener("resize", schedulePhoneTabFit, {passive:true});
+window.addEventListener("orientationchange", schedulePhoneTabFit, {passive:true});
+window.visualViewport?.addEventListener("resize", schedulePhoneTabFit, {passive:true});
+document.fonts?.ready.then(schedulePhoneTabFit);
+schedulePhoneTabFit();
+
 // Account for wrapped headings, loaded fonts and changing phone viewport sizes.
 const selfieSection = $("selfie");
 const selfieHeading = selfieSection?.querySelector(":scope > .heading");
