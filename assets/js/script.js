@@ -985,7 +985,12 @@ if ($("filterSelect")) {
 $("startBtn").addEventListener("click", async () => {
   try {
     stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "user", width: { ideal: 1080 }, height: { ideal: 1350 } },
+      video: {
+        facingMode: "user",
+        width: { ideal: 1080 },
+        height: { ideal: 1440 },
+        aspectRatio: { ideal: 3 / 4 }
+      },
       audio: false
     });
     $("camera").srcObject = stream;
@@ -1012,32 +1017,19 @@ $("captureBtn").addEventListener("click", async () => {
   const canvas = $("snapshotCanvas");
   const sourceWidth = video.videoWidth;
   const sourceHeight = video.videoHeight;
-  const stageRatio = video.clientWidth && video.clientHeight
-    ? video.clientWidth / video.clientHeight
-    : sourceWidth / sourceHeight;
-  const sourceRatio = sourceWidth / sourceHeight;
-  let sx = 0, sy = 0, sw = sourceWidth, sh = sourceHeight;
 
-  // Crop the camera feed to the visible booth frame before drawing the caption.
-  // This keeps the saved photo identical to the preview and prevents side text
-  // from being removed later by object-fit: cover.
-  if (sourceRatio > stageRatio) {
-    sw = sourceHeight * stageRatio;
-    sx = (sourceWidth - sw) / 2;
-  } else if (sourceRatio < stageRatio) {
-    sh = sourceWidth / stageRatio;
-    sy = (sourceHeight - sh) / 2;
-  }
-
-  canvas.width = Math.max(1, Math.round(sw));
-  canvas.height = Math.max(1, Math.round(sh));
+  // Preserve the complete camera frame. The preview uses object-fit: contain,
+  // so the saved selfie now includes the same uncropped view instead of a
+  // second center crop that made faces look artificially zoomed in.
+  canvas.width = Math.max(1, Math.round(sourceWidth));
+  canvas.height = Math.max(1, Math.round(sourceHeight));
   const ctx = canvas.getContext("2d");
   const w = canvas.width, h = canvas.height;
 
   ctx.save();
   ctx.translate(w, 0);
   ctx.scale(-1, 1);
-  ctx.drawImage(video, sx, sy, sw, sh, 0, 0, w, h);
+  ctx.drawImage(video, 0, 0, sourceWidth, sourceHeight, 0, 0, w, h);
   ctx.restore();
 
   if(currentFaceEffect!=="none"&&latestFaceLandmarks){
@@ -1045,8 +1037,8 @@ $("captureBtn").addEventListener("click", async () => {
       const point=latestFaceLandmarks[index];
       if(!point) return null;
       return {
-        x:w-((point.x*sourceWidth-sx)/sw)*w,
-        y:((point.y*sourceHeight-sy)/sh)*h
+        x:w-point.x*w,
+        y:point.y*h
       };
     });
   }

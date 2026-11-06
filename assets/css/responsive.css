@@ -300,6 +300,19 @@ main > #guest.section{
   }
 }
 
+/* Show the complete front-camera frame instead of center-cropping/zooming it. */
+#selfie #camera,
+#selfie #snapshotCanvas{
+  object-fit:contain !important;
+  object-position:center center !important;
+  background:#dfe7de;
+}
+
+#selfie #faceFilterCanvas{
+  object-fit:contain !important;
+  object-position:center center !important;
+}
+
 /* Each swatch scales from its own card width, independently of screen height. */
 #theme .attire-card .palette{
   display:grid;
