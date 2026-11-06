@@ -414,6 +414,76 @@ main > #guest.section{
   grid-row:4 !important;
 }
 
+/* Compact phone booth: keep the camera, messages and filters in one view. */
+@media(max-width:780px){
+  #selfie .selfie-grid{
+    gap:5px;
+    padding:6px;
+  }
+
+  #selfie .camera-stage{
+    width:auto !important;
+    height:clamp(220px,42svh,330px) !important;
+    max-width:100% !important;
+    justify-self:center;
+  }
+
+  #selfie .filter-card{
+    padding:5px;
+    gap:4px;
+  }
+
+  #selfie .filter-card h3{
+    margin:0;
+    font-size:14px;
+    line-height:1;
+  }
+
+  #selfie .filter-card .filter{
+    min-height:34px;
+    margin:0;
+    padding:4px 2px;
+    font-size:13px;
+    line-height:1.1;
+  }
+
+  #selfie .face-filter-picker{
+    margin-top:0;
+    padding-top:4px;
+  }
+
+  #selfie .face-filter-picker > p{
+    margin-bottom:3px;
+    font-size:11px;
+  }
+
+  #selfie .face-filter-options{
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    gap:3px;
+  }
+
+  #selfie .face-filter-option,
+  #selfie .face-filter-none{
+    min-height:34px;
+    padding:2px 1px;
+  }
+
+  #selfie .face-filter-option span{font-size:14px}
+  #selfie .face-filter-option small{font-size:7px}
+
+  #selfie .camera-actions .btn{
+    min-height:36px !important;
+    padding:5px 8px;
+    font-size:14px !important;
+  }
+
+  #selfie .status{
+    min-height:0;
+    font-size:9px;
+    line-height:1.2;
+  }
+}
+
 /* Each swatch scales from its own card width, independently of screen height. */
 #theme .attire-card .palette{
   display:grid;
