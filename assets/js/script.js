@@ -1689,6 +1689,7 @@ if(attirePreviewTriggers.length && attirePreviewModal){
 // Keep wheel, trackpad and touch scrolling fully native. The fixed navigation
 // is the only control that aligns a complete tab with the visible viewport.
 const invitationNav = document.querySelector(".nav");
+const invitationScroller = document.querySelector("main");
 const invitationNavLinks = [...document.querySelectorAll('.nav a[href^="#"]')];
 const invitationNavSections = invitationNavLinks
   .map(link => document.querySelector(link.getAttribute("href")))
@@ -1722,10 +1723,26 @@ invitationNav?.addEventListener("click", event => {
 
 let activeTabFrame = 0;
 function updateActiveInvitationTab(){
-  const viewportTop = window.visualViewport?.offsetTop || 0;
+  const viewport = window.visualViewport;
+  const viewportTop = viewport?.offsetTop || 0;
+  const viewportBottom = viewportTop + (viewport?.height || window.innerHeight);
+  const navBottom = invitationNav?.getBoundingClientRect?.().bottom || viewportTop;
+  const readingLine = navBottom + Math.max(0, viewportBottom - navBottom) * .46;
   let activeSection = invitationNavSections[0];
+  let nearestDistance = Infinity;
   invitationNavSections.forEach(section => {
-    if(section.getBoundingClientRect().top <= viewportTop + 8) activeSection = section;
+    const rect = section.getBoundingClientRect();
+    if(rect.top <= readingLine && rect.bottom > readingLine){
+      activeSection = section;
+      nearestDistance = 0;
+      return;
+    }
+    if(nearestDistance === 0) return;
+    const distance = Math.abs((rect.top + rect.bottom) / 2 - readingLine);
+    if(distance < nearestDistance){
+      nearestDistance = distance;
+      activeSection = section;
+    }
   });
   if(activeSection) markActiveInvitationTab(activeSection);
 }
@@ -1736,6 +1753,7 @@ function scheduleActiveInvitationTab(){
 }
 
 window.addEventListener("scroll", scheduleActiveInvitationTab, {passive:true});
+invitationScroller?.addEventListener("scroll", scheduleActiveInvitationTab, {passive:true});
 window.visualViewport?.addEventListener("resize", scheduleActiveInvitationTab, {passive:true});
 scheduleActiveInvitationTab();
 

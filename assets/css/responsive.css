@@ -400,6 +400,29 @@ main > #guest.section{
  * long tab to scroll instead of clipping its last card.
  */
 @media(max-width:780px){
+  html,
+  body{
+    width:100%;
+    height:100vh;
+    height:100svh;
+    overflow:hidden !important;
+  }
+
+  body{
+    position:fixed;
+    inset:0;
+  }
+
+  main{
+    width:100%;
+    height:100%;
+    overflow-x:hidden;
+    overflow-y:auto;
+    overscroll-behavior-y:contain;
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-y pinch-zoom;
+  }
+
   html{
     scroll-behavior:auto;
     scroll-snap-type:none;

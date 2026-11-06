@@ -24,19 +24,25 @@ function setup(){
     closest(){return this}
   }
   const links=[new Link('#home'),new Link('#theme')];
+  const positions={home:{top:0,bottom:800},theme:{top:800,bottom:1600}};
   const sections={
-    '#home':{id:'home',getBoundingClientRect:()=>({top:0}),scrollIntoView:options=>jumps.push(['home',options])},
-    '#theme':{id:'theme',getBoundingClientRect:()=>({top:800}),scrollIntoView:options=>jumps.push(['theme',options])}
+    '#home':{id:'home',getBoundingClientRect:()=>positions.home,scrollIntoView:options=>jumps.push(['home',options])},
+    '#theme':{id:'theme',getBoundingClientRect:()=>positions.theme,scrollIntoView:options=>jumps.push(['theme',options])}
   };
-  const nav={addEventListener:(name,handler)=>listeners[name]=handler};
+  const nav={
+    addEventListener:(name,handler)=>listeners[name]=handler,
+    getBoundingClientRect:()=>({bottom:48})
+  };
+  const main={addEventListener:(name,handler)=>listeners['main-'+name]=handler};
   const context=vm.createContext({
     document:{
-      querySelector:selector=>selector==='.nav'?nav:sections[selector]||null,
+      querySelector:selector=>selector==='.nav'?nav:selector==='main'?main:sections[selector]||null,
       querySelectorAll:selector=>selector==='.nav a[href^="#"]'?links:[]
     },
     window:{
       addEventListener:(name,handler)=>listeners[name]=handler,
-      visualViewport:{offsetTop:0,addEventListener:(name,handler)=>listeners['viewport-'+name]=handler}
+      innerHeight:800,
+      visualViewport:{offsetTop:0,height:800,addEventListener:(name,handler)=>listeners['viewport-'+name]=handler}
     },
     history:{replaceState:(state,title,url)=>historyUpdates.push(url)},
     Element,
@@ -44,7 +50,7 @@ function setup(){
     cancelAnimationFrame:()=>{}
   });
   vm.runInContext(navigation,context);
-  return {listeners,links,jumps,historyUpdates};
+  return {listeners,links,jumps,historyUpdates,positions};
 }
 
 test('top navigation aligns the selected tab without scroll animation',()=>{
@@ -66,4 +72,13 @@ test('wheel and touch input are never intercepted',()=>{
   assert.equal(listeners.touchstart,undefined);
   assert.equal(listeners.touchmove,undefined);
   assert.equal(listeners.touchend,undefined);
+});
+
+test('active tab follows the section at the center of the invitation scroller',()=>{
+  const {listeners,links,positions}=setup();
+  positions.home={top:-800,bottom:0};
+  positions.theme={top:0,bottom:800};
+  listeners['main-scroll']();
+  assert.equal(links[0].attributes['aria-current'],undefined);
+  assert.equal(links[1].attributes['aria-current'],'page');
 });
