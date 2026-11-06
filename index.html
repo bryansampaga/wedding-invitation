@@ -430,7 +430,7 @@
         <div class="camera-stage">
           <video id="camera" autoplay playsinline muted></video>
           <canvas id="snapshotCanvas"></canvas>
-          <canvas id="faceFilterCanvas" aria-hidden="true"></canvas>
+          <canvas id="faceFilterCanvas" aria-hidden="true" hidden></canvas>
 
           <div id="placeholder" class="placeholder">
             <div class="lens">◎</div>
@@ -451,7 +451,7 @@
             </select>
           </div>
 
-          <div id="liveOverlay" class="live-overlay filter-accept">
+          <div id="liveOverlay" class="live-overlay filter-accept" hidden>
             <div class="overlay-copy">
               <small id="filterSmall">With love,</small>
               <strong id="filterMain">Yes, I do accept the invitation!</strong>
@@ -471,7 +471,7 @@
         <p id="uploadStatus" class="status"></p>
       </div>
 
-      <aside class="filter-card">
+      <aside class="filter-card" hidden>
         <h3>Message</h3>
         <button class="filter active" data-style="accept" data-small="With love," data-main="Yes, I do accept the invitation!" data-decor="flowers">Yes, I accept</button>
         <button class="filter" data-style="honored" data-small="So happy for you both," data-main="Honored to be there for your big day!" data-decor="sprigs">Honored to attend</button>
@@ -485,7 +485,7 @@
         <div class="face-filter-picker">
           <p>Face Filter</p>
           <div class="face-filter-options" role="group" aria-label="Choose a face filter">
-            <button class="face-filter-option active" type="button" data-face-effect="crown" aria-pressed="true">
+            <button class="face-filter-option" type="button" data-face-effect="crown" aria-pressed="false">
               <span aria-hidden="true">&#9813;</span><small>Crown</small>
             </button>
             <button class="face-filter-option" type="button" data-face-effect="veil" aria-pressed="false">
@@ -500,7 +500,7 @@
             <button class="face-filter-option" type="button" data-face-effect="heart-glasses" aria-pressed="false">
               <span aria-hidden="true">&#9829;</span><small>Shades</small>
             </button>
-            <button class="face-filter-option face-filter-none" type="button" data-face-effect="none" aria-pressed="false">
+            <button class="face-filter-option face-filter-none active" type="button" data-face-effect="none" aria-pressed="true">
               <span aria-hidden="true">&#8709;</span><small>None</small>
             </button>
           </div>

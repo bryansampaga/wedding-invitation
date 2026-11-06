@@ -72,22 +72,9 @@ function fitPhoneTabs(){
     section.style.setProperty("--phone-tab-scale", scale.toFixed(4));
   });
 
-  if(selfie){
-    const sectionStyle = getComputedStyle(selfie);
-    const availableHeight = visibleHeight
-      - (parseFloat(sectionStyle.paddingTop) || 0)
-      - (parseFloat(sectionStyle.paddingBottom) || 0);
-    const boothParts = [
-      selfie.querySelector(":scope > .heading"),
-      selfie.querySelector(":scope > .selfie-grid")
-    ].filter(Boolean);
-    const scale = calculatePhoneFitScale(
-      availableHeight,
-      phoneFitSpan(boothParts),
-      visibleWidth
-    );
-    selfie.style.setProperty("--phone-tab-scale", scale.toFixed(4));
-  }
+  // Keep the portrait booth at full size. Its controls sit below the camera,
+  // and the invitation scroller can move naturally through them.
+  selfie?.style.setProperty("--phone-tab-scale", "1");
 
   if(gallery){
     const galleryStyle = getComputedStyle(gallery);
@@ -603,9 +590,11 @@ let currentDecor = "flowers";
 let faceLandmarker = null;
 let faceTrackingFrame = 0;
 let faceTrackingActive = false;
-let currentFaceEffect = "crown";
+let currentFaceEffect = "none";
 let latestFaceLandmarks = null;
 let lastTrackedVideoTime = -1;
+let lastFaceTrackingTimestamp = 0;
+let faceTrackingLoading = false;
 
 const faceFilterCanvas = $("faceFilterCanvas");
 const faceFilterOptions = [...document.querySelectorAll(".face-filter-option")];
@@ -887,8 +876,15 @@ function renderLiveFaceEffect(){
   );
 }
 
-function trackFaceFrame(){
+function trackFaceFrame(timestamp=0){
   if(!faceTrackingActive) return;
+  // Cap optional face detection near 15fps to keep the preview responsive on
+  // lower-powered phones.
+  if(timestamp-lastFaceTrackingTimestamp<66){
+    faceTrackingFrame=requestAnimationFrame(trackFaceFrame);
+    return;
+  }
+  lastFaceTrackingTimestamp=timestamp;
   const video=$("camera");
   if(faceLandmarker&&video.readyState>=2&&video.currentTime!==lastTrackedVideoTime){
     lastTrackedVideoTime=video.currentTime;
@@ -905,9 +901,12 @@ function trackFaceFrame(){
 
 async function startFaceTracking(){
   faceTrackingActive=true;
+  lastFaceTrackingTimestamp=0;
   cancelAnimationFrame(faceTrackingFrame);
   faceTrackingFrame=requestAnimationFrame(trackFaceFrame);
-  if(faceLandmarker) return;
+  if(faceLandmarker) return true;
+  if(faceTrackingLoading) return false;
+  faceTrackingLoading=true;
 
   try {
     const {FaceLandmarker,FilesetResolver}=await import("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.2/+esm");
@@ -932,21 +931,42 @@ async function startFaceTracking(){
         baseOptions:{modelAssetPath,delegate:"CPU"}
       });
     }
-    $("uploadStatus").textContent="Camera ready — choose a face filter from the Message panel.";
+    faceTrackingLoading=false;
+    return true;
   } catch(error) {
+    faceTrackingLoading=false;
+    faceTrackingActive=false;
+    cancelAnimationFrame(faceTrackingFrame);
+    if(faceFilterCanvas) faceFilterCanvas.hidden=true;
     console.warn("MediaPipe face filter unavailable:",error);
     $("uploadStatus").textContent="Camera ready. The face filter could not load, but selfies still work.";
   }
 }
 
 faceFilterOptions.forEach(option=>{
-  option.addEventListener("click",()=>{
+  option.addEventListener("click",async()=>{
     currentFaceEffect=option.dataset.faceEffect||"none";
     faceFilterOptions.forEach(button=>{
       const isActive=button===option;
       button.classList.toggle("active",isActive);
       button.setAttribute("aria-pressed",String(isActive));
     });
+    if(currentFaceEffect==="none"){
+      faceTrackingActive=false;
+      cancelAnimationFrame(faceTrackingFrame);
+      latestFaceLandmarks=null;
+      if(faceFilterCanvas){
+        faceFilterCanvas.hidden=true;
+        faceFilterCanvas.getContext("2d")?.clearRect(0,0,faceFilterCanvas.width,faceFilterCanvas.height);
+      }
+      $("uploadStatus").textContent="Camera ready. Face filter is off for the smoothest preview.";
+      return;
+    }
+
+    if(faceFilterCanvas) faceFilterCanvas.hidden=false;
+    if(!faceLandmarker) $("uploadStatus").textContent="Loading the optional face filterâ€¦";
+    if(!faceLandmarker) $("uploadStatus").textContent="Loading the optional face filter...";
+    await startFaceTracking();
     renderLiveFaceEffect();
   });
 });
@@ -996,11 +1016,13 @@ $("startBtn").addEventListener("click", async () => {
     $("camera").srcObject = stream;
     await $("camera").play();
     $("placeholder").classList.add("hidden");
+    $("liveOverlay").hidden=false;
+    document.querySelector("#selfie .filter-card")?.removeAttribute("hidden");
     $("captureBtn").disabled = false;
     $("startBtn").disabled = true;
     $("startBtn").textContent = "Camera Ready";
-    $("uploadStatus").textContent = "Loading floral face filter…";
-    startFaceTracking();
+    $("uploadStatus").textContent = "Camera ready. Choose a message or an optional face filter below.";
+    schedulePhoneTabFit();
   } catch (e) {
     $("uploadStatus").textContent = "Camera access was blocked. Use HTTPS and allow camera permission.";
   }

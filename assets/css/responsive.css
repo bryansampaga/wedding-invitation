@@ -333,6 +333,87 @@ main > #guest.section{
   object-position:center center !important;
 }
 
+/* Portrait-first booth: camera on top, lightweight controls underneath. */
+#selfie .selfie-grid{
+  grid-template-columns:minmax(0,1fr) !important;
+  grid-template-rows:auto auto auto auto !important;
+  width:min(100%,430px);
+  height:auto !important;
+  min-height:0;
+  max-height:none !important;
+  overflow:visible;
+}
+
+#selfie .camera-stage{
+  grid-column:1 !important;
+  grid-row:1 !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  aspect-ratio:3 / 4 !important;
+}
+
+#selfie .filter-card{
+  grid-column:1 !important;
+  grid-row:2 !important;
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  width:100%;
+  height:auto;
+  min-height:0;
+  max-height:none !important;
+  padding:8px;
+  gap:6px;
+  overflow:visible;
+  border:1px solid rgba(91,113,132,.22);
+  border-radius:12px;
+  background:rgba(255,255,255,.32);
+}
+
+#selfie .filter-card[hidden],
+#selfie #liveOverlay[hidden],
+#selfie #faceFilterCanvas[hidden]{
+  display:none !important;
+}
+
+#selfie .filter-card h3,
+#selfie .face-filter-picker{
+  grid-column:1 / -1;
+}
+
+#selfie .filter-card h3{
+  margin:0 0 2px;
+}
+
+#selfie .filter-card .filter{
+  min-height:42px;
+  padding:7px 4px;
+}
+
+#selfie .filter-card .filter:nth-of-type(n+4){
+  display:none;
+}
+
+#selfie .face-filter-picker{
+  margin-top:2px;
+  padding-top:7px;
+}
+
+#selfie .face-filter-options{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+
+#selfie .camera-actions{
+  grid-column:1 !important;
+  grid-row:3 !important;
+}
+
+#selfie .status{
+  grid-column:1 !important;
+  grid-row:4 !important;
+}
+
 /* Each swatch scales from its own card width, independently of screen height. */
 #theme .attire-card .palette{
   display:grid;
