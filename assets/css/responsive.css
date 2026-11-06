@@ -7,6 +7,26 @@
   --page-paper-width:clamp(560px,58vw,820px);
   --invitation-background:#eef2ed;
 }
+
+/* Native free scrolling everywhere; navigation clicks perform explicit jumps. */
+html{
+  scroll-behavior:auto !important;
+  scroll-snap-type:none !important;
+  scroll-padding-top:0 !important;
+  overscroll-behavior-y:auto !important;
+}
+
+main > .section,
+#selfie .my-gallery{
+  scroll-snap-align:none !important;
+  scroll-snap-stop:normal !important;
+  scroll-margin-top:0 !important;
+}
+
+.nav a[aria-current="page"]{
+  background:#e2e8df;
+  color:#344a56;
+}
 html{background:var(--invitation-background);scroll-snap-type:y proximity}
 body{min-width:0;background:var(--invitation-background)}
 main{min-width:0}
@@ -383,7 +403,7 @@ main > #guest.section{
   html{
     scroll-behavior:auto;
     scroll-snap-type:none;
-    scroll-padding-top:calc(50px + env(safe-area-inset-top, 0px));
+    scroll-padding-top:0;
     overscroll-behavior-y:auto;
   }
 
@@ -408,7 +428,7 @@ main > #guest.section{
     height:auto !important;
     scroll-snap-align:none;
     scroll-snap-stop:normal;
-    scroll-margin-top:calc(50px + env(safe-area-inset-top, 0px));
+    scroll-margin-top:0;
     padding-bottom:max(18px, calc(env(safe-area-inset-bottom, 0px) + 12px)) !important;
   }
 

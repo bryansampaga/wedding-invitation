@@ -2,97 +2,68 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
-const script=fs.readFileSync('assets/js/script.js','utf8');
-const navigation=script.slice(script.indexOf('// Move exactly one main invitation tab'),script.lastIndexOf('loadGuest();'));
 
-function setup(rects,{coarsePointer=false}={}){
-  const events={};
+const script=fs.readFileSync('assets/js/script.js','utf8');
+const navigation=script.slice(
+  script.indexOf('// Keep wheel, trackpad and touch scrolling fully native.'),
+  script.lastIndexOf('loadGuest();')
+);
+
+function setup(){
+  const listeners={};
+  const historyUpdates=[];
   const jumps=[];
-  class Element{}
-  const sections=rects.map((rect,i)=>({getBoundingClientRect:()=>rect,scrollIntoView:()=>jumps.push(i)}));
+  class Element{
+    closest(){return null;}
+  }
+  class Link extends Element{
+    constructor(hash){super();this.attributes={href:hash}}
+    getAttribute(name){return this.attributes[name]}
+    setAttribute(name,value){this.attributes[name]=value}
+    removeAttribute(name){delete this.attributes[name]}
+    closest(){return this}
+  }
+  const links=[new Link('#home'),new Link('#theme')];
+  const sections={
+    '#home':{id:'home',getBoundingClientRect:()=>({top:0}),scrollIntoView:options=>jumps.push(['home',options])},
+    '#theme':{id:'theme',getBoundingClientRect:()=>({top:800}),scrollIntoView:options=>jumps.push(['theme',options])}
+  };
+  const nav={addEventListener:(name,handler)=>listeners[name]=handler};
   const context=vm.createContext({
-    document:{querySelectorAll:()=>sections,documentElement:{classList:{contains:()=>false}},body:{}},
-    window:{addEventListener:(name,handler)=>events[name]=handler,setTimeout:()=>1},
-    innerHeight:800,Element,setTimeout:()=>1,clearTimeout:()=>{},
-    matchMedia:query=>({matches:query.includes('pointer: coarse')?coarsePointer:true}),
-    getComputedStyle:()=>({overflowY:'visible'})
+    document:{
+      querySelector:selector=>selector==='.nav'?nav:sections[selector]||null,
+      querySelectorAll:selector=>selector==='.nav a[href^="#"]'?links:[]
+    },
+    window:{
+      addEventListener:(name,handler)=>listeners[name]=handler,
+      visualViewport:{offsetTop:0,addEventListener:(name,handler)=>listeners['viewport-'+name]=handler}
+    },
+    history:{replaceState:(state,title,url)=>historyUpdates.push(url)},
+    Element,
+    requestAnimationFrame:callback=>{callback();return 1},
+    cancelAnimationFrame:()=>{}
   });
   vm.runInContext(navigation,context);
-  const run=code=>vm.runInContext(code,context);
-  const wheel=(deltaY)=>events.wheel({deltaY,deltaX:0,deltaMode:0,ctrlKey:false,target:new Element(),preventDefault(){}});
-  return {events,jumps,run,wheel,Element};
+  return {listeners,links,jumps,historyUpdates};
 }
 
-test('a tall page stays active until its top has passed; content remains readable',()=>{
-  const {run}=setup([{top:-200,bottom:1000},{top:1000,bottom:1800}]);
-  assert.equal(run('activeInvitationSectionIndex()'),0);
-  assert.equal(run('canScrollPageContent(1)'),true);
-  assert.equal(run('canScrollPageContent(-1)'),true);
-});
-
-test('the private gallery becomes active within the containing selfie section',()=>{
-  const {run}=setup([{top:-1000,bottom:800},{top:0,bottom:800}]);
-  assert.equal(run('activeInvitationSectionIndex()'),1);
-  assert.equal(run('canScrollPageContent(1)'),false);
-});
-
-test('small wheel deltas accumulate but momentum cannot trigger a second jump',()=>{
-  const {run,wheel,jumps}=setup([{top:0,bottom:800},{top:800,bottom:1600},{top:1600,bottom:2400}]);
-  wheel(10);wheel(10);wheel(10);
-  assert.equal(jumps.length,0);
-  wheel(10);
-  assert.deepEqual(jumps,[1]);
-  run('sectionScrollLocked=false');
-  wheel(100);
-  assert.deepEqual(jumps,[1]);
-});
-
-test('wheel input on a tall page does not skip its remaining content',()=>{
-  const {wheel,jumps}=setup([{top:0,bottom:1200},{top:1200,bottom:2000}]);
-  wheel(120);
-  assert.deepEqual(jumps,[]);
-});
-
-test('a swipe reading a tall page does not become a tab jump mid-gesture',()=>{
-  const rect={top:0,bottom:1200};
-  const {events,jumps,Element}=setup([rect,{top:1200,bottom:2000}]);
-  events.touchstart({touches:[{clientX:50,clientY:500}],target:new Element()});
-  events.touchmove({touches:[{clientX:50,clientY:400}],preventDefault(){}});
-  rect.top=-400;rect.bottom=800;
-  events.touchmove({touches:[{clientX:50,clientY:300}],preventDefault(){}});
-  events.touchend();
-  assert.deepEqual(jumps,[]);
-});
-
-test('a cancelled swipe cannot navigate on a later touchend',()=>{
-  const {events,jumps,Element}=setup([{top:0,bottom:800},{top:800,bottom:1600}]);
-  events.touchstart({touches:[{clientX:50,clientY:500}],target:new Element()});
-  events.touchmove({touches:[{clientX:50,clientY:400}],preventDefault(){}});
-  events.touchcancel();events.touchend();
-  assert.deepEqual(jumps,[]);
-});
-
-test('phone swipes stay native when browser chrome changes the viewport',()=>{
-  const {events,jumps,Element}=setup([{top:0,bottom:800},{top:800,bottom:1600}],{coarsePointer:true});
+test('top navigation aligns the selected tab without scroll animation',()=>{
+  const {listeners,links,jumps,historyUpdates}=setup();
   let prevented=false;
-  events.touchstart({touches:[{clientX:50,clientY:500}],target:new Element()});
-  events.touchmove({touches:[{clientX:50,clientY:350}],preventDefault(){prevented=true}});
-  events.touchend();
-  assert.equal(prevented,false);
-  assert.deepEqual(jumps,[]);
+  listeners.click({target:links[1],preventDefault(){prevented=true}});
+  assert.equal(prevented,true);
+  assert.equal(jumps.length,1);
+  assert.equal(jumps[0][0],'theme');
+  assert.equal(jumps[0][1].behavior,'auto');
+  assert.equal(jumps[0][1].block,'start');
+  assert.deepEqual(historyUpdates,['#theme']);
+  assert.equal(links[1].attributes['aria-current'],'page');
 });
 
-test('visible browser height determines when the page has been fully read',()=>{
-  const {run}=setup([{top:0,bottom:800},{top:800,bottom:1600}]);
-  run('window.visualViewport={height:700,offsetTop:0,scale:1}');
-  assert.equal(run('canScrollPageContent(1)'),true);
-  run('window.visualViewport.height=800');
-  assert.equal(run('canScrollPageContent(1)'),false);
-});
-
-test('pinch-zoom leaves wheel navigation to the browser',()=>{
-  const {run,wheel,jumps}=setup([{top:0,bottom:800},{top:800,bottom:1600}]);
-  run('window.visualViewport={height:400,offsetTop:0,scale:2}');
-  wheel(120);
-  assert.deepEqual(jumps,[]);
+test('wheel and touch input are never intercepted',()=>{
+  const {listeners}=setup();
+  assert.equal(listeners.wheel,undefined);
+  assert.equal(listeners.touchstart,undefined);
+  assert.equal(listeners.touchmove,undefined);
+  assert.equal(listeners.touchend,undefined);
 });

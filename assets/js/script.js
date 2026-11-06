@@ -1686,161 +1686,57 @@ if(attirePreviewTriggers.length && attirePreviewModal){
   });
 }
 
-// Move exactly one main invitation tab for each mouse-wheel or trackpad gesture.
-const invitationSections = [...document.querySelectorAll("main > .section, #selfie .my-gallery")];
-let sectionScrollLocked = false;
-let sectionScrollUnlockTimer = 0;
-let navigationViewportChanged = false;
-function visiblePageBounds(){
-  const viewport=window.visualViewport;
-  const top=viewport?.offsetTop||0;
-  return {top,bottom:top+(viewport?.height||innerHeight)};
-}
-function noteNavigationResize(){
-  if(sectionScrollLocked) navigationViewportChanged=true;
-}
-window.addEventListener("resize",noteNavigationResize);
-window.visualViewport?.addEventListener("resize",noteNavigationResize);
+// Keep wheel, trackpad and touch scrolling fully native. The fixed navigation
+// is the only control that aligns a complete tab with the visible viewport.
+const invitationNav = document.querySelector(".nav");
+const invitationNavLinks = [...document.querySelectorAll('.nav a[href^="#"]')];
+const invitationNavSections = invitationNavLinks
+  .map(link => document.querySelector(link.getAttribute("href")))
+  .filter(Boolean);
 
-function canScrollInside(element, direction){
-  for(let node = element; node && node !== document.body; node = node.parentElement){
-    const style = getComputedStyle(node);
-    const scrollable = /(auto|scroll)/.test(style.overflowY) && node.scrollHeight > node.clientHeight + 2;
-    if(!scrollable) continue;
-    if(direction > 0 && node.scrollTop + node.clientHeight < node.scrollHeight - 2) return true;
-    if(direction < 0 && node.scrollTop > 2) return true;
-  }
-  return false;
-}
-
-function canScrollPageContent(direction){
-  const index=activeInvitationSectionIndex();
-  const page=invitationSections[index];
-  if(!page) return false;
-  const rect=page.getBoundingClientRect();
-  const next=invitationSections[index+1];
-  const bottom=next ? Math.min(rect.bottom,next.getBoundingClientRect().top) : rect.bottom;
-  const visible=visiblePageBounds();
-  return direction>0 ? bottom>visible.bottom+8 : rect.top < visible.top-8;
-}
-
-function activeInvitationSectionIndex(){
-  // Use the page at the top, not whichever next heading is nearest the center.
-  let index=0;
-  invitationSections.forEach((section,i)=>{
-    if(section.getBoundingClientRect().top<=visiblePageBounds().top+8) index=i;
+function markActiveInvitationTab(activeSection){
+  invitationNavLinks.forEach(link => {
+    const isActive = link.getAttribute("href") === `#${activeSection?.id}`;
+    if(isActive) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
   });
-  return index;
 }
 
-function moveInvitationSection(direction){
-  if(sectionScrollLocked || invitationSections.length < 2) return;
-  const currentIndex = activeInvitationSectionIndex();
-  const nextIndex = Math.max(0, Math.min(invitationSections.length - 1, currentIndex + direction));
-  if(nextIndex === currentIndex) return;
+function showInvitationTab(link){
+  const selector = link?.getAttribute("href");
+  const section = selector?.startsWith("#") ? document.querySelector(selector) : null;
+  if(!section) return false;
+  section.scrollIntoView({behavior:"auto", block:"start"});
+  history.replaceState?.(null, "", selector);
+  markActiveInvitationTab(section);
+  return true;
+}
 
-  sectionScrollLocked = true;
-  navigationViewportChanged = false;
-  invitationSections[nextIndex].scrollIntoView({
-    behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-    block: "start"
+invitationNav?.addEventListener("click", event => {
+  const link = event.target instanceof Element
+    ? event.target.closest('.nav a[href^="#"]')
+    : null;
+  if(!link || !showInvitationTab(link)) return;
+  event.preventDefault();
+});
+
+let activeTabFrame = 0;
+function updateActiveInvitationTab(){
+  const viewportTop = window.visualViewport?.offsetTop || 0;
+  let activeSection = invitationNavSections[0];
+  invitationNavSections.forEach(section => {
+    if(section.getBoundingClientRect().top <= viewportTop + 8) activeSection = section;
   });
-
-  clearTimeout(sectionScrollUnlockTimer);
-  sectionScrollUnlockTimer = window.setTimeout(() => {
-    // Collapsing browser chrome can move a dvh-sized destination mid-animation.
-    // Align that same destination once, without advancing to another tab.
-    if(navigationViewportChanged && (window.visualViewport?.scale||1)===1){
-      invitationSections[nextIndex].scrollIntoView({behavior:"instant",block:"start"});
-    }
-    sectionScrollLocked = false;
-  }, 850);
+  if(activeSection) markActiveInvitationTab(activeSection);
 }
 
-let wheelGestureUsed=false;
-let wheelGestureTimer=0;
-let wheelDistance=0;
-window.addEventListener("wheel", event => {
-  if(event.ctrlKey || (window.visualViewport?.scale||1)>1.01 || Math.abs(event.deltaY)<=Math.abs(event.deltaX) || document.documentElement.classList.contains("attire-modal-open")) return;
-  const direction = event.deltaY > 0 ? 1 : -1;
-  const target = event.target instanceof Element ? event.target : null;
-  clearTimeout(wheelGestureTimer);
-  wheelGestureTimer=setTimeout(()=>{wheelGestureUsed=false;wheelDistance=0},220);
-  if(sectionScrollLocked||wheelGestureUsed){event.preventDefault();return}
-  if(target && canScrollInside(target, direction)) return;
-  if(canScrollPageContent(direction)) return;
+function scheduleActiveInvitationTab(){
+  cancelAnimationFrame(activeTabFrame);
+  activeTabFrame = requestAnimationFrame(updateActiveInvitationTab);
+}
 
-  event.preventDefault();
-  const delta=event.deltaY*(event.deltaMode===1?16:event.deltaMode===2?innerHeight:1);
-  if(Math.sign(wheelDistance)!==direction) wheelDistance=0;
-  wheelDistance+=delta;
-  if(Math.abs(wheelDistance)>=32){
-    wheelGestureUsed=true;
-    moveInvitationSection(direction);
-  }
-}, {passive:false});
-
-let sectionTouchStartX = 0;
-let sectionTouchStartY = 0;
-let sectionTouchCurrentY = 0;
-let sectionTouchTarget = null;
-let sectionTouchIsVertical = false;
-let sectionTouchNative = false;
-// Phone browser chrome changes the visual viewport during a swipe. Let coarse
-// pointer devices scroll natively so the address bar cannot fight a scripted
-// scrollIntoView() jump. Hybrid/desktop touchscreens keep one-section paging.
-const useCustomTouchSectionNavigation = !matchMedia("(hover: none), (pointer: coarse)").matches;
-
-window.addEventListener("touchstart", event => {
-  if(!useCustomTouchSectionNavigation){
-    sectionTouchTarget=null;
-    sectionTouchIsVertical=false;
-    sectionTouchNative=true;
-    return;
-  }
-  if(event.touches.length !== 1){sectionTouchTarget=null;sectionTouchIsVertical=false;return}
-  sectionTouchStartX = event.touches[0].clientX;
-  sectionTouchStartY = event.touches[0].clientY;
-  sectionTouchCurrentY = sectionTouchStartY;
-  sectionTouchTarget = event.target instanceof Element ? event.target : null;
-  sectionTouchIsVertical = false;
-  sectionTouchNative = false;
-}, {passive:true});
-
-window.addEventListener("touchmove", event => {
-  if(!useCustomTouchSectionNavigation) return;
-  if(event.touches.length !== 1 || !sectionTouchTarget || (window.visualViewport?.scale||1)>1.01 || document.documentElement.classList.contains("attire-modal-open")) return;
-  const deltaX = event.touches[0].clientX - sectionTouchStartX;
-  const deltaY = event.touches[0].clientY - sectionTouchStartY;
-  sectionTouchCurrentY = event.touches[0].clientY;
-  if(Math.abs(deltaY) < 10 || Math.abs(deltaY) <= Math.abs(deltaX)) return;
-
-  const direction = deltaY < 0 ? 1 : -1;
-  // Once a swipe is scrolling content, do not turn it into a tab jump mid-swipe.
-  if(sectionTouchNative) return;
-  if(sectionScrollLocked){event.preventDefault();return}
-  if(canScrollInside(sectionTouchTarget,direction)||canScrollPageContent(direction)){
-    sectionTouchNative=true;
-    return;
-  }
-  sectionTouchIsVertical = true;
-  event.preventDefault();
-}, {passive:false});
-
-window.addEventListener("touchend", () => {
-  if(!useCustomTouchSectionNavigation) return;
-  const distance = sectionTouchCurrentY - sectionTouchStartY;
-  if(sectionTouchIsVertical && Math.abs(distance) >= 42){
-    moveInvitationSection(distance < 0 ? 1 : -1);
-  }
-  sectionTouchTarget = null;
-  sectionTouchIsVertical = false;
-}, {passive:true});
-
-window.addEventListener("touchcancel",()=>{
-  sectionTouchTarget=null;
-  sectionTouchIsVertical=false;
-  sectionTouchNative=false;
-},{passive:true});
+window.addEventListener("scroll", scheduleActiveInvitationTab, {passive:true});
+window.visualViewport?.addEventListener("resize", scheduleActiveInvitationTab, {passive:true});
+scheduleActiveInvitationTab();
 
 loadGuest();
