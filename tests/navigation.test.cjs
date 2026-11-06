@@ -5,7 +5,7 @@ const vm=require('node:vm');
 const script=fs.readFileSync('assets/js/script.js','utf8');
 const navigation=script.slice(script.indexOf('// Move exactly one main invitation tab'),script.lastIndexOf('loadGuest();'));
 
-function setup(rects){
+function setup(rects,{coarsePointer=false}={}){
   const events={};
   const jumps=[];
   class Element{}
@@ -14,7 +14,7 @@ function setup(rects){
     document:{querySelectorAll:()=>sections,documentElement:{classList:{contains:()=>false}},body:{}},
     window:{addEventListener:(name,handler)=>events[name]=handler,setTimeout:()=>1},
     innerHeight:800,Element,setTimeout:()=>1,clearTimeout:()=>{},
-    matchMedia:()=>({matches:true}),
+    matchMedia:query=>({matches:query.includes('pointer: coarse')?coarsePointer:true}),
     getComputedStyle:()=>({overflowY:'visible'})
   });
   vm.runInContext(navigation,context);
@@ -69,6 +69,16 @@ test('a cancelled swipe cannot navigate on a later touchend',()=>{
   events.touchstart({touches:[{clientX:50,clientY:500}],target:new Element()});
   events.touchmove({touches:[{clientX:50,clientY:400}],preventDefault(){}});
   events.touchcancel();events.touchend();
+  assert.deepEqual(jumps,[]);
+});
+
+test('phone swipes stay native when browser chrome changes the viewport',()=>{
+  const {events,jumps,Element}=setup([{top:0,bottom:800},{top:800,bottom:1600}],{coarsePointer:true});
+  let prevented=false;
+  events.touchstart({touches:[{clientX:50,clientY:500}],target:new Element()});
+  events.touchmove({touches:[{clientX:50,clientY:350}],preventDefault(){prevented=true}});
+  events.touchend();
+  assert.equal(prevented,false);
   assert.deepEqual(jumps,[]);
 });
 

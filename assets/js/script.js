@@ -1688,8 +1688,18 @@ let sectionTouchCurrentY = 0;
 let sectionTouchTarget = null;
 let sectionTouchIsVertical = false;
 let sectionTouchNative = false;
+// Phone browser chrome changes the visual viewport during a swipe. Let coarse
+// pointer devices scroll natively so the address bar cannot fight a scripted
+// scrollIntoView() jump. Hybrid/desktop touchscreens keep one-section paging.
+const useCustomTouchSectionNavigation = !matchMedia("(hover: none), (pointer: coarse)").matches;
 
 window.addEventListener("touchstart", event => {
+  if(!useCustomTouchSectionNavigation){
+    sectionTouchTarget=null;
+    sectionTouchIsVertical=false;
+    sectionTouchNative=true;
+    return;
+  }
   if(event.touches.length !== 1){sectionTouchTarget=null;sectionTouchIsVertical=false;return}
   sectionTouchStartX = event.touches[0].clientX;
   sectionTouchStartY = event.touches[0].clientY;
@@ -1700,6 +1710,7 @@ window.addEventListener("touchstart", event => {
 }, {passive:true});
 
 window.addEventListener("touchmove", event => {
+  if(!useCustomTouchSectionNavigation) return;
   if(event.touches.length !== 1 || !sectionTouchTarget || (window.visualViewport?.scale||1)>1.01 || document.documentElement.classList.contains("attire-modal-open")) return;
   const deltaX = event.touches[0].clientX - sectionTouchStartX;
   const deltaY = event.touches[0].clientY - sectionTouchStartY;
@@ -1719,6 +1730,7 @@ window.addEventListener("touchmove", event => {
 }, {passive:false});
 
 window.addEventListener("touchend", () => {
+  if(!useCustomTouchSectionNavigation) return;
   const distance = sectionTouchCurrentY - sectionTouchStartY;
   if(sectionTouchIsVertical && Math.abs(distance) >= 42){
     moveInvitationSection(distance < 0 ? 1 : -1);

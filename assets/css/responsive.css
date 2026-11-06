@@ -359,3 +359,76 @@ main > #guest.section{
 #reservations .reservation-guest-note h3{font-size:clamp(18px,4.5vw,22px);margin-bottom:4px}
 #reservations .reservation-guest-note p{font-size:clamp(14px,3.5vw,17px);line-height:1.28}
 #reservations .reservation-guest-note p + p{margin-top:3px}
+
+/*
+ * Android's address bar and three-button/gesture navigation change the dynamic
+ * viewport while the page is being scrolled.  Use the stable "small" viewport
+ * for phone tabs, leave room for display cutouts/system controls and allow a
+ * long tab to scroll instead of clipping its last card.
+ */
+@media(max-width:780px){
+  html{
+    scroll-behavior:auto;
+    scroll-snap-type:none;
+    scroll-padding-top:calc(50px + env(safe-area-inset-top, 0px));
+    overscroll-behavior-y:auto;
+  }
+
+  body{
+    padding-right:env(safe-area-inset-right, 0px);
+    padding-left:env(safe-area-inset-left, 0px);
+    touch-action:auto;
+  }
+
+  .nav{
+    top:max(5px, env(safe-area-inset-top, 0px)) !important;
+    width:calc(100% - max(10px, env(safe-area-inset-left, 0px)) - max(10px, env(safe-area-inset-right, 0px))) !important;
+  }
+
+  main > .section,
+  main > #guest.section,
+  main > #reservations.section,
+  main > #theme.section,
+  main > #venue.section,
+  main > #selfie.section{
+    min-height:100svh !important;
+    height:auto !important;
+    scroll-snap-align:none;
+    scroll-snap-stop:normal;
+    scroll-margin-top:calc(50px + env(safe-area-inset-top, 0px));
+    padding-bottom:max(18px, calc(env(safe-area-inset-bottom, 0px) + 12px)) !important;
+  }
+
+  #reservations,
+  #theme{
+    overflow:visible;
+  }
+
+  /* Scale both four-colour palettes from their card, not viewport height. */
+  #theme .attire-card{
+    container-type:inline-size;
+  }
+
+  #theme .attire-card .palette{
+    width:100%;
+    min-width:0;
+  }
+
+  #theme .attire-card .palette .palette-color{
+    width:100%;
+    height:clamp(40px, 15cqw, 68px);
+    min-height:0;
+    aspect-ratio:auto;
+  }
+
+  #theme .palette-hint{
+    max-width:100%;
+    overflow-wrap:anywhere;
+  }
+}
+
+@media(max-width:360px){
+  #theme .attire-card .palette .palette-color{
+    height:clamp(36px, 14cqw, 52px);
+  }
+}
