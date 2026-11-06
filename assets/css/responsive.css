@@ -422,9 +422,10 @@ main > #guest.section{
   }
 
   #selfie .camera-stage{
-    width:auto !important;
+    width:100% !important;
     height:clamp(260px,48svh,390px) !important;
     max-width:100% !important;
+    aspect-ratio:auto !important;
     justify-self:center;
   }
 
